@@ -1,6 +1,6 @@
 {
   "name": "@webreflection/utils",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "exports": {
     "./with-resolvers": "./src/with-resolvers.js",
