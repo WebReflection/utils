@@ -1,0 +1,34 @@
+{
+  "name": "@webreflection/utils",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    "./with-resolvers": "./src/with-resolvers.js",
+    "./package.json": "./package.json"
+  },
+  "tests": [
+    "with-resolvers"
+  ],
+  "scripts": {
+    "test": "c8 node -e 'let q=Promise.resolve();for(const t of require(`./package.json`).tests)q=q.then(()=>import(`./test/${t}.js`));'"
+  },
+  "keywords": [
+    "shared",
+    "utility",
+    "utils"
+  ],
+  "author": "Andrea Giammarchi",
+  "license": "MIT",
+  "description": "A collection of utility functions",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WebReflection/utils.git"
+  },
+  "bugs": {
+    "url": "https://github.com/WebReflection/utils/issues"
+  },
+  "homepage": "https://github.com/WebReflection/utils#readme",
+  "devDependencies": {
+    "c8": "^10.1.3"
+  }
+}
