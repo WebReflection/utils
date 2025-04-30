@@ -10,6 +10,7 @@
     "with-resolvers"
   ],
   "scripts": {
+    "coverage": "mkdir -p ./coverage; c8 report --reporter=text-lcov > ./coverage/lcov.info",
     "test": "c8 node -e 'let q=Promise.resolve();for(const t of require(`./package.json`).tests)q=q.then(()=>import(`./test/${t}.js`));'"
   },
   "keywords": [
