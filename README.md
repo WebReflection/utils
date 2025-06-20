@@ -8,6 +8,9 @@
 A [collection](./src/) of utility functions.
 
 ```js
+// example: a shim based on ArrayBuffer if native is `false`
+import { SharedArrayBuffer, native } from 'https://esm.run/@webreflection/utils/shared-array-buffer';
+
 // example: self bound Promise.withResolvers()
 import withResolvers from 'https://esm.run/@webreflection/utils/with-resolvers';
 

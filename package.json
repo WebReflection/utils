@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "type": "module",
   "exports": {
+    "./shared-array-buffer": "./src/shared-array-buffer.js",
     "./with-resolvers": "./src/with-resolvers.js",
     "./package.json": "./package.json"
   },
   "tests": [
+    "shared-array-buffer",
     "with-resolvers"
   ],
   "scripts": {
