@@ -1,6 +1,6 @@
 {
   "name": "@webreflection/utils",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "exports": {
     "./shared-array-buffer": "./src/shared-array-buffer.js",
