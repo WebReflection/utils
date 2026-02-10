@@ -1,4 +1,6 @@
-import withResolvers from '../src/with-resolvers.js';
+Promise.withResolvers = undefined;
+
+const { default: withResolvers } = await import('../src/with-resolvers.js');
 
 const { promise, resolve, reject } = withResolvers();
 
