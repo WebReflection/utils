@@ -1,9 +1,9 @@
 //@ts-check
 
-/**
- * @type {WeakMap<object, Map<string | symbol, (...args: any[]) => unknown>>}
- */
-const methods = new WeakMap;
+const $ = Symbol.for('@webreflection/utils/bound-once');
+
+// @ts-ignore
+const methods = globalThis[$] || (globalThis[$] = new WeakMap);
 
 /**
  * @type {ProxyHandler<any>}
