@@ -7,6 +7,10 @@
       "types": "./types/bound.d.ts",
       "import": "./src/bound.js"
     },
+    "./bound-once": {
+      "types": "./types/bound-once.d.ts",
+      "import": "./src/bound-once.js"
+    },
     "./shared-array-buffer": {
       "types": "./types/shared-array-buffer.d.ts",
       "import": "./src/shared-array-buffer.js"
@@ -19,6 +23,7 @@
   },
   "tests": [
     "bound",
+    "bound-once",
     "shared-array-buffer",
     "with-resolvers"
   ],

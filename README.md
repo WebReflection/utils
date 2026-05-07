@@ -9,10 +9,29 @@ A [collection](./src/) of utility functions.
 
 ```js
 // example: a shim based on ArrayBuffer if native is `false`
-import { SharedArrayBuffer, native } from 'https://esm.run/@webreflection/utils/shared-array-buffer';
+import { SharedArrayBuffer, native } from '@webreflection/utils/shared-array-buffer';
 
 // example: self bound Promise.withResolvers()
-import withResolvers from 'https://esm.run/@webreflection/utils/with-resolvers';
+import withResolvers from '@webreflection/utils/with-resolvers';
 
 const { promise, resolve, reject } = withResolvers();
+
+// example: any object bound method
+import bound from '@webreflection/utils/bound';
+
+const { all, resolve } = bound(Promise);
+all([1, 2, 3]);
+resolve(4);
+
+
+// example: any object bound method is identical
+//          particularly useful for listeners identity
+import boundOnce from '@webreflection/utils/bound-once';
+
+const { all, resolve } = boundOnce(Promise);
+all([1, 2, 3]);
+resolve(4);
+
+boundOnce(Promise).all === all;
+boundOnce(Promise).resolve === resolve;
 ```
