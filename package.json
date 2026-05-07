@@ -1,6 +1,6 @@
 {
   "name": "@webreflection/utils",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "type": "module",
   "types": {
     "./bound-once": "./types/bound-once.d.ts",
