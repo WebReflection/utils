@@ -3,7 +3,11 @@
 const $ = Symbol.for('@webreflection/utils/bound-once');
 
 // @ts-ignore
-const methods = globalThis[$] || (globalThis[$] = new WeakMap);
+const methods = globalThis[$] || Object.defineProperty(
+    globalThis,
+    $,
+    { value: new WeakMap },
+)[$];
 
 /**
  * @type {ProxyHandler<any>}
