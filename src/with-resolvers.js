@@ -2,21 +2,26 @@
 
 /**
  * @template T
- * @typedef {{promise: Promise<T>, resolve: (value: T) => void, reject: (reason?: any) => void}} Resolvers
+ * @typedef {{promise: Promise<T>, resolve: (value: T | PromiseLike<T>) => void, reject: (reason?: any) => void}} Resolvers
  */
 
 // fallback for Android WebView
-//@ts-ignore
-const withResolvers = Promise.withResolvers || function withResolvers() {
+/**
+ * @template T
+ * @this {PromiseConstructor}
+ * @returns {Resolvers<T>}
+ */
+function withResolvers() {
   var a, b, c = new this((resolve, reject) => {
     a = resolve;
     b = reject;
   });
-  return {resolve: a, reject: b, promise: c};
-};
+  // @ts-ignore
+  return { resolve: a, reject: b, promise: c };
+}
 
-/**
- * @template T
- * @type {() => Resolvers<T>}
- */
-export default withResolvers.bind(Promise);
+
+export default /** @type {<T>() => Resolvers<T>} */((
+  /** @type {PromiseConstructor & {withResolvers?: <T>() => Resolvers<T>}} */ (Promise).withResolvers ||
+  withResolvers
+).bind(Promise));
