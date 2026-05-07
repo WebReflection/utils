@@ -4,9 +4,9 @@ const $ = Symbol.for('@webreflection/utils/bound-once');
 
 // @ts-ignore
 const methods = globalThis[$] || Object.defineProperty(
-    globalThis,
-    $,
-    { value: new WeakMap },
+  globalThis,
+  $,
+  { value: new WeakMap },
 )[$];
 
 /**
@@ -27,7 +27,6 @@ const handler = {
  * @returns {import('./bound.js').Bound<T>}
  */
 export default target => {
-  let known = methods.get(target);
-  if (!known) methods.set(target, (known = new Map));
+  if (!methods.has(target)) methods.set(target, new Map);
   return new Proxy(target, handler);
 };
