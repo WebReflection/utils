@@ -2,6 +2,12 @@
   "name": "@webreflection/utils",
   "version": "0.2.1",
   "type": "module",
+  "types": {
+    "./bound-once": "./types/bound-once.d.ts",
+    "./bound": "./types/bound.d.ts",
+    "./shared-array-buffer": "./types/shared-array-buffer.d.ts",
+    "./with-resolvers": "./types/with-resolvers.d.ts"
+  },
   "exports": {
     "./bound-once": {
       "types": "./types/bound-once.d.ts",
