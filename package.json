@@ -6,6 +6,7 @@
     "./bound-once": "./types/bound-once.d.ts",
     "./bound": "./types/bound.d.ts",
     "./shared-array-buffer": "./types/shared-array-buffer.d.ts",
+    "./sticky": "./types/sticky.d.ts",
     "./with-resolvers": "./types/with-resolvers.d.ts"
   },
   "exports": {
