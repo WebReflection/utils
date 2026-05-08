@@ -34,4 +34,10 @@ resolve(4);
 
 boundOnce(Promise).all === all;
 boundOnce(Promise).resolve === resolve;
+
+// example: do not import or export same module
+
+import sticky from '@webreflection/utils/sticky-module';
+
+export default sticky('@module/name', { always: 'same' });
 ```

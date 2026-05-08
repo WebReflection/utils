@@ -21,6 +21,10 @@
       "types": "./types/shared-array-buffer.d.ts",
       "import": "./src/shared-array-buffer.js"
     },
+    "./sticky-module": {
+      "types": "./types/sticky-module.d.ts",
+      "import": "./src/sticky-module.js"
+    },
     "./with-resolvers": {
       "types": "./types/with-resolvers.d.ts",
       "import": "./src/with-resolvers.js"
@@ -31,6 +35,7 @@
     "bound-once",
     "bound",
     "shared-array-buffer",
+    "sticky-module",
     "with-resolvers"
   ],
   "scripts": {
