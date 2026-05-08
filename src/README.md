@@ -6,6 +6,28 @@ Each utility can be loaded from a *CDN* via either `https://esm.run/@webreflecti
 This document describes each utility separately.
 
 
+## all
+
+A `Promise.all` companion with one extra convenience: when called with a
+single object literal, it resolves each value and returns an object with the
+same keys.
+
+```js
+import all from '@webreflection/all';
+
+const user = await all({
+  name: fetchName(),
+  age: fetchAge()
+});
+
+// { name: 'Ada', age: 36 }
+```
+
+This preserves the shape and names of object-literal work, avoiding the
+positional array juggling required by `Promise.all`. For arrays, or for two or
+more arguments, it behaves like `Promise.all` and resolves to an array.
+
+
 ## bound-once
 
 This is equivalent to **bound**, except each bound method is created only once. It is useful when bound method identity must be preserved across multiple calls.

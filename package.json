@@ -3,6 +3,7 @@
   "version": "0.2.10",
   "type": "module",
   "types": {
+    "./all": "./types/all.d.ts",
     "./bound-once": "./types/bound-once.d.ts",
     "./bound": "./types/bound.d.ts",
     "./shared-array-buffer": "./types/shared-array-buffer.d.ts",
@@ -10,6 +11,10 @@
     "./with-resolvers": "./types/with-resolvers.d.ts"
   },
   "exports": {
+    "./all": {
+      "types": "./types/all.d.ts",
+      "import": "./src/all.js"
+    },
     "./bound-once": {
       "types": "./types/bound-once.d.ts",
       "import": "./src/bound-once.js"
@@ -33,6 +38,7 @@
     "./package.json": "./package.json"
   },
   "tests": [
+    "all",
     "bound-once",
     "bound",
     "shared-array-buffer",

@@ -7,6 +7,7 @@
 
 A [collection](./src/) of utility functions:
 
+  * **[all](https://github.com/WebReflection/utils/tree/main/src#all)** - `Promise.all` via object destructuring
   * **[bound-once](https://github.com/WebReflection/utils/tree/main/src#bound-once)** - to retrieve unique bound methods per realm
   * **[bound](https://github.com/WebReflection/utils/tree/main/src#bound)** - to retrieve one-off bound methods
   * **[shared-array-buffer](https://github.com/WebReflection/utils/tree/main/src#shared-array-buffer)** - to simulate *SAB* when not available
