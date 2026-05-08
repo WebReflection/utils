@@ -4,6 +4,7 @@
   "type": "module",
   "types": {
     "./all": "./types/all.d.ts",
+    "./ascii": "./types/ascii.d.ts",
     "./bound-once": "./types/bound-once.d.ts",
     "./bound": "./types/bound.d.ts",
     "./shared-array-buffer": "./types/shared-array-buffer.d.ts",
@@ -14,6 +15,10 @@
     "./all": {
       "types": "./types/all.d.ts",
       "import": "./src/all.js"
+    },
+    "./ascii": {
+      "types": "./types/ascii.d.ts",
+      "import": "./src/ascii.js"
     },
     "./bound-once": {
       "types": "./types/bound-once.d.ts",
@@ -39,6 +44,7 @@
   },
   "tests": [
     "all",
+    "ascii",
     "bound-once",
     "bound",
     "shared-array-buffer",

@@ -28,6 +28,27 @@ positional array juggling required by `Promise.all`. For arrays, or for two or
 more arguments, it behaves like `Promise.all` and resolves to an array.
 
 
+## ascii
+
+An extremely small string to `Uint8Array` converter for known ASCII-compatible
+content. It does not validate or encode Unicode code points; it simply stores
+each string unit as its `0-255` char code.
+
+This is meant for niche cases where the input is already constrained, such as
+ISO date strings, plain-English global names or method names, and other small
+ad-hoc values.
+
+```js
+import { encode, decode } from '@webreflection/utils/ascii';
+
+console.log(decode(encode('ASCII')));
+// ASCII
+```
+
+Please note that decoding also fails for inputs bigger than about 64K bytes, or
+whatever argument limit your runtime has for `String.fromCharCode`.
+
+
 ## bound-once
 
 This is equivalent to **bound**, except each bound method is created only once. It is useful when bound method identity must be preserved across multiple calls.
