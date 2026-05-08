@@ -13,15 +13,12 @@ const { for: symbolFor } = Symbol;
  * @returns {[T, boolean]} the passed `value` or the previous one as first entry, a boolean indicating if it was known or not
  */
 export default (name, value, global = globalThis) => {
-  /** @type {symbol} */
   const symbol = symbolFor(name);
-  const known = symbol in global;
+  // @ts-ignore
+  const known = global[symbol];
   return [
-    known ?
-      // @ts-ignore
-      global[symbol] :
-      // @ts-ignore
-      defineProperty(global, symbol, { value })[symbol],
-    known,
+    // @ts-ignore
+    known ?? defineProperty(global, symbol, { value })[symbol],
+    !!known,
   ];
 };

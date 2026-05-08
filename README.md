@@ -38,5 +38,7 @@ boundOnce(Promise).resolve === resolve;
 // example: always retrieve the first time data/module
 import sticky from '@webreflection/utils/sticky';
 
-export default sticky('@module/name', { always: 'same' });
+const [module, known] = sticky('@module/name', { always: 'same' });
+
+export default module;
 ```

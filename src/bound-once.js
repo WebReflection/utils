@@ -1,13 +1,11 @@
 //@ts-check
 
-const $ = Symbol.for('@webreflection/utils/bound-once');
+import sticky from './sticky.js';
 
-// @ts-ignore
-const methods = globalThis[$] || Object.defineProperty(
-  globalThis,
-  $,
-  { value: new WeakMap },
-)[$];
+const [methods] = sticky(
+  '@webreflection/utils/bound-once',
+  /** @type {WeakMap<object, Map<string | symbol, (...args: any[]) => unknown>>} */ (new WeakMap),
+);
 
 /**
  * @type {ProxyHandler<any>}
