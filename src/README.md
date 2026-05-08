@@ -13,7 +13,7 @@ single object literal, it resolves each value and returns an object with the
 same keys.
 
 ```js
-import all from '@webreflection/all';
+import all from '@webreflection/utils/all';
 
 const user = await all({
   name: fetchName(),
