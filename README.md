@@ -35,9 +35,8 @@ resolve(4);
 boundOnce(Promise).all === all;
 boundOnce(Promise).resolve === resolve;
 
-// example: do not import or export same module
-
-import sticky from '@webreflection/utils/sticky-module';
+// example: always retrieve the first time data/module
+import sticky from '@webreflection/utils/sticky';
 
 export default sticky('@module/name', { always: 'same' });
 ```

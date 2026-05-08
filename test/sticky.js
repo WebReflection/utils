@@ -1,4 +1,4 @@
-import stickyModule from '../src/sticky-module.js';
+import stickyModule from '../src/sticky.js';
 
 let [value, known] = stickyModule('test-sticky-module', 'value');
 
