@@ -5,11 +5,13 @@ Each utility can be loaded from a *CDN* via either `https://esm.run/@webreflecti
 
 This document describes each utility separately.
 
+
 ## bound-once
 
 This is equivalent to **bound**, except each bound method is created only once. It is useful when bound method identity must be preserved across multiple calls.
 
 This variant uses **sticky** to ensure that weakly referenced targets always produce the same bound method within the same realm.
+
 
 ## bound
 
@@ -32,6 +34,7 @@ This utility provides an unobtrusive *SAB* (*SharedArrayBuffer*) shim based on t
 This class can be used to simulate *SAB* capabilities.
 
 The module exports both `SharedArrayBuffer` and `native`. The `native` *boolean* indicates whether the returned constructor is the platform implementation or the shim.
+
 
 ## sticky
 
@@ -62,6 +65,8 @@ if (known) console.warn('embedded multiple times');
 
 export default module;
 ```
+
+Because the sticky logic is intentionally simple, using a "*first come, first served*" global symbol lookup, avoid storing sensitive values there directly when secrecy or module-level isolation matters.
 
 
 ## with-resolvers
