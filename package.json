@@ -79,6 +79,11 @@
     "url": "https://github.com/WebReflection/utils/issues"
   },
   "homepage": "https://github.com/WebReflection/utils#readme",
+  "overrides": {
+      "c8": {
+          "yargs": "^18.0.0"
+      }
+  },
   "devDependencies": {
     "c8": "^11.0.0",
     "typescript": "^6.0.3"
