@@ -70,6 +70,26 @@ resolve(4);
 
 The **bound-once** variant ensures that repeated accesses, such as `boundOnce(Promise).all`, always return the same bound method.
 
+
+## json-storage
+
+A *Map* like API that is compatible out of the box with *JSON API*.
+
+```js
+import JSONStorage from '@webreflection/utils/json-storage';
+
+const localJSONStorage = new JSONStorage;
+
+// insert if not present an object and returns it
+localJSONStorage.getOrInsert('key', { complex: true }).complex;
+
+localJSONStorage.get('key').complex; // true
+```
+
+The storage can be a session one via `new JSONStorage(JSONStorage.SESSION)` and it can optionally accept a different api from native *JSON* as long as both `parse` and `stringify` are implemented.
+
+
+
 ## shared-array-buffer
 
 This utility provides an unobtrusive *SAB* (*SharedArrayBuffer*) shim based on the default *ArrayBuffer*, with `grow(length)` and `growable` additions.

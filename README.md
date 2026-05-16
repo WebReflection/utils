@@ -11,6 +11,7 @@ A [collection](./src/) of utility functions:
   * **[ascii](https://github.com/WebReflection/utils/tree/main/src#ascii)** - basic string to buffer conversion (without validation)
   * **[bound-once](https://github.com/WebReflection/utils/tree/main/src#bound-once)** - to retrieve unique bound methods per realm
   * **[bound](https://github.com/WebReflection/utils/tree/main/src#bound)** - to retrieve one-off bound methods
+  * **[json-storage](https://github.com/WebReflection/utils/tree/main/src#json-storage)** - to handle with ease both `localStorage` and `sessionStorage` via a *Map* friendly API
   * **[shared-array-buffer](https://github.com/WebReflection/utils/tree/main/src#shared-array-buffer)** - to simulate *SAB* when not available
   * **[sticky](https://github.com/WebReflection/utils/tree/main/src#sticky)** - to stick once per realm anything useful
   * **[with-resolvers](https://github.com/WebReflection/utils/tree/main/src#with-resolvers)** - a self bound `Promise.withResolver()` for older runtimes
