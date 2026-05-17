@@ -15,7 +15,7 @@ class Storage extends Map {
 const { default: JSONStorage } = await import('../src/json-storage.js');
 
 function test(type) {
-  // setup
+  // setup - if flag is not passed to store data
   const global = type === JSONStorage.LOCAL ? 'localStorage' : 'sessionStorage';
   const unknown = !globalThis[global];
   if (unknown) {
@@ -36,16 +36,14 @@ function test(type) {
   console.assert(storage.delete('foo'), 'storage.delete("foo")');
   console.assert(!storage.has('foo'), 'storage.has("foo")');
   console.assert(storage.getOrInsertComputed('foo', () => 'baz') === 'baz', 'storage.getOrInsertComputed("foo", () => "baz") === "baz"');
-  if (type === JSONStorage.SESSION && !globalThis.localStorage) {
-    console.assert([...storage].join(',') === 'foo,baz', '[...storage].join(",") === "foo,baz"');
-    console.assert([...storage.entries()].join(',') === 'foo,baz', '[...storage.entries()].join(",") === "foo,baz"');
-    console.assert([...storage.keys()].join(',') === 'foo', '[...storage.keys()].join(",") === "foo"');
-    console.assert([...storage.values()].join(',') === 'baz', '[...storage.values()].join(",") === "baz"');
-  }
+  console.assert([...storage].join(',') === 'foo,baz', '[...storage].join(",") === "foo,baz"');
+  console.assert([...storage.entries()].join(',') === 'foo,baz', '[...storage.entries()].join(",") === "foo,baz"');
+  console.assert([...storage.keys()].join(',') === 'foo', '[...storage.keys()].join(",") === "foo"');
+  console.assert([...storage.values()].join(',') === 'baz', '[...storage.values()].join(",") === "baz"');
   storage.clear();
   console.assert([...storage].length === 0, '[...storage].length === 0');
 
-  // teardown
+  // teardown - if flag is not passed to store data
   if (unknown) {
     delete globalThis[global];
     Object.keys = keys;
