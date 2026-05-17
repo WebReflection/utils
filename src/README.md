@@ -71,23 +71,64 @@ resolve(4);
 The **bound-once** variant ensures that repeated accesses, such as `boundOnce(Promise).all`, always return the same bound method.
 
 
+## iterable
+
+Ensures an object can be consumed by `for...of`, spread, `Array.from`, and
+other iterable-aware APIs.
+
+```js
+import iterable from '@webreflection/utils/iterable';
+
+const query = iterable({ page: 1, perPage: 20 });
+
+console.log([...query]);
+// [['page', 1], ['perPage', 20]]
+```
+
+If the object already defines or inherits `Symbol.iterator`, it is returned
+unchanged. Otherwise, the same object receives a configurable own
+`Symbol.iterator` method that yields `Object.entries(ref)`.
+
+
 ## json-storage
 
-A *Map* like API that is compatible out of the box with *JSON API*.
+A small *Map* like facade over `localStorage` by default, or `sessionStorage`
+when requested. Values are serialized with `JSON.stringify` on write and parsed
+with `JSON.parse` on read, so callers can store structured data without
+manually converting every value.
 
 ```js
 import JSONStorage from '@webreflection/utils/json-storage';
 
-const localJSONStorage = new JSONStorage;
+const preferences = new JSONStorage;
 
-// insert if not present an object and returns it
-localJSONStorage.getOrInsert('key', { complex: true }).complex;
+preferences.set('theme', { dark: true });
 
-localJSONStorage.get('key').complex; // true
+console.log(preferences.get('theme').dark);
+// true
 ```
 
-The storage can be a session one via `new JSONStorage(JSONStorage.SESSION)` and it can optionally accept a different api from native *JSON* as long as both `parse` and `stringify` are implemented.
+The API follows familiar `Map` names where they make sense: `get`, `set`,
+`has`, `delete`, `clear`, `entries`, `keys`, `values`, and default iteration.
+Missing keys return `undefined`, while `delete(key)` reports whether the key was
+present.
 
+```js
+const cart = new JSONStorage(JSONStorage.SESSION);
+
+const items = cart.getOrInsert('items', []);
+items.push('book');
+cart.set('items', items);
+
+for (const [key, value] of cart) {
+  console.log(key, value);
+}
+```
+
+Use `getOrInsert(key, value)` to create a value only when the key is absent, or
+`getOrInsertComputed(key, callback)` when the initial value should be computed
+from the key. A second constructor argument can replace the native *JSON* API as
+long as it provides compatible `parse(source)` and `stringify(value)` methods.
 
 
 ## shared-array-buffer

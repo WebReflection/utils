@@ -28,6 +28,10 @@
       "types": "./types/bound.d.ts",
       "import": "./src/bound.js"
     },
+    "./iterable": {
+      "types": "./types/iterable.d.ts",
+      "import": "./src/iterable.js"
+    },
     "./json-storage": {
       "types": "./types/json-storage.d.ts",
       "import": "./src/json-storage.js"
@@ -51,6 +55,7 @@
     "ascii",
     "bound-once",
     "bound",
+    "iterable",
     "json-storage",
     "shared-array-buffer",
     "sticky",
