@@ -5,7 +5,7 @@
 <sup>**Social Media Photo by [benjamin lehman](https://unsplash.com/@abject) on [Unsplash](https://unsplash.com/)**</sup>
 
 
-A [collection](./src/) of utility functions:
+A curated, *TypeScript* friendly, [collection](./src/) of utilities:
 
   * **[all](https://github.com/WebReflection/utils/tree/main/src#all)** - `Promise.all` via object destructuring
   * **[ascii](https://github.com/WebReflection/utils/tree/main/src#ascii)** - basic string to buffer conversion (without validation)
