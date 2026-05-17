@@ -1,5 +1,19 @@
 const { entries, keys, values } = Object;
 
+let $entries = entries;
+let $keys = keys;
+let $values = values;
+
+Object.keys = function* (target) {
+    yield* $keys(target);
+};
+Object.values = function* (target) {
+    yield* $values(target);
+};
+Object.entries = function* (target) {
+    yield*  $entries(target);
+};
+
 class Storage extends Map {
   getItem(key) {
     return super.get(key);
@@ -19,9 +33,15 @@ function test(type) {
   const global = type === JSONStorage.LOCAL ? 'localStorage' : 'sessionStorage';
   const unknown = !globalThis[global];
   if (unknown) {
-    Object.keys = target => target.keys();
-    Object.values = target => target.values();
-    Object.entries = target => target.entries();
+    $entries = function* (target) {
+      yield* target.entries();
+    };
+    $keys = function* (target) {
+      yield* target.keys();
+    };
+    $values = function* (target) {
+      yield* target.values();
+    };
     globalThis[global] = new Storage;
   }
 
@@ -46,13 +66,17 @@ function test(type) {
   // teardown - if flag is not passed to store data
   if (unknown) {
     delete globalThis[global];
-    Object.keys = keys;
-    Object.values = values;
-    Object.entries = entries;
+    $entries = entries;
+    $keys = keys;
+    $values = values;
   }
 }
 
 test(JSONStorage.LOCAL);
 test(JSONStorage.SESSION);
+
+Object.entries = entries;
+Object.keys = keys;
+Object.values = values;
 
 console.log('JSON Storage tests passed');
