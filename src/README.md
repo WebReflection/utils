@@ -131,6 +131,52 @@ from the key. A second constructor argument can replace the native *JSON* API as
 long as it provides compatible `parse(source)` and `stringify(value)` methods.
 
 
+## registry
+
+A `Map` subclass that validates keys and values before storing them. By default,
+keys must be unique, so setting the same key twice throws a `TypeError`; pass
+`unique: false` when replacement should behave like a regular `Map`.
+
+```js
+import Registry from '@webreflection/utils/registry';
+
+const registry = new Registry(null, {
+  key: value => typeof value === 'string',
+  value: value => typeof value === 'function'
+});
+
+registry.set('ready', () => true);
+
+console.log(registry.get('ready')());
+// true
+```
+
+Both validators receive the candidate value and should return whether it is
+allowed. In TypeScript-aware editors, type-predicate validators also define the
+resulting `Registry<Key, Value>` shape, so `key` controls the map key type and
+`value` controls the stored value type.
+
+```js
+const mutable = new Registry(
+  [
+    ['answer', 41],
+    ['answer', 42]
+  ],
+  {
+    key: value => value === 'answer',
+    value: value => Number.isInteger(value),
+    unique: false
+  }
+);
+
+console.log(mutable.get('answer'));
+// 42
+```
+
+Initial iterable entries are validated with the same rules used by `set()`, so
+invalid keys, invalid values, or duplicate keys fail during construction.
+
+
 ## shared-array-buffer
 
 This utility provides an unobtrusive *SAB* (*SharedArrayBuffer*) shim based on the default *ArrayBuffer*, with `grow(length)` and `growable` additions.
