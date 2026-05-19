@@ -7,6 +7,9 @@
     "./ascii": "./types/ascii.d.ts",
     "./bound-once": "./types/bound-once.d.ts",
     "./bound": "./types/bound.d.ts",
+    "./iterable": "./types/iterable.d.ts",
+    "./json-storage": "./types/json-storage.d.ts",
+    "./registry": "./types/registry.d.ts",
     "./shared-array-buffer": "./types/shared-array-buffer.d.ts",
     "./sticky": "./types/sticky.d.ts",
     "./with-resolvers": "./types/with-resolvers.d.ts"
