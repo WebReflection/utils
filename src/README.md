@@ -53,7 +53,7 @@ whatever argument limit your runtime has for `String.fromCharCode`.
 
 This is equivalent to **bound**, except each bound method is created only once. It is useful when bound method identity must be preserved across multiple calls.
 
-This variant uses **sticky** to ensure that weakly referenced targets always produce the same bound method within the same realm.
+This variant uses [sticky](#sticky) to ensure that weakly referenced targets always produce the same bound method within the same realm.
 
 
 ## bound
