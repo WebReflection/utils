@@ -8,11 +8,10 @@
 /**
  * @template [Key=unknown]
  * @template [Value=unknown]
- * @typedef {{
- *   key?: RegistryValidator<Key>,
- *   value?: RegistryValidator<Value>,
- *   unique?: boolean,
- * }} RegistryOptions
+ * @typedef {object} RegistryOptions
+ * @property {RegistryValidator<Key>} [key] Accepts or rejects candidate keys.
+ * @property {RegistryValidator<Value>} [value] Accepts or rejects candidate values.
+ * @property {boolean} [unique] When true, stored keys cannot be replaced or removed.
  */
 
 /**
@@ -30,7 +29,9 @@ const defaultOptions = {
 };
 
 /**
- * Map with optional key/value validation and duplicate-key protection.
+ * Map with optional key/value validation and permanent-key protection.
+ *
+ * When unique keys are enabled, stored keys cannot be replaced or deleted.
  *
  * @template [Key=unknown]
  * @template [Value=unknown]
@@ -49,6 +50,7 @@ export default class Registry extends Map {
   /**
    * @param {Iterable<[Key, Value]> | null} [iterable]
    * @param {RegistryOptions<Key, Value>} [options]
+   * @throws {TypeError} If an initial entry violates validation or uniqueness.
    */
   constructor(
     iterable,
@@ -67,9 +69,22 @@ export default class Registry extends Map {
   }
 
   /**
+   * Remove a key when unique-key protection is disabled.
+   *
+   * @param {Key} key
+   * @returns {boolean}
+   * @throws {TypeError} If the key exists and unique-key protection is enabled.
+   */
+  delete(key) {
+    if (this.#unique && super.has(key)) fail('Unable to remove key:', key);
+    return super.delete(key);
+  }
+
+  /**
    * @param {Key} key
    * @param {Value} value
    * @returns {this}
+   * @throws {TypeError} If the key, value, or uniqueness check fails.
    */
   set(key, value) {
     if (!this.#key(key)) fail('Invalid key:', key);

@@ -5,6 +5,17 @@ const registry = new Registry;
 
 registry.set('foo', 'bar');
 assert.equal(registry.get('foo'), 'bar');
+assert.equal(registry.delete('missing'), false);
+
+assert.throws(
+  () => registry.delete('foo'),
+  {
+    name: 'TypeError',
+    message: 'Unable to remove key: foo'
+  }
+);
+
+assert.equal(registry.get('foo'), 'bar');
 
 assert.throws(
   () => registry.set('foo', 'baz'),
@@ -73,6 +84,10 @@ const duplicates = new Registry(
 assert.equal(duplicates.get('foo'), 'baz');
 assert.equal(duplicates.set('foo', 'qux'), duplicates);
 assert.equal(duplicates.get('foo'), 'qux');
+assert.equal(duplicates.delete('foo'), true);
+assert.equal(duplicates.has('foo'), false);
+duplicates.set('foo', 'again');
+assert.equal(duplicates.get('foo'), 'again');
 
 assert.throws(
   () => new Registry(

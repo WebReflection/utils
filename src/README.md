@@ -134,8 +134,10 @@ long as it provides compatible `parse(source)` and `stringify(value)` methods.
 ## registry
 
 A `Map` subclass that validates keys and values before storing them. By default,
-keys must be unique, so setting the same key twice throws a `TypeError`; pass
-`unique: false` when replacement should behave like a regular `Map`.
+keys are permanent: setting the same key twice throws a `TypeError`, and
+deleting an existing key also throws so it cannot be re-appended later. Pass
+`unique: false` when replacement and deletion should behave like a regular
+`Map`.
 
 ```js
 import Registry from '@webreflection/utils/registry';
@@ -171,10 +173,15 @@ const mutable = new Registry(
 
 console.log(mutable.get('answer'));
 // 42
+
+console.log(mutable.delete('answer'));
+// true
 ```
 
 Initial iterable entries are validated with the same rules used by `set()`, so
-invalid keys, invalid values, or duplicate keys fail during construction.
+invalid keys, invalid values, or duplicate keys fail during construction. With
+the default `unique: true` behavior, only missing keys can be passed to
+`delete()` without throwing, in which case it returns `false` like `Map`.
 
 
 ## shared-array-buffer
