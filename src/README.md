@@ -1,6 +1,6 @@
 # @webreflection/utils
 
-Each utility can be loaded from a *CDN* via either `https://esm.run/@webreflection/utils/{{UTILITY}}` or `https://cdn.jsdelivr.net/npm/@webreflection/utils/src/{{UTILITY}}.js`.
+Each utility can be loaded from a *CDN* via either `https://esm.run/@webreflection/utils/UTILITY` or `https://cdn.jsdelivr.net/npm/@webreflection/utils/src/UTILITY.js`.
 
 
 This document describes each utility separately.

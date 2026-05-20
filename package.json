@@ -96,7 +96,7 @@
   "bugs": {
     "url": "https://github.com/WebReflection/utils/issues"
   },
-  "homepage": "https://github.com/WebReflection/utils#readme",
+  "homepage": "https://webreflection.github.io/utils/",
   "overrides": {
     "c8": {
       "yargs": "^18.0.0"

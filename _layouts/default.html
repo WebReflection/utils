@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="{{ page.lang | default: site.lang | default: 'en' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="{{ page.description | default: site.description | escape }}">
+  <title>{% if page.title %}{{ page.title | escape }} · {% endif %}{{ site.title | escape }}</title>
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+  <script type="module">
+    const { dataset } = document.documentElement;
+    const key = 'webreflection-utils-theme';
+    const toggle = document.querySelector('.theme-toggle');
+    const stored = localStorage.getItem(key);
+
+    if (stored) dataset.theme = stored;
+
+    toggle.addEventListener('click', () => {
+      const current = dataset.theme;
+      const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+      const next = current ? (current === 'dark' ? 'light' : 'dark') : (dark ? 'light' : 'dark');
+      dataset.theme = next;
+      localStorage.setItem(key, next);
+    });
+  </script>
+</head>
+<body>
+  <div class="site">
+    <header class="site-header">
+      <a class="site-title" href="{{ '/' | relative_url }}">{{ site.title }}</a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="{{ '/' | relative_url }}">Home</a>
+        <a href="{{ '/src/' | relative_url }}">Utilities</a>
+        <a href="https://www.npmjs.com/package/@webreflection/utils">npm</a>
+        <a href="https://github.com/{{ site.repository }}">GitHub</a>
+        <button class="theme-toggle" type="button" aria-label="Toggle color theme">Theme</button>
+      </nav>
+    </header>
+
+    <main class="content">
+      {{ content }}
+    </main>
+
+    <footer class="site-footer">
+      <span>MIT-style license.</span>
+      <a href="https://github.com/{{ site.repository }}">WebReflection/utils</a>
+    </footer>
+  </div>
+</body>
+</html>

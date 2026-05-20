@@ -1,0 +1,14 @@
+title: "@webreflection/utils"
+description: "A curated, TypeScript-friendly collection of small JavaScript utilities."
+url: "https://webreflection.github.io"
+baseurl: "/utils"
+repository: "WebReflection/utils"
+markdown: kramdown
+highlighter: rouge
+
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
