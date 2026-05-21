@@ -71,6 +71,35 @@ resolve(4);
 The **bound-once** variant ensures that repeated accesses, such as `boundOnce(Promise).all`, always return the same bound method.
 
 
+## cache
+
+A temporal `Map` subclass for short-lived memoization. It keeps newly added
+entries only until its scheduled cleanup runs, making it useful to reuse
+expensive work for repeated access to the same key without keeping the value
+around as a long-term cache.
+
+```js
+import Cache from '@webreflection/utils/cache';
+
+const users = new Cache;
+
+const loadUser = id => users.getOrInsertComputed(
+  id,
+  id => fetch(`/users/${id}`).then(response => response.json())
+);
+```
+
+When the constructor `delay` is omitted, `0`, or less than `0`, cleanup is
+queued as a microtask, so same-tick lookups can share the stored value and the
+map clears itself before the next task. Pass a positive delay, such as
+`new Cache(100)`, to keep entries until a timer removes them instead.
+
+Use `getOrInsert(key, value)` or `getOrInsertComputed(key, callback)` when the
+value should only be stored if missing. Use `put(key, value)` for the faster
+`cache.get(key) ?? cache.put(key, value)` pattern when duplicate queue entries
+are acceptable.
+
+
 ## iterable
 
 Ensures an object can be consumed by `for...of`, spread, `Array.from`, and

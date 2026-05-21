@@ -7,6 +7,7 @@
     "./ascii": "./types/ascii.d.ts",
     "./bound-once": "./types/bound-once.d.ts",
     "./bound": "./types/bound.d.ts",
+    "./cache": "./types/cache.d.ts",
     "./iterable": "./types/iterable.d.ts",
     "./json-storage": "./types/json-storage.d.ts",
     "./registry": "./types/registry.d.ts",
@@ -30,6 +31,10 @@
     "./bound": {
       "types": "./types/bound.d.ts",
       "import": "./src/bound.js"
+    },
+    "./cache": {
+      "types": "./types/cache.d.ts",
+      "import": "./src/cache.js"
     },
     "./iterable": {
       "types": "./types/iterable.d.ts",
@@ -62,6 +67,7 @@
     "ascii",
     "bound-once",
     "bound",
+    "cache",
     "iterable",
     "json-storage",
     "registry",

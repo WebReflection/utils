@@ -11,6 +11,7 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[ascii](./src#ascii)** - basic string-to-buffer conversion without validation
   * **[bound-once](./src#bound-once)** - retrieve unique bound methods per realm
   * **[bound](./src#bound)** - retrieve one-off bound methods
+  * **[cache](./src#cache)** - use a temporal `Map` to reuse repeated key lookups within the same tick, or for a short timed window
   * **[iterable](./src#iterable)** - make plain objects iterable as `Object.entries(object)` pairs, without touching objects that are already iterable
   * **[json-storage](./src#json-storage)** - use `localStorage` or `sessionStorage` through a JSON-aware, iterable, *Map*-friendly API
   * **[registry](./src#registry)** - use a `Map`-like API with key/value validation and duplicate-key protection by default
