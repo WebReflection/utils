@@ -2,21 +2,17 @@
 
 /**
  * @template K,V
- * @type {(self: Cache<K,V>) => void}
- */
-let cleanup;
-
-/**
- * @template K,V
  * @extends Map<K,V>
  */
 export default class Cache extends Map {
-  static {
-    cleanup = self => {
-      self.#run = true;
-      self.#queue.splice(0).forEach(self.delete, self);
-    };
-  }
+  /**
+   * @template K,V
+   * @type {(self: Cache<K,V>) => void}
+   */
+  #cleanup = () => {
+    this.#run = true;
+    this.#queue.splice(0).forEach(this.delete, this);
+  };
 
   /** @type {number} */
   #delay;
@@ -36,11 +32,11 @@ export default class Cache extends Map {
       this.#run = false;
       if (this.#delay < 1) {
         // @ts-ignore
-        queueMicrotask(() => cleanup(this));
+        queueMicrotask(this.#cleanup);
       }
       else {
         // @ts-ignore
-        setTimeout(cleanup, this.#delay, this);
+        setTimeout(this.#cleanup, this.#delay);
       }
     }
   }
@@ -64,7 +60,8 @@ export default class Cache extends Map {
    * @returns
    */
   getOrInsert(key, value) {
-    return this.has(key) ? this.get(key) : this.put(key, value);
+    const known = this.get(key);
+    return known === void 0 && !this.has(key) ? this.put(key, value) : known;
   }
 
   /**
@@ -73,7 +70,8 @@ export default class Cache extends Map {
    * @returns
    */
   getOrInsertComputed(key, callback) {
-    return this.has(key) ? this.get(key) : this.put(key, callback(key));
+    const known = this.get(key);
+    return known === void 0 && !this.has(key) ? this.put(key, callback(key)) : known;
   }
 
   /**
