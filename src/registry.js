@@ -68,6 +68,11 @@ export default class Registry extends Map {
     for (const [key, value] of iterable ?? []) this.set(key, value);
   }
 
+  clear() {
+    if (this.#unique) fail('Unable to clear registry with unique keys');
+    super.clear();
+  }
+
   /**
    * Remove a key when unique-key protection is disabled.
    *
@@ -88,8 +93,8 @@ export default class Registry extends Map {
    */
   set(key, value) {
     if (!this.#key(key)) fail('Invalid key:', key);
-    if (this.#unique && super.has(key)) fail('Duplicate key:', key);
     if (!this.#value(value)) fail('Invalid value:', value);
+    if (this.#unique && super.has(key)) fail('Duplicate key:', key);
     return super.set(key, value);
   }
 }

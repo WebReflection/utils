@@ -88,6 +88,7 @@ assert.equal(duplicates.delete('foo'), true);
 assert.equal(duplicates.has('foo'), false);
 duplicates.set('foo', 'again');
 assert.equal(duplicates.get('foo'), 'again');
+duplicates.clear();
 
 assert.throws(
   () => new Registry(
@@ -109,5 +110,11 @@ const booleans = new Registry(null, {
 
 booleans.set('enabled', true);
 assert.equal(booleans.get('enabled'), true);
+
+try {
+  booleans.clear();
+} catch (error) {
+  assert.equal(error.name, 'TypeError');
+}
 
 console.log('Registry tests passed');
