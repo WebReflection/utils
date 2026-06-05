@@ -97,7 +97,7 @@ export default class JSONStorage {
    */
   get(key) {
     const value = this.#storage.getItem(key);
-    return typeof value === 'string' ? this.#parse(value) : void 0;
+    return value != null ? this.#parse(value) : void 0;
   }
 
   /**
@@ -135,7 +135,8 @@ export default class JSONStorage {
    * @returns {this}
    */
   set(key, value) {
-    this.#storage.setItem(key, this.#stringify(value));
+    const str = this.#stringify(value);
+    if (str != null) this.#storage.setItem(key, str);
     return this;
   }
 
