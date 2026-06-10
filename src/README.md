@@ -140,7 +140,7 @@ exposing `html` and `svg` factories backed by a `<template>` element and an
 import { html, svg } from '@webreflection/utils/dom-content';
 
 const layout = html('<section><h1>Title</h1></section>');
-const icon = svg('<svg><circle cx="10" cy="10" r="5"/></svg>');
+const icon = svg('<circle cx="10" cy="10" r="5" />');
 ```
 
 Each helper parses its markup string in the matching context and returns a
