@@ -100,6 +100,55 @@ value should only be stored if missing. Use `put(key, value)` for the faster
 are acceptable.
 
 
+## content
+
+A tiny factory builder for turning markup strings into `DocumentFragment`
+instances, where each factory parses in the context of a specific element. The
+parsing context is just an element, so any namespace reachable through
+`createElementNS` works: HTML, SVG, MathML, and so on.
+
+```js
+import content from '@webreflection/utils/content';
+
+const parse = content({
+  html: document.createElement('template'),
+  svg: document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+});
+
+const fragment = parse.html('<div>Hello</div>');
+document.body.append(fragment);
+```
+
+The passed object maps free-form names to the element whose contents define the
+parsing context for that name. The returned object exposes the same keys, each
+being a `value => DocumentFragment` factory. A single shared `Range` is reused
+across all factories, re-selecting node contents only when the active context
+changes, so repeated parsing within the same context stays cheap.
+
+A second argument can provide the `Document` used to create the working range,
+defaulting to `globalThis.document`. For the common HTML and SVG contexts, see
+[dom-content](#dom-content).
+
+
+## dom-content
+
+A ready-made [content](#content) instance for the two most common contexts,
+exposing `html` and `svg` factories backed by a `<template>` element and an
+`<svg>` element respectively.
+
+```js
+import { html, svg } from '@webreflection/utils/dom-content';
+
+const layout = html('<section><h1>Title</h1></section>');
+const icon = svg('<svg><circle cx="10" cy="10" r="5"/></svg>');
+```
+
+Each helper parses its markup string in the matching context and returns a
+`DocumentFragment` ready to be inserted into the DOM. This module relies on the
+global `document`, so use [content](#content) directly when a specific
+`Document` or additional contexts are required.
+
+
 ## iterable
 
 Ensures an object can be consumed by `for...of`, spread, `Array.from`, and

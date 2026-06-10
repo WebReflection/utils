@@ -12,6 +12,8 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[bound-once](./src#bound-once)** - retrieve unique bound methods per realm
   * **[bound](./src#bound)** - retrieve one-off bound methods
   * **[cache](./src#cache)** - use a temporal `Map` to reuse repeated key lookups within the same tick, or for a short timed window
+  * **[content](./src#content)** - build factories that parse markup strings into `DocumentFragment` instances within a chosen element context
+  * **[dom-content](./src#dom-content)** - parse HTML or SVG markup strings into a `DocumentFragment` via ready-made `html` and `svg` helpers
   * **[iterable](./src#iterable)** - make plain objects iterable as `Object.entries(object)` pairs, without touching objects that are already iterable
   * **[json-storage](./src#json-storage)** - use `localStorage` or `sessionStorage` through a JSON-aware, iterable, *Map*-friendly API
   * **[registry](./src#registry)** - use a `Map`-like API with key/value validation and duplicate-key protection by default

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="module">
+    import content from '../src/content.js';
+
+    const template = document.createElement('template');
+    const { html } = content({
+      html: template,
+    });
+
+    const fragment = html('<td>Hello</td>');
+    if (
+      fragment.firstChild instanceof HTMLTableCellElement &&
+      fragment !== template.content
+    ) document.body.append(html('OK'));
+  </script>
+</head>
+</html>

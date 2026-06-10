@@ -8,6 +8,8 @@
     "./bound-once": "./types/bound-once.d.ts",
     "./bound": "./types/bound.d.ts",
     "./cache": "./types/cache.d.ts",
+    "./content": "./types/content.d.ts",
+    "./dom-content": "./types/dom-content.d.ts",
     "./iterable": "./types/iterable.d.ts",
     "./json-storage": "./types/json-storage.d.ts",
     "./registry": "./types/registry.d.ts",
@@ -35,6 +37,14 @@
     "./cache": {
       "types": "./types/cache.d.ts",
       "import": "./src/cache.js"
+    },
+    "./content": {
+      "types": "./types/content.d.ts",
+      "import": "./src/content.js"
+    },
+    "./dom-content": {
+      "types": "./types/dom-content.d.ts",
+      "import": "./src/dom-content.js"
     },
     "./iterable": {
       "types": "./types/iterable.d.ts",
@@ -68,6 +78,7 @@
     "bound-once",
     "bound",
     "cache",
+    "dom-content",
     "iterable",
     "json-storage",
     "registry",
