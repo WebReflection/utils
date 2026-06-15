@@ -125,9 +125,25 @@ being a `value => DocumentFragment` factory. A single shared `Range` is reused
 across all factories, re-selecting node contents only when the active context
 changes, so repeated parsing within the same context stays cheap.
 
-A second argument can provide the `Document` used to create the working range,
-defaulting to `globalThis.document`. For the common HTML and SVG contexts, see
-[dom-content](#dom-content).
+Unlike most DOM utilities here, **content** also accepts an optional second
+`document` argument. This is handy in SSR projects where there is no global
+`document`, but one can be created with *linkedom*, *jsdom*, or similar and
+passed in so the same parsing logic works on the server.
+
+```js
+import { parseHTML } from 'linkedom';
+import content from '@webreflection/utils/content';
+
+const { document } = parseHTML('<html><body></body></html>');
+const parse = content({
+  html: document.createElement('template')
+}, document);
+
+const fragment = parse.html('<div>Hello</div>');
+```
+
+When omitted, the second argument defaults to `globalThis.document`. For the
+common HTML and SVG contexts in the browser, see [dom-content](#dom-content).
 
 
 ## dom-content
@@ -145,8 +161,10 @@ const icon = svg('<circle cx="10" cy="10" r="5" />');
 
 Each helper parses its markup string in the matching context and returns a
 `DocumentFragment` ready to be inserted into the DOM. This module relies on the
-global `document`, so use [content](#content) directly when a specific
-`Document` or additional contexts are required.
+global `document`, so it is browser-oriented. For SSR, or when a specific
+`Document` or additional parsing contexts are required, use
+[content](#content) directly and pass the server-side document as its second
+argument.
 
 
 ## iterable
