@@ -16,9 +16,13 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[dom-content](./src#dom-content)** - parse HTML or SVG markup strings into a `DocumentFragment` via ready-made `html` and `svg` helpers
   * **[iterable](./src#iterable)** - make plain objects iterable as `Object.entries(object)` pairs, without touching objects that are already iterable
   * **[json-storage](./src#json-storage)** - use `localStorage` or `sessionStorage` through a JSON-aware, iterable, *Map*-friendly API
+  * **[map](./src#map)** - use a native `Map` with an extra `put` method that returns the stored value instead of the map itself
   * **[registry](./src#registry)** - use a `Map`-like API with key/value validation and duplicate-key protection by default
+  * **[set](./src#set)** - use a native `Set` with an extra `put` method that returns the stored value instead of the set itself
   * **[shared-array-buffer](./src#shared-array-buffer)** - simulate *SAB* when not available
   * **[sticky](./src#sticky)** - keep useful values stable once per realm
+  * **[weakmap](./src#weakmap)** - use a native `WeakMap` with an extra `put` method that returns the stored value instead of the map itself
+  * **[weakset](./src#weakset)** - use a native `WeakSet` with an extra `put` method that returns the stored value instead of the set itself
   * **[with-resolvers](./src#with-resolvers)** - use a self-bound `Promise.withResolvers()` helper for older runtimes
 
 MIT-style license.

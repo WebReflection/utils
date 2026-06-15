@@ -209,6 +209,26 @@ from the key. A second constructor argument can replace the native *JSON* API as
 long as it provides compatible `parse(source)` and `stringify(value)` methods.
 
 
+## map
+
+A native `Map` subclass with one extra method: `put(key, value)`. It stores the
+entry like `set`, but returns the value instead of the map reference itself.
+
+```js
+import Map from '@webreflection/utils/map';
+
+const map = new Map;
+
+const value = map.put('theme', { dark: true });
+
+console.log(value.dark);
+// true
+```
+
+Use `set` when chaining on the map is needed; use `put` when the stored value
+should flow directly into the next expression.
+
+
 ## registry
 
 A `Map` subclass that validates keys and values before storing them. By default,
@@ -262,6 +282,26 @@ the default `unique: true` behavior, only missing keys can be passed to
 `delete()` without throwing, in which case it returns `false` like `Map`.
 
 
+## set
+
+A native `Set` subclass with one extra method: `put(value)`. It stores the entry
+like `add`, but returns the value instead of the set reference itself.
+
+```js
+import Set from '@webreflection/utils/set';
+
+const set = new Set;
+
+const value = set.put('ready');
+
+console.log(value);
+// 'ready'
+```
+
+Use `add` when chaining on the set is needed; use `put` when the stored value
+should flow directly into the next expression.
+
+
 ## shared-array-buffer
 
 This utility provides an unobtrusive *SAB* (*SharedArrayBuffer*) shim based on the default *ArrayBuffer*, with `grow(length)` and `growable` additions.
@@ -302,6 +342,50 @@ export default module;
 ```
 
 Because the sticky logic is intentionally simple, using a "*first come, first served*" global symbol lookup, avoid storing sensitive values there directly when secrecy or module-level isolation matters.
+
+
+## weakmap
+
+A native `WeakMap` subclass with one extra method: `put(key, value)`. It stores
+the entry like `set`, but returns the value instead of the map reference itself.
+
+```js
+import WeakMap from '@webreflection/utils/weakmap';
+
+const map = new WeakMap;
+const key = {};
+
+const value = map.put(key, { ready: true });
+
+console.log(value.ready);
+// true
+```
+
+Use `set` when chaining on the map is needed; use `put` when the stored value
+should flow directly into the next expression. Keys must be objects or symbols,
+like the native `WeakMap`.
+
+
+## weakset
+
+A native `WeakSet` subclass with one extra method: `put(value)`. It stores the
+entry like `add`, but returns the value instead of the set reference itself.
+
+```js
+import WeakSet from '@webreflection/utils/weakset';
+
+const set = new WeakSet;
+const item = {};
+
+const value = set.put(item);
+
+console.log(value === item);
+// true
+```
+
+Use `add` when chaining on the set is needed; use `put` when the stored value
+should flow directly into the next expression. Values must be objects or
+symbols, like the native `WeakSet`.
 
 
 ## with-resolvers

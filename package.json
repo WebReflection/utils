@@ -12,9 +12,13 @@
     "./dom-content": "./types/dom-content.d.ts",
     "./iterable": "./types/iterable.d.ts",
     "./json-storage": "./types/json-storage.d.ts",
+    "./map": "./types/map.d.ts",
     "./registry": "./types/registry.d.ts",
+    "./set": "./types/set.d.ts",
     "./shared-array-buffer": "./types/shared-array-buffer.d.ts",
     "./sticky": "./types/sticky.d.ts",
+    "./weakmap": "./types/weakmap.d.ts",
+    "./weakset": "./types/weakset.d.ts",
     "./with-resolvers": "./types/with-resolvers.d.ts"
   },
   "exports": {
@@ -54,9 +58,17 @@
       "types": "./types/json-storage.d.ts",
       "import": "./src/json-storage.js"
     },
+    "./map": {
+      "types": "./types/map.d.ts",
+      "import": "./src/map.js"
+    },
     "./registry": {
       "types": "./types/registry.d.ts",
       "import": "./src/registry.js"
+    },
+    "./set": {
+      "types": "./types/set.d.ts",
+      "import": "./src/set.js"
     },
     "./shared-array-buffer": {
       "types": "./types/shared-array-buffer.d.ts",
@@ -65,6 +77,14 @@
     "./sticky": {
       "types": "./types/sticky.d.ts",
       "import": "./src/sticky.js"
+    },
+    "./weakmap": {
+      "types": "./types/weakmap.d.ts",
+      "import": "./src/weakmap.js"
+    },
+    "./weakset": {
+      "types": "./types/weakset.d.ts",
+      "import": "./src/weakset.js"
     },
     "./with-resolvers": {
       "types": "./types/with-resolvers.d.ts",
@@ -81,9 +101,13 @@
     "dom-content",
     "iterable",
     "json-storage",
+    "map",
     "registry",
+    "set",
     "shared-array-buffer",
     "sticky",
+    "weakmap",
+    "weakset",
     "with-resolvers"
   ],
   "scripts": {
