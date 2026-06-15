@@ -1,5 +1,7 @@
 // @ts-check
 
+import Map from './map.js';
+
 /**
  * @template Type
  * @typedef {((value: unknown) => value is Type) | ((value: unknown) => boolean)} RegistryValidator

@@ -132,6 +132,16 @@ export default class JSONStorage {
   /**
    * @param {string} key
    * @param {Value} value
+   * @returns {Value}
+   */
+  put(key, value) {
+    this.set(key, value);
+    return value;
+  }
+
+  /**
+   * @param {string} key
+   * @param {Value} value
    * @returns {this}
    */
   set(key, value) {

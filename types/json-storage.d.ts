@@ -48,6 +48,12 @@ export default class JSONStorage<Value = unknown> implements Iterable<[string, V
     /**
      * @param {string} key
      * @param {Value} value
+     * @returns {Value}
+     */
+    put(key: string, value: Value): Value;
+    /**
+     * @param {string} key
+     * @param {Value} value
      * @returns {this}
      */
     set(key: string, value: Value): this;

@@ -60,6 +60,7 @@ function test(type) {
   console.assert([...storage.entries()].join(',') === 'foo,baz', '[...storage.entries()].join(",") === "foo,baz"');
   console.assert([...storage.keys()].join(',') === 'foo', '[...storage.keys()].join(",") === "foo"');
   console.assert([...storage.values()].join(',') === 'baz', '[...storage.values()].join(",") === "baz"');
+  console.assert(storage.put('foo', 'bar') === 'bar', 'storage.put("foo", "bar") === "bar"');
   storage.clear();
   console.assert([...storage].length === 0, '[...storage].length === 0');
 

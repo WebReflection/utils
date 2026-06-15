@@ -38,3 +38,4 @@ export type RegistryOptions<Key = unknown, Value = unknown> = {
      */
     unique?: boolean | undefined;
 };
+import Map from './map.js';
