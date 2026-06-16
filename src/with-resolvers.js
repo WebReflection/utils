@@ -22,6 +22,6 @@ function withResolvers() {
 
 
 export default /** @type {<T>() => Resolvers<T>} */((
-  /** @type {PromiseConstructor & {withResolvers?: <T>() => Resolvers<T>}} */ (Promise).withResolvers ||
+  /** @type {PromiseConstructor & {withResolvers?: <T>() => Resolvers<T>}} */ (Promise).withResolvers ??
   withResolvers
 ).bind(Promise));
