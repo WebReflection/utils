@@ -14,6 +14,7 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[cache](./src#cache)** - temporal `Map` for same-tick or short-lived memoization; supports [Map `put`](#map-put-convention) and `getOrInsert` helpers
   * **[content](./src#content)** - build factories that parse markup strings into `DocumentFragment` instances within a chosen element context
   * **[dom-content](./src#dom-content)** - parse HTML or SVG markup strings into a `DocumentFragment` via ready-made `html` and `svg` helpers
+  * **[empty](./src#empty)** - frozen shared empty references: array, object, or null-prototype object
   * **[has-own](./src#has-own)** - quick polyfill for `Object.hasOwn()` on older browsers
   * **[iterable](./src#iterable)** - make plain objects iterable as `Object.entries(object)` pairs, without touching objects that are already iterable
   * **[json-storage](./src#json-storage)** - JSON-aware, iterable, Map-like `localStorage` / `sessionStorage` facade with [Map `put`](#map-put-convention)

@@ -10,6 +10,7 @@
     "./cache": "./types/cache.d.ts",
     "./content": "./types/content.d.ts",
     "./dom-content": "./types/dom-content.d.ts",
+    "./empty": "./types/empty.d.ts",
     "./has-own": "./types/has-own.d.ts",
     "./iterable": "./types/iterable.d.ts",
     "./json-storage": "./types/json-storage.d.ts",
@@ -50,6 +51,10 @@
     "./dom-content": {
       "types": "./types/dom-content.d.ts",
       "import": "./src/dom-content.js"
+    },
+    "./empty": {
+      "types": "./types/empty.d.ts",
+      "import": "./src/empty.js"
     },
     "./has-own": {
       "types": "./types/has-own.d.ts",

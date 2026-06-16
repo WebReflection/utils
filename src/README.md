@@ -167,6 +167,23 @@ global `document`, so it is browser-oriented. For SSR, or when a specific
 argument.
 
 
+## empty
+
+Frozen, shared empty references for code that needs a guaranteed-empty array,
+plain object, or null-prototype object without allocating a new one each time.
+
+```js
+import { array, object, nil } from '@webreflection/utils/empty';
+
+const defaults = { ...object, theme: 'light' };
+const items = [...array, 'new'];
+```
+
+- `array` — a frozen, shared empty array (`readonly never[]`)
+- `object` — a frozen, shared empty object (`Readonly<Record<string, never>>`)
+- `nil` — a frozen, shared empty object with a `null` prototype
+
+
 ## has-own
 
 A quick and simple polyfill for `Object.hasOwn()` on older browsers. When the
