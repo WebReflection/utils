@@ -167,6 +167,20 @@ global `document`, so it is browser-oriented. For SSR, or when a specific
 argument.
 
 
+## has-own
+
+A quick and simple polyfill for `Object.hasOwn()` on older browsers. When the
+native method is available, it is used directly; otherwise it falls back to
+`Object.prototype.hasOwnProperty.call`.
+
+```js
+import hasOwn from '@webreflection/utils/has-own';
+
+console.log(hasOwn({ a: 1 }, 'a'));
+// true
+```
+
+
 ## iterable
 
 Ensures an object can be consumed by `for...of`, spread, `Array.from`, and
