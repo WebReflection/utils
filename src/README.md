@@ -198,6 +198,29 @@ console.log(hasOwn({ a: 1 }, 'a'));
 ```
 
 
+## id
+
+A tiny factory for unique `int32` identifiers. Each call to the returned function
+yields the next value, and the counter wraps automatically from `2 ** 31 - 1` to
+`-2 ** 31` so it can roundtrip forever without growing past signed 32-bit range.
+
+```js
+import id from '@webreflection/utils/id';
+
+const next = id();
+
+console.log(next()); // 0
+console.log(next()); // 1
+
+const roundtrip = id(2 ** 31 - 1);
+
+console.log(roundtrip()); // 2147483647
+console.log(roundtrip()); // -2147483648
+```
+
+Pass an optional starting value when the first issued id should not be `0`.
+
+
 ## iterable
 
 Ensures an object can be consumed by `for...of`, spread, `Array.from`, and

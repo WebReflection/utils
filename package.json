@@ -12,6 +12,7 @@
     "./dom-content": "./types/dom-content.d.ts",
     "./empty": "./types/empty.d.ts",
     "./has-own": "./types/has-own.d.ts",
+    "./id": "./types/id.d.ts",
     "./iterable": "./types/iterable.d.ts",
     "./json-storage": "./types/json-storage.d.ts",
     "./map": "./types/map.d.ts",
@@ -59,6 +60,10 @@
     "./has-own": {
       "types": "./types/has-own.d.ts",
       "import": "./src/has-own.js"
+    },
+    "./id": {
+      "types": "./types/id.d.ts",
+      "import": "./src/id.js"
     },
     "./iterable": {
       "types": "./types/iterable.d.ts",
@@ -110,6 +115,7 @@
     "cache",
     "dom-content",
     "has-own",
+    "id",
     "iterable",
     "json-storage",
     "map",

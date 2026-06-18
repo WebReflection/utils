@@ -16,6 +16,7 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[dom-content](./src#dom-content)** - parse HTML or SVG markup strings into a `DocumentFragment` via ready-made `html` and `svg` helpers
   * **[empty](./src#empty)** - frozen shared empty references: array, object, or null-prototype object
   * **[has-own](./src#has-own)** - quick polyfill for `Object.hasOwn()` on older browsers
+  * **[id](./src#id)** - unique `int32` counter that wraps automatically at `2 ** 31 - 1`
   * **[iterable](./src#iterable)** - make plain objects iterable as `Object.entries(object)` pairs, without touching objects that are already iterable
   * **[json-storage](./src#json-storage)** - JSON-aware, iterable, Map-like `localStorage` / `sessionStorage` facade with [Map `put`](#map-put-convention)
   * **[map](./src#map)** - native `Map` subclass with [Map `put`](#map-put-convention)
