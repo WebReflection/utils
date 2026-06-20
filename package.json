@@ -8,6 +8,7 @@
     "./bound-once": "./types/bound-once.d.ts",
     "./bound": "./types/bound.d.ts",
     "./cache": "./types/cache.d.ts",
+    "./caller-of": "./types/caller-of.d.ts",
     "./content": "./types/content.d.ts",
     "./dom-content": "./types/dom-content.d.ts",
     "./empty": "./types/empty.d.ts",
@@ -44,6 +45,10 @@
     "./cache": {
       "types": "./types/cache.d.ts",
       "import": "./src/cache.js"
+    },
+    "./caller-of": {
+      "types": "./types/caller-of.d.ts",
+      "import": "./src/caller-of.js"
     },
     "./content": {
       "types": "./types/content.d.ts",
@@ -113,6 +118,7 @@
     "bound-once",
     "bound",
     "cache",
+    "caller-of",
     "dom-content",
     "has-own",
     "id",
