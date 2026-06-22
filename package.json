@@ -17,6 +17,7 @@
     "./iterable": "./types/iterable.d.ts",
     "./json-storage": "./types/json-storage.d.ts",
     "./map": "./types/map.d.ts",
+    "./plain-tag": "./types/plain-tag.d.ts",
     "./registry": "./types/registry.d.ts",
     "./set": "./types/set.d.ts",
     "./shared-array-buffer": "./types/shared-array-buffer.d.ts",
@@ -82,6 +83,10 @@
       "types": "./types/map.d.ts",
       "import": "./src/map.js"
     },
+    "./plain-tag": {
+      "types": "./types/plain-tag.d.ts",
+      "import": "./src/plain-tag.js"
+    },
     "./registry": {
       "types": "./types/registry.d.ts",
       "import": "./src/registry.js"
@@ -125,6 +130,7 @@
     "iterable",
     "json-storage",
     "map",
+    "plain-tag",
     "registry",
     "set",
     "shared-array-buffer",

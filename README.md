@@ -20,6 +20,7 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[iterable](./src#iterable)** - make plain objects iterable as `Object.entries(object)` pairs, without touching objects that are already iterable
   * **[json-storage](./src#json-storage)** - JSON-aware, iterable, Map-like `localStorage` / `sessionStorage` facade with [Map `put`](#map-put-convention)
   * **[map](./src#map)** - native `Map` subclass with [Map `put`](#map-put-convention)
+  * **[plain-tag](./src#plain-tag)** - transform a generic template tag into a plain string
   * **[registry](./src#registry)** - validated `Map` with duplicate-key protection by default; inherits [Map `put`](#map-put-convention)
   * **[set](./src#set)** - native `Set` subclass with [Set `put`](#set-put-convention)
   * **[shared-array-buffer](./src#shared-array-buffer)** - simulate *SAB* when not available
