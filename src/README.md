@@ -301,6 +301,20 @@ Use `set` when chaining on the map is needed; use `put` when the stored value
 should flow directly into the next expression.
 
 
+## plain-tag
+
+Transform a generic tagged template function into a plain string by
+interpolating the static parts and values, without any special handling or
+escaping.
+
+```js
+import plainTag from '@webreflection/utils/plain-tag';
+
+console.log(plainTag`Hello, ${'world'}!`);
+// Hello, world!
+```
+
+
 ## registry
 
 A `Map` subclass that validates keys and values before storing them. By default,
