@@ -30,6 +30,24 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[weakset](./src#weakset)** - native `WeakSet` subclass with [Set `put`](#set-put-convention)
   * **[with-resolvers](./src#with-resolvers)** - use a self-bound `Promise.withResolvers()` helper for older runtimes
 
+- - -
+
+### Background
+
+I've written too many *micro-utilities*. When I realized I couldn't even remember their names or where to find them, I decided to create this module. The philosophy behind it is pretty simple:
+
+  * ESM by default: most micro-utilities published as dual modules need extra maintenance I'm no longer interested in; *ESM* is the standard these days, and *CJS* can import it anyway
+  * if I repeat the same pattern more than once, I drop a quick helper in here so I never have to write it again
+  * every utility has zero runtime dependencies; the only dependencies in this repo are `c8` for coverage and *TypeScript* for types
+  * every utility is 100% covered and *TypeScript*-friendly via its definitions, while the implementation stays plain JS for broad compatibility
+  * every utility can be imported individually as a standalone subpath, so via *CDN* you can grab only the utils a project needs
+  * some utilities are deliberately simple, opinionated, or both; none are meant as polyfills (unlike `@ungap`)
+
+That's it. If you keep solving or rewriting the same patterns, take a look here — and the [dedicated docs page](https://webreflection.github.io/utils/) goes deeper.
+
+I'll gradually deprecate, archive, and abandon the older micro-utilities that landed here. For now, I just want one place I can trust and use as needed.
+
+- - -
 
 ### Map `put` convention
 
