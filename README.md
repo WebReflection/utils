@@ -13,6 +13,7 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[bound](./src#bound)** - retrieve one-off bound methods
   * **[cache](./src#cache)** - temporal `Map` for same-tick or short-lived memoization; supports [Map `put`](#map-put-convention) and `getOrInsert` helpers
   * **[content](./src#content)** - build factories that parse markup strings into `DocumentFragment` instances within a chosen element context
+  * **[dedent](./src#dedent)** - strip common leading indentation from the first non-empty line, as a template tag or on strings
   * **[dom-content](./src#dom-content)** - parse HTML or SVG markup strings into a `DocumentFragment` via ready-made `html` and `svg` helpers
   * **[empty](./src#empty)** - frozen shared empty references: array, object, or null-prototype object
   * **[has-own](./src#has-own)** - quick polyfill for `Object.hasOwn()` on older browsers

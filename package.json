@@ -10,6 +10,7 @@
     "./cache": "./types/cache.d.ts",
     "./caller-of": "./types/caller-of.d.ts",
     "./content": "./types/content.d.ts",
+    "./dedent": "./types/dedent.d.ts",
     "./dom-content": "./types/dom-content.d.ts",
     "./empty": "./types/empty.d.ts",
     "./has-own": "./types/has-own.d.ts",
@@ -54,6 +55,10 @@
     "./content": {
       "types": "./types/content.d.ts",
       "import": "./src/content.js"
+    },
+    "./dedent": {
+      "types": "./types/dedent.d.ts",
+      "import": "./src/dedent.js"
     },
     "./dom-content": {
       "types": "./types/dom-content.d.ts",
@@ -124,6 +129,7 @@
     "bound",
     "cache",
     "caller-of",
+    "dedent",
     "dom-content",
     "has-own",
     "id",

@@ -146,6 +146,39 @@ When omitted, the second argument defaults to `globalThis.document`. For the
 common HTML and SVG contexts in the browser, see [dom-content](#dom-content).
 
 
+## dedent
+
+Strip common leading indentation from multiline strings. The utility finds the
+first non-empty line, measures its leading whitespace, and removes that same
+indentation from every line while leaving everything else unchanged.
+
+It works both as a tagged template and as a plain function on strings. In tag
+form, interpolations are joined first via [plain-tag](#plain-tag), then
+dedented.
+
+```js
+import dedent from '@webreflection/utils/dedent';
+
+console.log(dedent`
+  Hello,
+  world!
+`);
+// Hello,
+// world!
+
+console.log(dedent(`
+  Hello,
+  world!
+`));
+// Hello,
+// world!
+```
+
+Use the tag form when the string is written inline in source code and should
+lose the surrounding indentation. Use the function form when the input is already
+a string variable.
+
+
 ## dom-content
 
 A ready-made [content](#content) instance for the two most common contexts,
