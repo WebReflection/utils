@@ -57,6 +57,10 @@ Optional compression is applied through `CompressionStream` and
 `DecompressionStream` before or after the base64 step.
 
 ```js
+// if a polyfill is required for older browsers
+import '@ungap/base64';
+
+// this module base64 utility
 import { encode, decode } from '@webreflection/utils/base64';
 
 const encoded = await encode('Hello, world!');
