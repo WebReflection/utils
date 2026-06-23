@@ -1,2 +1,3 @@
-export function encode(str: string): Uint8Array<ArrayBuffer>;
-export function decode(view: Uint8Array): string;
+import decode from './ascii/decode.js';
+import encode from './ascii/encode.js';
+export { decode, encode };
