@@ -5,6 +5,9 @@
   "types": {
     "./all": "./types/all.d.ts",
     "./ascii": "./types/ascii.d.ts",
+    "./base64": "./types/base64.d.ts",
+    "./base64/decode": "./types/base64/decode.d.ts",
+    "./base64/encode": "./types/base64/encode.d.ts",
     "./bound-once": "./types/bound-once.d.ts",
     "./bound": "./types/bound.d.ts",
     "./cache": "./types/cache.d.ts",
@@ -35,6 +38,18 @@
     "./ascii": {
       "types": "./types/ascii.d.ts",
       "import": "./src/ascii.js"
+    },
+    "./base64": {
+      "types": "./types/base64.d.ts",
+      "import": "./src/base64.js"
+    },
+    "./base64/decode": {
+      "types": "./types/base64/decode.d.ts",
+      "import": "./src/base64/decode.js"
+    },
+    "./base64/encode": {
+      "types": "./types/base64/encode.d.ts",
+      "import": "./src/base64/encode.js"
     },
     "./bound-once": {
       "types": "./types/bound-once.d.ts",
@@ -125,6 +140,7 @@
   "tests": [
     "all",
     "ascii",
+    "base64",
     "bound-once",
     "bound",
     "cache",

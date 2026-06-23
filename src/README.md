@@ -49,6 +49,51 @@ Please note that decoding also fails for inputs bigger than about 64K bytes, or
 whatever argument limit your runtime has for `String.fromCharCode`.
 
 
+## base64
+
+A small async wrapper around `Uint8Array.prototype.toBase64()` and
+`Uint8Array.fromBase64()` for encoding and decoding binary data as strings.
+Optional compression is applied through `CompressionStream` and
+`DecompressionStream` before or after the base64 step.
+
+```js
+import { encode, decode } from '@webreflection/utils/base64';
+
+const encoded = await encode('Hello, world!');
+const decoded = await decode(encoded);
+
+console.log(decoded);
+// Hello, world!
+```
+
+Pass the same `format` to both sides when the payload should be compressed
+first. Supported formats are `brotli`, `gzip`, `deflate`, `deflate-raw`, and
+`zstd` [as mentioned on MDN](https://developer.mozilla.org/en-US/docs/Web/API/CompressionStream/CompressionStream#format).
+
+```js
+const compressed = await encode('Hello, world!', { format: 'deflate' });
+const decompressed = await decode(compressed, { format: 'deflate' });
+
+console.log(decompressed);
+// Hello, world!
+```
+
+By default, `decode()` returns a UTF-8 string. Pass `{ buffer: true }` to get
+the raw `ArrayBuffer` instead.
+
+```js
+const buffer = await decode(compressed, { format: 'deflate', buffer: true });
+
+console.log(new Uint8Array(buffer));
+// Uint8Array(13) [ 72, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100, 33 ]
+```
+
+`encode()` accepts any `BlobPart`, so strings, typed arrays, and `ArrayBuffer`
+values all work. Both helpers also accept `alphabet: 'base64url'` and other
+options forwarded to the native base64 APIs, such as `omitPadding` on encode and
+`lastChunkHandling` on decode.
+
+
 ## bound-once
 
 This is equivalent to **bound**, except each bound method is created only once. It is useful when bound method identity must be preserved across multiple calls.
