@@ -77,11 +77,10 @@ That replaces the awkward membership dance where `add` returns the set, not the 
 
 ```js
 // before: add returns the set, not the value
-const value = expensive();
-set.has(value) || set.add(value);
+set.has(value) ? value : (set.add(doSomethingWith(value)), value);
 
-// after: expensive() runs only when the value is absent
-const value = set.has(item) ? item : set.put(expensive());
+// after: put returns the value, not the set
+set.has(value) ? value : set.put(doSomethingWith(value));
 ```
 
 Use `add` when set chaining is needed; use `put` when the stored value should flow into the next expression.
