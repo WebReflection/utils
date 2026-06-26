@@ -228,6 +228,25 @@ lose the surrounding indentation. Use the function form when the input is alread
 a string variable.
 
 
+## devtools
+
+Short selectors for DOM queries, mirroring the helpers available in browser
+DevTools. `$` and `$$` wrap `querySelector` and `querySelectorAll`; `$x`
+evaluates an XPath expression and returns matching nodes as an array.
+
+```js
+import { $, $$, $x } from '@webreflection/utils/devtools';
+
+const title = $('h1');
+const links = $$('a[href]');
+const items = $x('//li[@data-id]');
+```
+
+Each helper accepts an optional root node. When omitted, it defaults to
+`document`, so queries can be scoped to any `Document`, `DocumentFragment`, or
+`Element`.
+
+
 ## dom-content
 
 A ready-made [content](#content) instance for the two most common contexts,

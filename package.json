@@ -14,6 +14,7 @@
     "./caller-of": "./types/caller-of.d.ts",
     "./content": "./types/content.d.ts",
     "./dedent": "./types/dedent.d.ts",
+    "./devtools": "./types/devtools.d.ts",
     "./dom-content": "./types/dom-content.d.ts",
     "./empty": "./types/empty.d.ts",
     "./has-own": "./types/has-own.d.ts",
@@ -75,6 +76,10 @@
     "./dedent": {
       "types": "./types/dedent.d.ts",
       "import": "./src/dedent.js"
+    },
+    "./devtools": {
+      "types": "./types/devtools.d.ts",
+      "import": "./src/devtools.js"
     },
     "./dom-content": {
       "types": "./types/dom-content.d.ts",
