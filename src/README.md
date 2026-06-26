@@ -322,6 +322,23 @@ unchanged. Otherwise, the same object receives a configurable own
 `Symbol.iterator` method that yields `Object.entries(ref)`.
 
 
+## json-callback
+
+Return a callback's source string for JSON payloads. Arrow functions and
+`function` declarations or expressions are left as-is; method shorthand is
+normalized to named `function` form so the result can be revived later.
+
+```js
+import toJSONCallback from '@webreflection/utils/json-callback';
+
+console.log(toJSONCallback(() => {}));
+// () => {}
+
+console.log(toJSONCallback({ f() {} }.f));
+// function f() {}
+```
+
+
 ## json-storage
 
 A small *Map* like facade over `localStorage` by default, or `sessionStorage`

@@ -19,6 +19,7 @@
     "./has-own": "./types/has-own.d.ts",
     "./id": "./types/id.d.ts",
     "./iterable": "./types/iterable.d.ts",
+    "./json-callback": "./types/json-callback.d.ts",
     "./json-storage": "./types/json-storage.d.ts",
     "./map": "./types/map.d.ts",
     "./plain-tag": "./types/plain-tag.d.ts",
@@ -95,6 +96,10 @@
       "types": "./types/iterable.d.ts",
       "import": "./src/iterable.js"
     },
+    "./json-callback": {
+      "types": "./types/json-callback.d.ts",
+      "import": "./src/json-callback.js"
+    },
     "./json-storage": {
       "types": "./types/json-storage.d.ts",
       "import": "./src/json-storage.js"
@@ -150,6 +155,7 @@
     "has-own",
     "id",
     "iterable",
+    "json-callback",
     "json-storage",
     "map",
     "plain-tag",
