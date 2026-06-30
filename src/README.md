@@ -105,6 +105,49 @@ This is equivalent to **bound**, except each bound method is created only once. 
 This variant uses [sticky](#sticky) to ensure that weakly referenced targets always produce the same bound method within the same realm.
 
 
+## bound-key
+
+This utility binds one or more functions to a context key and caches the result
+per key. It is useful when the same logic should run with different `this`
+values — especially in DOM code — without passing that context through every
+call.
+
+Pass one or more functions; it returns a matching array of factories. Each
+factory accepts a key, binds the function's `this` to that key, and reuses the
+same bound function when the key is seen again.
+
+```js
+import boundKey from '@webreflection/utils/bound-key';
+
+function greet() {
+  return `Hello ${this}!`;
+}
+
+const [bound] = boundKey(greet);
+
+const world = bound('world');
+world(); // 'Hello world!'
+bound('world') === world; // true — cached per key
+```
+
+A typical DOM use case:
+
+```js
+function handle() {
+  this.classList.toggle('active');
+}
+
+const [boundHandle] = boundKey(handle);
+
+for (const el of document.querySelectorAll('.item'))
+  el.addEventListener('click', boundHandle(el));
+```
+
+Unlike [bound](#bound) and [bound-once](#bound-once), which bind methods on an
+object target, **bound-key** binds arbitrary functions to any key and keeps one
+cached bound function per key.
+
+
 ## bound
 
 This utility provides an object-destructuring syntax shortcut for binding methods.

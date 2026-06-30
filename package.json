@@ -9,6 +9,7 @@
     "./base64/decode": "./types/base64/decode.d.ts",
     "./base64/encode": "./types/base64/encode.d.ts",
     "./bound-once": "./types/bound-once.d.ts",
+    "./bound-key": "./types/bound-key.d.ts",
     "./bound": "./types/bound.d.ts",
     "./cache": "./types/cache.d.ts",
     "./caller-of": "./types/caller-of.d.ts",
@@ -56,6 +57,10 @@
     "./bound-once": {
       "types": "./types/bound-once.d.ts",
       "import": "./src/bound-once.js"
+    },
+    "./bound-key": {
+      "types": "./types/bound-key.d.ts",
+      "import": "./src/bound-key.js"
     },
     "./bound": {
       "types": "./types/bound.d.ts",
@@ -152,6 +157,7 @@
     "ascii",
     "base64",
     "bound-once",
+    "bound-key",
     "bound",
     "cache",
     "caller-of",
