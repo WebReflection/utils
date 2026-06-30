@@ -1,6 +1,6 @@
 {
   "name": "@webreflection/utils",
-  "version": "0.3.14",
+  "version": "0.3.15",
   "type": "module",
   "types": {
     "./all": "./types/all.d.ts",
