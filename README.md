@@ -9,6 +9,7 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
 
   * **[all](./src/#all)** - `Promise.all` via object destructuring
   * **[ascii](./src#ascii)** - basic string-to-buffer conversion without validation
+  * **[async-accessor](./src#async-accessor)** - wrap a `{ get, set }` descriptor as one async function: zero args read, one arg write
   * **[base64](./src#base64)** - encode and decode binary data as base64 strings, with optional compression - `base64/decode` and `base64/encode` provide respective utilities
   * **[bound-once](./src#bound-once)** - retrieve unique bound methods per realm
   * **[bound-key](./src#bound-key)** - cache bound functions per context key, for DOM and other reuse

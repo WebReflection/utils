@@ -5,6 +5,7 @@
   "types": {
     "./all": "./types/all.d.ts",
     "./ascii": "./types/ascii.d.ts",
+    "./async-accessor": "./types/async-accessor.d.ts",
     "./base64": "./types/base64.d.ts",
     "./base64/decode": "./types/base64/decode.d.ts",
     "./base64/encode": "./types/base64/encode.d.ts",
@@ -41,6 +42,10 @@
     "./ascii": {
       "types": "./types/ascii.d.ts",
       "import": "./src/ascii.js"
+    },
+    "./async-accessor": {
+      "types": "./types/async-accessor.d.ts",
+      "import": "./src/async-accessor.js"
     },
     "./base64": {
       "types": "./types/base64.d.ts",
@@ -155,6 +160,7 @@
   "tests": [
     "all",
     "ascii",
+    "async-accessor",
     "base64",
     "bound-once",
     "bound-key",

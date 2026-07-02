@@ -49,6 +49,40 @@ Please note that decoding also fails for inputs bigger than about 64K bytes, or
 whatever argument limit your runtime has for `String.fromCharCode`.
 
 
+## async-accessor
+
+Wrap a `{ get, set }` descriptor as a single async function. Argument count
+selects the operation: call with no arguments to read, or with exactly one
+argument to write.
+
+The descriptor may be any object or class instance that defines or inherits
+both methods. Extra properties are allowed. `get` takes no parameters and may
+return a value or a promise. `set` takes exactly one value and may return void
+or a promise. The returned accessor is always async: `await ref()` resolves to
+`T`, `await ref(value)` resolves to `undefined`.
+
+This mirrors `await ref.value` for reads; writes are `await ref(value)` since
+assignment syntax cannot be expressed via property descriptors alone.
+
+```js
+import asyncAccessor from '@webreflection/utils/async-accessor';
+
+const value = asyncAccessor({
+  value: 42,
+  async get() {
+    return this.value;
+  },
+  async set(next) {
+    this.value = next;
+  },
+});
+
+await value();      // 42
+await value(43);    // undefined
+await value();      // 43
+```
+
+
 ## base64
 
 A small async wrapper around `Uint8Array.prototype.toBase64()` and
