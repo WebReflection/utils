@@ -64,9 +64,17 @@ or a promise. The returned accessor is always async: `await ref()` resolves to
 This mirrors `await ref.value` for reads; writes are `await ref(value)` since
 assignment syntax cannot be expressed via property descriptors alone.
 
+`get` and `set` are invoked with a `this` context. When the accessor is called
+standalone (`await ref()`), that context is the descriptor object passed to
+`asyncAccessor`. When it is assigned to a host and called as a property
+(`await host.ref()`), the context is the host instead. The same descriptor can
+therefore target either its own backing fields or those on another object,
+depending on how the returned function is used.
+
 ```js
 import asyncAccessor from '@webreflection/utils/async-accessor';
 
+// Standalone: `this` in get/set is the descriptor object itself.
 const value = asyncAccessor({
   value: 42,
   async get() {
@@ -82,6 +90,34 @@ await value(43);    // undefined
 await value();      // 43
 ```
 
+When the accessor is installed on a host object, `get` and `set` see that host
+as `this` instead:
+
+```js
+const object = Object.defineProperty({ _: 42 }, 'value', {
+  enumerable: true,
+  writable: true,
+  value: asyncAccessor({
+    async get() {
+      return this._;
+    },
+    async set(next) {
+      this._ = next;
+    },
+  }),
+});
+
+await object.value();      // 42
+await object.value(43);    // undefined
+await object.value();      // 43
+object._;                  // 43
+```
+
+In TypeScript, annotate the expected context on `get` / `set` with `@this` in
+JSDoc, or with an explicit `this` parameter in `.d.ts` consumers. The context
+type can differ between the two patterns above: a standalone accessor usually
+types `this` as the descriptor (or a shape it includes), while a host property
+accessor types `this` as the host object.
 
 ## base64
 

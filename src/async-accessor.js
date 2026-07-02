@@ -10,6 +10,13 @@
  * `Object.defineProperty` accessors, `get` must not declare parameters and
  * `set` must declare one — do not use `@type` on `set` to fake its arity.
  *
+ * **Context** ({@link AsyncDescriptorContext}): `get` and `set` are invoked
+ * with a `this` value. When the returned accessor is called as a property
+ * (`await host.ref()`), that host is the context. When called standalone
+ * (`await ref()`), the descriptor object passed to `asyncAccessor` is used
+ * instead. Annotate `get` / `set` with `@this` (or a `this` parameter in
+ * `.d.ts` consumers) to type the expected context.
+ *
  * **Accessor contract** ({@link AsyncAccessorFn}): the returned `async`
  * function always yields a `Promise`. `await ref()` reads (`Promise<T>`),
  * `await ref(value)` writes (`Promise<void>`, always `undefined`). This
@@ -17,10 +24,18 @@
  * assignment syntax cannot be expressed via descriptors alone.
  *
  * @template T
+ * @template [C=any]
  * @typedef {{
- *   get(): T | Promise<T>,
- *   set(value: T): void | Promise<void>
+ *   get(this: C): T | Promise<T>,
+ *   set(this: C, value: T): void | Promise<void>
  * }} AsyncDescriptor
+ */
+
+/**
+ * Context bound as `this` when `get` or `set` run. Defaults to the descriptor
+ * object when the accessor is not called as a property.
+ * @template C
+ * @typedef {C} AsyncDescriptorContext
  */
 
 /**
@@ -38,26 +53,26 @@
 
 /**
  * @typedef {{
- *   <T, D extends AsyncDescriptor<T> & {
- *     get: (...args: any) => any,
- *     set: (...args: any) => any
+ *   <T, C, D extends AsyncDescriptor<T, C> & {
+ *     get: (this: C, ...args: []) => any,
+ *     set: (this: C, ...args: [T]) => any
  *   }>(
- *     descriptor: Parameters<D['get']> extends []
- *       ? Parameters<D['set']> extends [T]
- *         ? D
- *         : never
- *       : never
+ *     descriptor: D
  *   ): AsyncAccessorFn<AsyncAccessorValue<D['get']>>
  * }} AsyncAccessor
  */
 
 /** @type {AsyncAccessor} */
-const asyncAccessor = descriptor => /** @type {AsyncAccessorFn<any>} */ (
-  async function (value) {
-    const ref = /** @type {AsyncDescriptor<any> & object} */ (descriptor);
-    if (arguments.length < 1) return ref.get();
-    await ref.set(value);
-  }
-);
+const asyncAccessor = descriptor => {
+  const { get, set } = descriptor;
+  return /** @type {AsyncAccessorFn<any>} */ (
+    /** @this {any} */
+    async function (value) {
+      const context = this || descriptor;
+      if (arguments.length < 1) return get.call(context);
+      await set.call(context, value);
+    }
+  );
+};
 
 export default asyncAccessor;
