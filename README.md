@@ -22,6 +22,7 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[empty](./src#empty)** - frozen shared empty references: array, object, or null-prototype object
   * **[has-own](./src#has-own)** - quick polyfill for `Object.hasOwn()` on older browsers
   * **[id](./src#id)** - unique `int32` counter that wraps automatically at `2 ** 31 - 1`
+  * **[instance-of](./src#instance-of)** - return a constructor from an `instanceof` list so `switch`/`case` can replace `switch (true)`
   * **[iterable](./src#iterable)** - make plain objects iterable as `Object.entries(object)` pairs, without touching objects that are already iterable
   * **[json-callback](./src#json-callback)** - stringify callbacks for JSON payloads, normalizing method shorthand to named `function` form
   * **[json-storage](./src#json-storage)** - JSON-aware, iterable, Map-like `localStorage` / `sessionStorage` facade with [Map `put`](#map-put-convention)

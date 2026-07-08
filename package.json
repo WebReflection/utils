@@ -21,6 +21,7 @@
     "./empty": "./types/empty.d.ts",
     "./has-own": "./types/has-own.d.ts",
     "./id": "./types/id.d.ts",
+    "./instance-of": "./types/instance-of.d.ts",
     "./iterable": "./types/iterable.d.ts",
     "./json-callback": "./types/json-callback.d.ts",
     "./json-storage": "./types/json-storage.d.ts",
@@ -107,6 +108,10 @@
       "types": "./types/id.d.ts",
       "import": "./src/id.js"
     },
+    "./instance-of": {
+      "types": "./types/instance-of.d.ts",
+      "import": "./src/instance-of.js"
+    },
     "./iterable": {
       "types": "./types/iterable.d.ts",
       "import": "./src/iterable.js"
@@ -171,6 +176,7 @@
     "dom-content",
     "has-own",
     "id",
+    "instance-of",
     "iterable",
     "json-callback",
     "json-storage",

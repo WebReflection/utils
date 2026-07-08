@@ -435,6 +435,43 @@ console.log(roundtrip()); // -2147483648
 Pass an optional starting value when the first issued id should not be `0`.
 
 
+## instance-of
+
+Return the first constructor in a list that matches `ref` via `instanceof`, so
+`switch`/`case` can dispatch on types without the `switch (true)` workaround.
+
+```js
+import instanceOf from '@webreflection/utils/instance-of';
+
+const types = [Response, Request, Headers];
+
+const kind = instanceOf(ref, types);
+
+switch (kind) {
+  case Response:
+    // ...
+    break;
+  case Request:
+    // ...
+    break;
+  case Headers:
+    // ...
+    break;
+  case Array:
+    // arrays that did not match any listed constructor
+    break;
+  case Object:
+    // plain objects that did not match any listed constructor
+    break;
+}
+```
+
+`ref` must be a non-null object (`typeof ref === 'object' && ref !== null`).
+Constructors are checked in list order; the first match wins. When none match,
+the result is `Array` for arrays and `Object` otherwise, so both defaults can
+be handled explicitly in the same `switch`.
+
+
 ## iterable
 
 Ensures an object can be consumed by `for...of`, spread, `Array.from`, and
