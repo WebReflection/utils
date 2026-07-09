@@ -20,6 +20,7 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[devtools](./src#devtools)** - DevTools-style `$`, `$$`, and `$x` helpers for CSS and XPath queries
   * **[dom-content](./src#dom-content)** - parse HTML or SVG markup strings into a `DocumentFragment` via ready-made `html` and `svg` helpers
   * **[empty](./src#empty)** - frozen shared empty references: array, object, or null-prototype object
+  * **[global](./src#global)** - lazily trap `globalThis` so native constructors and prototypes cannot be polluted after first access
   * **[has-own](./src#has-own)** - quick polyfill for `Object.hasOwn()` on older browsers
   * **[id](./src#id)** - unique `int32` counter that wraps automatically at `2 ** 31 - 1`
   * **[instance-of](./src#instance-of)** - return a constructor from an `instanceof` list so `switch`/`case` can replace `switch (true)`

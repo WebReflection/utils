@@ -19,6 +19,7 @@
     "./devtools": "./types/devtools.d.ts",
     "./dom-content": "./types/dom-content.d.ts",
     "./empty": "./types/empty.d.ts",
+    "./global": "./types/global.d.ts",
     "./has-own": "./types/has-own.d.ts",
     "./id": "./types/id.d.ts",
     "./instance-of": "./types/instance-of.d.ts",
@@ -99,6 +100,10 @@
     "./empty": {
       "types": "./types/empty.d.ts",
       "import": "./src/empty.js"
+    },
+    "./global": {
+      "types": "./types/global.d.ts",
+      "import": "./src/global.js"
     },
     "./has-own": {
       "types": "./types/has-own.d.ts",
@@ -188,7 +193,8 @@
     "sticky",
     "weakmap",
     "weakset",
-    "with-resolvers"
+    "with-resolvers",
+    "global"
   ],
   "scripts": {
     "build": "npm run build:types && npm run test",

@@ -398,6 +398,40 @@ const items = [...array, 'new'];
 - `nil` — a frozen, shared empty object with a `null` prototype
 
 
+## global
+
+A lazily trapped view of `globalThis` for pages that must keep using native
+constructors, prototypes, and utilities even when other scripts try to replace
+or pollute them.
+
+Import this module as early as possible — ideally before any third-party code
+runs — then read the globals you need through it instead of from `globalThis`
+directly. Each property is snapshotted on first access. Non-null objects are
+trapped recursively, so once `Object.prototype.toString` (or any other nested
+reference) is retrieved, later reassignment or prototype pollution on the live
+global no longer affects the trapped copy.
+
+```js
+import global from '@webreflection/utils/global';
+
+const { Object: { prototype: { toString } } } = global;
+
+// later, a hostile script mutates the live global
+Object.prototype.toString = function () { return 'polluted'; };
+globalThis.Object = function Object() {};
+
+toString.call([]);              // still the native result
+toString !== Object.prototype.toString; // true — trapped copy is reliable
+globalThis.Object !== global.Object;    // true — constructor was trapped first
+```
+
+This is deliberately niche: it does not sandbox code, block execution, or trap
+every global up front. It only protects the specific properties already read
+through this export, at the time they were first read. Destructure or access
+everything you rely on early, and load this module before untrusted scripts
+when that guarantee matters.
+
+
 ## has-own
 
 A quick and simple polyfill for `Object.hasOwn()` on older browsers. When the
