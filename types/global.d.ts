@@ -9,7 +9,5 @@ export default global;
  * recursively, so deeper references such as `Object.prototype.toString` stay
  * faithful to the moment they were first accessed, even if the live
  * `globalThis` or its prototypes are later reassigned or augmented.
- *
- * @type {typeof globalThis}
  */
 declare const global: typeof globalThis;

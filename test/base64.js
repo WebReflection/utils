@@ -17,3 +17,10 @@ const buffer = await decode(compressed, { format: 'deflate', buffer: true });
 
 assert.ok(buffer instanceof ArrayBuffer);
 assert.deepEqual(new Uint8Array(buffer), new TextEncoder().encode(value));
+
+
+
+import { readFileSync } from 'fs';
+const file = readFileSync('README.md').toString('utf-8');
+
+assert.ok((await encode(file, { format: 'deflate' })).length < file.length);

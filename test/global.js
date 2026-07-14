@@ -7,6 +7,7 @@ console.assert(nested.x === 1);
 
 Object.prototype.shenanigans = null;
 
+debugger;
 const { Object: { prototype: { toString, shenanigans } } } = global;
 
 const previously = Object.prototype.toString;
@@ -22,6 +23,6 @@ globalThis.Object = function Object() {};
 
 console.assert(globalThis.Object !== global.Object);
 console.assert(globalThis.Object.prototype !== global.Object.prototype);
-console.assert(global.Object.prototype.toString === previously);
-console.assert(global.Object.prototype.toString === toString);
-console.assert(global.Object.prototype.shenanigans === null);
+console.assert(global.Object.prototype.toString === toString, 'toString');
+console.assert(global.Object.prototype.toString !== Object.prototype.toString, 'toString');
+console.assert(global.Object.prototype.shenanigans === null, 'shenanigans');
