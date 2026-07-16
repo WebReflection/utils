@@ -1,6 +1,7 @@
 // @ts-check
 
 import Map from './map.js';
+import { array } from './empty.js';
 
 /**
  * @template Type
@@ -67,7 +68,7 @@ export default class Registry extends Map {
     this.#key = key;
     this.#value = value;
     this.#unique = !!unique;
-    for (const [key, value] of iterable ?? []) this.set(key, value);
+    for (const [key, value] of iterable ?? array) this.set(key, value);
   }
 
   clear() {

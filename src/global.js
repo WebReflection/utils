@@ -1,48 +1,58 @@
 // @ts-check
 
-const { create } = Object;
+const { create, defineProperty } = Object;
 const {
   apply,
-  construct,
   get,
 } = Reflect;
+
+const { hasInstance } = Symbol;
+
+/**
+ * @param {function} fn
+ * @param {function} param1
+ * @returns
+ */
+const proto = (fn, { prototype }) => defineProperty(fn, 'prototype', { value: prototype });
 
 const set = () => false;
 
 /**
- * 
  * @param {object | function} ref
- * @param {object} target
  * @param {object | function} source
  * @returns
  */
-const proxied = (ref, target, source) => new Proxy(ref, {
-  set,
-  defineProperty: set,
-  deleteProperty: set,
-  preventExtensions: set,
-  setPrototypeOf: set,
-  // @ts-expect-error source is a function
-  construct: (_, args) => construct(source, args),
-  // @ts-expect-error source is a function
-  apply: (_, thisArg, args) => apply(source, thisArg, args),
-  // @ts-expect-error target is a generic object
-  get: (_, key, ...rest) => (target[key] ?? (target[key] = value(get(source, key, ...rest)))),
-});
+const proxied = (ref, source) => {
+  const target = create(null);
+  // @ts-ignore
+  const hi = source[hasInstance]?.bind(source);
+  return new Proxy(ref, {
+    set,
+    defineProperty: set,
+    deleteProperty: set,
+    preventExtensions: set,
+    setPrototypeOf: set,
+    // @ts-expect-error if source is not a function
+    construct: (_, args) => new source(...args),
+    // @ts-expect-error if source is not a function
+    apply: (_, thisArg, args) => apply(source, thisArg, args),
+    get: (_, key, ...rest) => key === hasInstance ?
+      hi : (target[key] ?? (target[key] = value(get(source, key, ...rest)))),
+  });
+};
 
 /**
  * @param {object | function} ref
  * @returns
  */
 const value = ref => {
-  switch (typeof ref) {
-    case 'function':
-      return proxied(function () {}, create(null), ref);
-    case 'object':
-      if (!ref) break;
-      return proxied(ref, create(null), ref);
-  }
-  return ref;
+  const type = typeof ref;
+  // @ts-expect-error ref is a function
+  return type === 'function' && /^[A-Z]/.test(ref.name) ?
+    // @ts-expect-error ref is a function
+    proxied(proto(function () {}, ref), ref) :
+    (type === 'object' && ref ? proxied(ref, ref) : ref)
+  ;
 };
 
 /**
