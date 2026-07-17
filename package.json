@@ -28,6 +28,7 @@
     "./json-storage": "./types/json-storage.d.ts",
     "./map": "./types/map.d.ts",
     "./plain-tag": "./types/plain-tag.d.ts",
+    "./ref-id": "./types/ref-id.d.ts",
     "./registry": "./types/registry.d.ts",
     "./set": "./types/set.d.ts",
     "./shared-array-buffer": "./types/shared-array-buffer.d.ts",
@@ -137,6 +138,10 @@
       "types": "./types/plain-tag.d.ts",
       "import": "./src/plain-tag.js"
     },
+    "./ref-id": {
+      "types": "./types/ref-id.d.ts",
+      "import": "./src/ref-id.js"
+    },
     "./registry": {
       "types": "./types/registry.d.ts",
       "import": "./src/registry.js"
@@ -187,6 +192,7 @@
     "json-storage",
     "map",
     "plain-tag",
+    "ref-id",
     "registry",
     "set",
     "shared-array-buffer",
@@ -200,7 +206,7 @@
     "build": "npm run build:types && npm run test",
     "build:types": "tsc --allowJs --checkJs --declaration --emitDeclarationOnly --stripInternal --outDir types --target es2022 --lib es2024 --module nodenext --moduleResolution nodenext src/*.js",
     "coverage": "mkdir -p ./coverage; c8 report --reporter=text-lcov > ./coverage/lcov.info",
-    "test": "c8 node --localstorage-file './test/.storage' -e 'let q=Promise.resolve();for(const t of require(`./package.json`).tests)q=q.then(()=>import(`./test/${t}.js`));'"
+    "test": "c8 node --expose-gc --localstorage-file './test/.storage' -e 'let q=Promise.resolve();for(const t of require(`./package.json`).tests)q=q.then(()=>import(`./test/${t}.js`));'"
   },
   "files": [
     "src",

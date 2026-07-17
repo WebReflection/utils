@@ -617,6 +617,30 @@ console.log(plainTag`Hello, ${'world'}!`);
 ```
 
 
+## ref-id
+
+Assigns a unique `int32` identifier to any WeakMap-compatible key (object or
+symbol). The same reference always gets the same id; different references get
+different ids. Values come from [id](#id), so they stay in signed 32-bit range
+and wrap forever without growing past `Int32Array` limits.
+
+```js
+import refId from '@webreflection/utils/ref-id';
+
+const a = {};
+const b = {};
+
+console.log(refId(a)); // e.g. 0
+console.log(refId(a)); // same id as above
+console.log(refId(b)); // a different id
+console.log(refId(globalThis) === refId(globalThis)); // true
+```
+
+Ids are held weakly: when a key is garbage-collected, its id can be reused for
+a later key. Use this when you need a compact numeric handle for an object or
+symbol without attaching an own property.
+
+
 ## registry
 
 A `Map` subclass that validates keys and values before storing them. By default,
