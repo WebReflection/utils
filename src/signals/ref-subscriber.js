@@ -35,7 +35,7 @@ export const subscribe = (ref, signal, callback) => {
  */
 export const unsubscribe = (ref, signal, callback) => {
   let op = signal.delete(callback), id = unique(ref), callbacks = tracked.get(id);
-  if (callbacks && (op = callbacks.delete(callback)) && callbacks.size === 0) {
+  if ((op = !!callbacks?.delete(callback)) && callbacks.size === 0) {
     fr.unregister(ref);
     tracked.delete(id);
   }
