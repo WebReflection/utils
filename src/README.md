@@ -403,6 +403,8 @@ import {
 
 const text = signal('test');
 const num = signal(0);
+
+// note: mandatory tracking of signals relevant for this computed
 const label = computed(() => `${text.value} ${num.value}`, [text, num]);
 
 const app = document.querySelector('#app');
@@ -410,6 +412,10 @@ const app = document.querySelector('#app');
 const sync = subscribe(app, label, () => {
   app.textContent = label.value;
 });
+
+// apply the returned callback directly
+// if the dom node is already live
+if (app.isConnected) sync();
 
 batch(() => {
   text.value = 'test2';
