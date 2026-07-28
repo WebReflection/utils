@@ -381,6 +381,65 @@ global `document`, so it is browser-oriented. For SSR, or when a specific
 argument.
 
 
+## dom-signals
+
+Browser companion to [signals](#signals): the same minimal core, plus explicit
+`subscribe` / `unsubscribe` helpers that bind a callback to both a DOM node and
+a signal.
+
+Importing this module starts a document-wide `MutationObserver` (and patches
+`Element.prototype.attachShadow` so shadow roots are observed too). Associations
+are stored in a `WeakMap`, so a node that becomes unreachable can be garbage
+collected without leaving signal subscriptions behind.
+
+```js
+import {
+  signal,
+  computed,
+  batch,
+  subscribe,
+  unsubscribe,
+} from '@webreflection/utils/dom-signals';
+
+const text = signal('test');
+const num = signal(0);
+const label = computed(() => `${text.value} ${num.value}`, [text, num]);
+
+const app = document.querySelector('#app');
+
+const sync = subscribe(app, label, () => {
+  app.textContent = label.value;
+});
+
+batch(() => {
+  text.value = 'test2';
+  num.value = 1;
+});
+
+// later, drop the association explicitly if the node stays in the tree
+unsubscribe(app, label, sync);
+```
+
+`subscribe(node, signal, callback)` registers `callback` on `signal` immediately
+and remembers the pair on `node`. `unsubscribe` removes that pair and deletes
+the callback from the signal.
+
+Lifecycle is automatic when nodes move in or out of the tree:
+
+- **disconnected** — the observer walks the removed subtree and `delete`s every
+  associated callback from its signal, so detached UI stops reacting and does
+  not keep signals alive
+- **reconnected** — the observer walks the added subtree, `add`s those callbacks
+  again, and invokes each one once so the node refreshes against the current
+  value
+
+You still choose what to subscribe; the observer only keeps those explicit
+bindings in sync with DOM attachment. Prefer this entry over importing
+[signals](#signals) alone when the app runs in the browser and updates should
+follow node lifetime. For environments without a `document`, use
+[signals](#signals) directly.
+
+
 ## empty
 
 Frozen, shared empty references for code that needs a guaranteed-empty array,
@@ -721,6 +780,69 @@ This utility provides an unobtrusive *SAB* (*SharedArrayBuffer*) shim based on t
 This class can be used to simulate *SAB* capabilities.
 
 The module exports both `SharedArrayBuffer` and `native`. The `native` *boolean* indicates whether the returned constructor is the platform implementation or the shim.
+
+
+## signals
+
+A minimalistic, explicit signals implementation. There is no automatic
+dependency tracking: every `computed` and `effect` takes the list of signals it
+depends on. That keeps the runtime small and the dataflow obvious at the call
+site.
+
+```js
+import {
+  signal,
+  computed,
+  batch,
+  effect,
+  dispose,
+} from '@webreflection/utils/signals';
+
+const a = signal(1);
+const b = signal(2);
+const c = computed(() => a.value + b.value, [a, b]);
+
+c.value; // 3
+
+a.value = 3;
+c.value; // 5
+
+batch(() => {
+  a.value = 4;
+  batch(() => {
+    b.value = 5;
+  });
+});
+c.value; // 9 — recomputed once after the outer batch
+
+const stop = effect(() => {
+  console.log(c.value);
+}, [c]);
+
+a.value = 5; // effect runs again
+stop();      // unsubscribe and run optional cleanup
+c[dispose]();
+a[dispose]();
+b[dispose]();
+```
+
+API surface:
+
+- `signal(value)` / `Signal` — readable and writable `.value`; subscribers run
+  on each set (or once after an outer `batch`)
+- `computed(fn, signals)` / `Computed` — readonly `.value`, recomputed when any
+  listed signal notifies; the dependency list is mandatory
+- `batch(fn)` — coalesces nested updates so dependent work runs once afterward
+- `effect(fn, signals)` — runs `fn` immediately and again when any listed signal
+  notifies; `fn` may return a cleanup; the returned function unsubscribes and
+  runs that cleanup
+- `dispose` — the `Symbol.dispose` (or `Symbol.for('dispose')`) key; call
+  `ref[dispose]()` to clear subscribers (`Signal`) or detach from sources
+  (`Computed`)
+
+`Signal#add` / `Signal#delete` are available when a custom subscriber is needed.
+For DOM nodes that should react while attached and drop listeners when removed
+(or resume when reinserted), use [dom-signals](#dom-signals).
 
 
 ## sticky

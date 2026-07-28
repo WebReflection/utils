@@ -18,6 +18,7 @@
     "./dedent": "./types/dedent.d.ts",
     "./devtools": "./types/devtools.d.ts",
     "./dom-content": "./types/dom-content.d.ts",
+    "./dom-signals": "./types/dom-signals.d.ts",
     "./empty": "./types/empty.d.ts",
     "./global": "./types/global.d.ts",
     "./has-own": "./types/has-own.d.ts",
@@ -32,6 +33,7 @@
     "./registry": "./types/registry.d.ts",
     "./set": "./types/set.d.ts",
     "./shared-array-buffer": "./types/shared-array-buffer.d.ts",
+    "./signals": "./types/signals.d.ts",
     "./sticky": "./types/sticky.d.ts",
     "./weakmap": "./types/weakmap.d.ts",
     "./weakset": "./types/weakset.d.ts",
@@ -98,6 +100,10 @@
       "types": "./types/dom-content.d.ts",
       "import": "./src/dom-content.js"
     },
+    "./dom-signals": {
+      "types": "./types/dom-signals.d.ts",
+      "import": "./src/dom-signals.js"
+    },
     "./empty": {
       "types": "./types/empty.d.ts",
       "import": "./src/empty.js"
@@ -154,6 +160,10 @@
       "types": "./types/shared-array-buffer.d.ts",
       "import": "./src/shared-array-buffer.js"
     },
+    "./signals": {
+      "types": "./types/signals.d.ts",
+      "import": "./src/signals.js"
+    },
     "./sticky": {
       "types": "./types/sticky.d.ts",
       "import": "./src/sticky.js"
@@ -196,6 +206,7 @@
     "registry",
     "set",
     "shared-array-buffer",
+    "signals",
     "sticky",
     "weakmap",
     "weakset",
@@ -204,7 +215,7 @@
   ],
   "scripts": {
     "build": "npm run build:types && npm run test",
-    "build:types": "tsc --allowJs --checkJs --declaration --emitDeclarationOnly --stripInternal --outDir types --target es2022 --lib es2024 --module nodenext --moduleResolution nodenext src/*.js",
+    "build:types": "tsc --allowJs --checkJs --declaration --emitDeclarationOnly --stripInternal --outDir types --target es2022 --lib es2025 --module nodenext --moduleResolution nodenext src/*.js",
     "coverage": "mkdir -p ./coverage; c8 report --reporter=text-lcov > ./coverage/lcov.info",
     "test": "c8 node --expose-gc --localstorage-file './test/.storage' -e 'let q=Promise.resolve();for(const t of require(`./package.json`).tests)q=q.then(()=>import(`./test/${t}.js`));'"
   },

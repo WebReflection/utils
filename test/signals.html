@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="module">
+    import { Signal, Computed, signal, computed, batch, effect, dispose } from '../src/signals/index.js';
+    import { subscribe, unsubscribe } from '../src/signals/dom-subscriber.js';
+
+    let { app } = globalThis;
+    let text = signal('test');
+    let num = signal(0);
+    let comp = computed(() => `${text.value} ${num.value}`, [text, num]);
+    let wr = new WeakRef(app);
+
+    (function ({ app }) {
+      subscribe(app, comp, () => {
+        app.textContent = comp.value;
+      });
+    }(globalThis));
+
+    document.body.appendChild(app);
+
+    globalThis.text = text;
+    globalThis.num = num;
+
+    (globalThis.fr = new FinalizationRegistry(console.log)).register(app, 'gone');
+
+    setTimeout(batch, 5000, () => {
+      text.value = 'test2';
+      num.value = 1;
+    });
+  </script>
+</head>
+<body>
+  <div id="app"></div>
+</body>
+</html>

@@ -19,6 +19,7 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[dedent](./src#dedent)** - strip common leading indentation from the first non-empty line, as a template tag or on strings
   * **[devtools](./src#devtools)** - DevTools-style `$`, `$$`, and `$x` helpers for CSS and XPath queries
   * **[dom-content](./src#dom-content)** - parse HTML or SVG markup strings into a `DocumentFragment` via ready-made `html` and `svg` helpers
+  * **[dom-signals](./src#dom-signals)** - [signals](./src#signals) plus DOM subscribe/unsubscribe with MutationObserver lifecycle so detached nodes cannot leak listeners
   * **[empty](./src#empty)** - frozen shared empty references: array, object, or null-prototype object
   * **[global](./src#global)** - lazily trap `globalThis` so native constructors and prototypes cannot be polluted after first access
   * **[has-own](./src#has-own)** - quick polyfill for `Object.hasOwn()` on older browsers
@@ -33,6 +34,7 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[registry](./src#registry)** - validated `Map` with duplicate-key protection by default; inherits [Map `put`](#map-put-convention)
   * **[set](./src#set)** - native `Set` subclass with [Set `put`](#set-put-convention)
   * **[shared-array-buffer](./src#shared-array-buffer)** - simulate *SAB* when not available
+  * **[signals](./src#signals)** - minimalistic signals with explicit (manual) dependency lists: `signal`, `computed`, `batch`, and `effect`
   * **[sticky](./src#sticky)** - keep useful values stable once per realm
   * **[weakmap](./src#weakmap)** - native `WeakMap` subclass with [Map `put`](#map-put-convention)
   * **[weakset](./src#weakset)** - native `WeakSet` subclass with [Set `put`](#set-put-convention)
