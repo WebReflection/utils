@@ -466,8 +466,9 @@ Lifecycle is automatic when nodes move in or out of the tree:
 You still choose what to subscribe; the observer only keeps those explicit
 bindings in sync with DOM attachment. Prefer this entry over importing
 [signals](#signals) alone when the app runs in the browser and updates should
-follow node lifetime. For environments without a `document`, use
-[signals](#signals) directly.
+follow node lifetime. For arbitrary objects or symbols (no DOM lifecycle), use
+[ref-signals](#ref-signals). For environments without a `document`, use
+[signals](#signals) or [ref-signals](#ref-signals) directly.
 
 
 ## empty
@@ -730,6 +731,48 @@ a later key. Use this when you need a compact numeric handle for an object or
 symbol without attaching an own property.
 
 
+## ref-signals
+
+Companion to [signals](#signals): the same minimal core, plus explicit
+`subscribe` / `unsubscribe` helpers that bind a callback to both a
+WeakMap-compatible key (`WeakKey`: object or symbol) and a signal.
+
+Associations are tracked by [ref-id](#ref-id) and cleaned up through a
+`FinalizationRegistry`: when the ref becomes unreachable and is garbage
+collected, every callback registered for that ref is deleted from its signal.
+There is no reconnect path — once the ref is gone, the subscriptions are gone.
+
+```js
+import {
+  signal,
+  computed,
+  batch,
+  subscribe,
+  unsubscribe,
+} from '@webreflection/utils/ref-signals';
+
+const num = signal(0);
+const ref = { value: num.value };
+
+const sync = subscribe(ref, num, () => {
+  ref.value = num.value;
+});
+
+num.value = 1;
+// sync ran; ref.value === 1
+
+// drop the association explicitly while the ref is still live
+unsubscribe(ref, num, sync);
+```
+
+`subscribe(ref, signal, callback)` registers `callback` on `signal` immediately
+and remembers the pair under `ref`. `unsubscribe` removes that pair and deletes
+the callback from the signal. Prefer this entry over importing
+[signals](#signals) alone when subscriptions should die with an arbitrary
+object or symbol. For DOM nodes that should also pause and resume with
+attachment, use [dom-signals](#dom-signals) instead.
+
+
 ## registry
 
 A `Map` subclass that validates keys and values before storing them. By default,
@@ -871,7 +914,9 @@ API surface:
 
 `Signal#add` / `Signal#delete` are available when a custom subscriber is needed.
 For DOM nodes that should react while attached and drop listeners when removed
-(or resume when reinserted), use [dom-signals](#dom-signals).
+(or resume when reinserted), use [dom-signals](#dom-signals). For arbitrary
+objects or symbols whose subscriptions should end when the key is collected,
+use [ref-signals](#ref-signals).
 
 
 ## sticky

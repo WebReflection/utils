@@ -31,6 +31,7 @@
     "./map": "./types/map.d.ts",
     "./plain-tag": "./types/plain-tag.d.ts",
     "./ref-id": "./types/ref-id.d.ts",
+    "./ref-signals": "./types/ref-signals.d.ts",
     "./registry": "./types/registry.d.ts",
     "./set": "./types/set.d.ts",
     "./shared-array-buffer": "./types/shared-array-buffer.d.ts",
@@ -153,6 +154,10 @@
       "types": "./types/ref-id.d.ts",
       "import": "./src/ref-id.js"
     },
+    "./ref-signals": {
+      "types": "./types/ref-signals.d.ts",
+      "import": "./src/ref-signals.js"
+    },
     "./registry": {
       "types": "./types/registry.d.ts",
       "import": "./src/registry.js"
@@ -209,6 +214,7 @@
     "map",
     "plain-tag",
     "ref-id",
+    "ref-signals",
     "registry",
     "set",
     "shared-array-buffer",
