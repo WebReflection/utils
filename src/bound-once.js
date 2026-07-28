@@ -1,5 +1,6 @@
 //@ts-check
 
+import Map from './map.js';
 import sticky from './sticky.js';
 
 const methods = /** @type {WeakMap<object, Map<string | symbol, (...args: any[]) => unknown>>} */ (new WeakMap);
@@ -8,9 +9,7 @@ const methods = /** @type {WeakMap<object, Map<string | symbol, (...args: any[])
 const handler = {
   get(target, prop) {
     const known = /** @type {Map<string | symbol, (...args: any[]) => unknown>} */ (methods.get(target));
-    let method = known.get(prop);
-    if (!method) known.set(prop, (method = target[prop].bind(target)));
-    return method;
+    return known.get(prop) ?? known.put(prop, target[prop].bind(target));
   }
 };
 
