@@ -33,6 +33,7 @@ export { dispose };
 
 /**
  * @template T
+ * @extends {Set<Subscriber>}
  */
 export class Signal extends Set {
   /** @type {T} */

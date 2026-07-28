@@ -3,8 +3,9 @@ export type Subscriber = () => void;
 export { dispose };
 /**
  * @template T
+ * @extends {Set<Subscriber>}
  */
-export declare class Signal<T> extends Set {
+export declare class Signal<T> extends Set<Subscriber> {
     #private;
     [dispose]: () => void;
     /**
