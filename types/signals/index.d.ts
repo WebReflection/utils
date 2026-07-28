@@ -4,7 +4,7 @@ export { dispose };
 /**
  * @template T
  */
-export declare class Signal<T> {
+export declare class Signal<T> extends Set {
     #private;
     [dispose]: () => void;
     /**
@@ -17,16 +17,6 @@ export declare class Signal<T> {
      * @param {T} value
      */
     set value(value: T);
-    /**
-     * @param {Subscriber} subscriber
-     * @returns {this}
-     */
-    add(subscriber: Subscriber): this;
-    /**
-     * @param {Subscriber} subscriber
-     * @returns {boolean}
-     */
-    delete(subscriber: Subscriber): boolean;
 }
 /**
  * Parent `Signal` stores the recompute callback; this class exposes the computed `T`.

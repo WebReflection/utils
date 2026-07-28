@@ -34,20 +34,17 @@ export { dispose };
 /**
  * @template T
  */
-export class Signal {
+export class Signal extends Set {
   /** @type {T} */
+  // @ts-ignore assigned via super().#value in the constructor
   #value;
-
-  /**
-   * @type {Set<Subscriber>}
-   */
-  #subscribers = new Set;
 
   /**
    * @param {T} value
    */
   constructor(value) {
-    this.#value = value;
+    // @ts-ignore
+    super().#value = value;
   }
 
   /** @type {T} */
@@ -60,30 +57,13 @@ export class Signal {
    */
   set value(value) {
     this.#value = value;
-    if (batching === null) this.#subscribers.forEach(invoke);
+    if (batching === null) this.forEach(invoke);
     // @ts-ignore
-    else batching = batching.union(this.#subscribers);
-  }
-
-  /**
-   * @param {Subscriber} subscriber
-   * @returns {this}
-   */
-  add(subscriber) {
-    this.#subscribers.add(subscriber);
-    return this;
-  }
-
-  /**
-   * @param {Subscriber} subscriber
-   * @returns {boolean}
-   */
-  delete(subscriber) {
-    return this.#subscribers.delete(subscriber);
+    else batching = batching.union(this);
   }
 
   [dispose]() {
-    this.#subscribers.clear();
+    super.clear();
   }
 }
 
