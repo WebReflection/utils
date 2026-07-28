@@ -22,7 +22,7 @@ export const subscribe = (ref, signal, callback) => {
   let id = unique(ref), callbacks = tracked.get(id);
   if (!callbacks) {
     fr.register(ref, id, ref);
-    tracked.set(id, (callbacks = new Map));
+    callbacks = tracked.put(id, new Map);
   }
   callbacks.put(callback, signal).add(callback);
   return callback;
