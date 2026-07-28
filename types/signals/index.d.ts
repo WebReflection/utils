@@ -1,19 +1,22 @@
+import dispose from '../dispose.js';
+export type Subscriber = () => void;
 export { dispose };
 /**
  * @template T
  */
-export class Signal<T> {
-    [x: symbol]: () => void;
+export declare class Signal<T> {
+    #private;
+    [dispose]: () => void;
     /**
      * @param {T} value
      */
     constructor(value: T);
+    /** @type {T} */
+    get value(): T;
     /**
      * @param {T} value
      */
     set value(value: T);
-    /** @type {T} */
-    get value(): T;
     /**
      * @param {Subscriber} subscriber
      * @returns {this}
@@ -24,7 +27,6 @@ export class Signal<T> {
      * @returns {boolean}
      */
     delete(subscriber: Subscriber): boolean;
-    #private;
 }
 /**
  * Parent `Signal` stores the recompute callback; this class exposes the computed `T`.
@@ -32,22 +34,37 @@ export class Signal<T> {
  * @template T
  * @extends {Signal<*>}
  */
-export class Computed<T> extends Signal<any> {
+export declare class Computed<T> extends Signal<any> {
+    #private;
+    [dispose]: () => void;
     /**
      * @param {() => T} value
      * @param {Signal<unknown>[]} signals
      */
     constructor(value: () => T, signals: Signal<unknown>[]);
-    /**
-     * @type {T}
-     * @readonly
-     */
-    readonly get value(): T;
-    #private;
+    /** @type {T} */
+    get value(): T;
 }
-export function batch(callback: () => void): void;
-export function effect(callback: () => void | (() => void), signals: Signal<unknown>[]): () => void;
-export function signal<T>(value: T): Signal<T>;
-export function computed<T>(value: () => T, signals: Signal<unknown>[]): Computed<T>;
-export type Subscriber = () => void;
-import dispose from '../dispose.js';
+/**
+ * @param {() => void} callback batch callback
+ */
+export declare const batch: (callback: () => void) => void;
+/**
+ * @param {() => void | (() => void)} callback effect callback; returns a cleanup
+ * @param {Signal<unknown>[]} signals signals to track
+ * @returns {() => void} dispose function that unsubscribes and runs cleanup
+ */
+export declare const effect: (callback: () => void | (() => void), signals: Signal<unknown>[]) => () => void;
+/**
+ * @template T
+ * @param {T} value
+ * @returns {Signal<T>}
+ */
+export declare const signal: <T>(value: T) => Signal<T>;
+/**
+ * @template T
+ * @param {() => T} value
+ * @param {Signal<unknown>[]} signals
+ * @returns {Computed<T>}
+ */
+export declare const computed: <T>(value: () => T, signals: Signal<unknown>[]) => Computed<T>;

@@ -3,6 +3,8 @@
  * @extends Map<K,V>
  */
 export default class Cache<K, V> extends Map<K, V> {
+    #private;
+    clear(): void;
     /**
      * @param {number} [delay]
      */
@@ -35,5 +37,4 @@ export default class Cache<K, V> extends Map<K, V> {
      * @returns
      */
     set(key: K, value: V): this;
-    #private;
 }

@@ -1,5 +1,7 @@
-export type Alphabet = "base64" | "base64url";
-export type Format = "brotli" | "gzip" | "deflate" | "deflate-raw" | "zstd";
 import decode from './base64/decode.js';
 import encode from './base64/encode.js';
+export type Alphabet = 'base64' | 'base64url';
+export type Format = 'brotli' | 'gzip' | 'deflate' | 'deflate-raw' | 'zstd';
+/** @typedef {'base64' | 'base64url'} Alphabet */
+/** @typedef {'brotli' | 'gzip' | 'deflate' | 'deflate-raw' | 'zstd'} Format */
 export { decode, encode };

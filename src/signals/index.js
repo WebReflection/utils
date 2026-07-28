@@ -118,10 +118,7 @@ export class Computed extends Signal {
     callback();
   }
 
-  /**
-   * @type {T}
-   * @readonly
-   */
+  /** @type {T} */
   get value() {
     return this.#value;
   }

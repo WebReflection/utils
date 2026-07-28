@@ -9,7 +9,7 @@ const { for: symbolFor } = Symbol;
  * @template T
  * @param {string} name the module name to save or retrieve
  * @param {T} value the module as value to save if not known
- * @param {globalThis} [global=globalThis] the reference where modules are saved where `globalThis` is the default
+ * @param {typeof globalThis} [global=globalThis] the reference where modules are saved where `globalThis` is the default
  * @returns {[T, boolean]} the passed `value` or the previous one as first entry, a boolean indicating if it was known or not
  */
 export default (name, value, global = globalThis) => {

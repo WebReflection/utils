@@ -1,3 +1,2 @@
-declare let SAB: SharedArrayBufferConstructor;
-export let native: boolean;
-export { SAB as SharedArrayBuffer };
+declare let SAB: SharedArrayBufferConstructor, native: boolean;
+export { SAB as SharedArrayBuffer, native };

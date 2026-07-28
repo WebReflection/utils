@@ -2,9 +2,7 @@
  * @template V
  * @extends {Set<V>}
  */
-export default class _default<V> extends Set<V> {
-    constructor(values?: readonly V[] | null | undefined);
-    constructor(iterable?: Iterable<V> | null | undefined);
+export default class<V> extends Set<V> {
     /**
      * @param {V} value
      * @returns {V}

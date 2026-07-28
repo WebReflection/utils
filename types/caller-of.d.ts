@@ -1,3 +1,15 @@
-declare const _default: <F_1 extends (...args: any[]) => any>(fn: F_1) => CallerOf<F_1>;
+export type CallerOf<F extends (...args: any[]) => any> = (thisArg: ThisParameterType<F>, ...args: Parameters<F>) => ReturnType<F>;
+/**
+ * @template {(...args: any[]) => any} F
+ * @typedef {(thisArg: ThisParameterType<F>, ...args: Parameters<F>) => ReturnType<F>} CallerOf
+ */
+/**
+ * Borrow a method so it can be invoked with an explicit `this` value
+ * (e.g. `callerOf({}.hasOwnProperty)(obj, key)`).
+ *
+ * @template {(...args: any[]) => any} F
+ * @param {F} fn
+ * @returns {CallerOf<F>}
+ */
+declare const _default: <F extends (...args: any[]) => any>(fn: F) => CallerOf<F>;
 export default _default;
-export type CallerOf<F_1 extends (...args: any[]) => any> = (thisArg: ThisParameterType<F_1>, ...args: Parameters<F_1>) => ReturnType<F_1>;

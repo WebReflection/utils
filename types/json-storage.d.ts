@@ -1,3 +1,19 @@
+/** @type {typeof Symbol.iterator} */
+declare const iterator: typeof Symbol.iterator;
+declare const LOCAL = "local";
+declare const SESSION = "session";
+export type JSONStorageKind = typeof LOCAL | typeof SESSION;
+export type JSONStorageAPI<Value> = {
+    parse(source: string): Value;
+    stringify(value: Value): string;
+};
+export type StorageAPI = {
+    clear(): void;
+    getItem(key: string): string | null;
+    removeItem(key: string): void;
+    setItem(key: string, value: string): void;
+    [Symbol.iterator](): Generator<[string, string], void, unknown>;
+};
 /**
  * Map-like facade over `localStorage` or `sessionStorage` that stores values
  * through a JSON-compatible `parse`/`stringify` pair.
@@ -6,6 +22,7 @@
  * @implements {Iterable<[string, Value]>}
  */
 export default class JSONStorage<Value = unknown> implements Iterable<[string, Value]> {
+    #private;
     /** @type {typeof LOCAL} */
     static LOCAL: typeof LOCAL;
     /** @type {typeof SESSION} */
@@ -64,21 +81,6 @@ export default class JSONStorage<Value = unknown> implements Iterable<[string, V
     /** @returns {Generator<Value, void, unknown>} */
     values(): Generator<Value, void, unknown>;
     /** @returns {Generator<[string, Value], void, unknown>} */
-    [Symbol.iterator](): Generator<[string, Value], void, unknown>;
-    #private;
+    [iterator](): Generator<[string, Value], void, unknown>;
 }
-export type JSONStorageKind = typeof LOCAL | typeof SESSION;
-export type JSONStorageAPI<Value> = {
-    parse(source: string): Value;
-    stringify(value: Value): string;
-};
-export type StorageAPI = {
-    clear(): void;
-    getItem(key: string): string | null;
-    removeItem(key: string): void;
-    setItem(key: string, value: string): void;
-    [Symbol.iterator](): Generator<[string, string], void, unknown>;
-};
-declare const LOCAL: "local";
-declare const SESSION: "session";
 export {};

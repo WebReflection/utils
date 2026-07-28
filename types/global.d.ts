@@ -1,4 +1,3 @@
-export default global;
 /**
  * Lazily trapped view of {@link globalThis}. Import this module as early as
  * possible in the page or bundle so native constructors, prototypes, and other
@@ -11,3 +10,4 @@ export default global;
  * `globalThis` or its prototypes are later reassigned or augmented.
  */
 declare const global: typeof globalThis;
+export default global;
