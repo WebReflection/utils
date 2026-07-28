@@ -37,6 +37,9 @@
     "./shared-array-buffer": "./types/shared-array-buffer.d.ts",
     "./signals": "./types/signals.d.ts",
     "./sticky": "./types/sticky.d.ts",
+    "./weak": "./types/weak.d.ts",
+    "./weak-map": "./types/weakmap.d.ts",
+    "./weak-set": "./types/weakset.d.ts",
     "./weakmap": "./types/weakmap.d.ts",
     "./weakset": "./types/weakset.d.ts",
     "./with-resolvers": "./types/with-resolvers.d.ts"
@@ -177,6 +180,18 @@
     "./sticky": {
       "types": "./types/sticky.d.ts",
       "import": "./src/sticky.js"
+    },
+    "./weak": {
+      "types": "./types/weak.d.ts",
+      "import": "./src/weak.js"
+    },
+    "./weak-map": {
+      "types": "./types/weakmap.d.ts",
+      "import": "./src/weakmap.js"
+    },
+    "./weak-set": {
+      "types": "./types/weakset.d.ts",
+      "import": "./src/weakset.js"
     },
     "./weakmap": {
       "types": "./types/weakmap.d.ts",

@@ -952,13 +952,30 @@ export default module;
 Because the sticky logic is intentionally simple, using a "*first come, first served*" global symbol lookup, avoid storing sensitive values there directly when secrecy or module-level isolation matters.
 
 
+## weak
+
+A convenience entry that re-exports both [weakmap](#weakmap) and
+[weakset](#weakset) when both are needed from a single import.
+
+```js
+import { WeakMap, WeakSet } from '@webreflection/utils/weak';
+
+const map = new WeakMap;
+const set = new WeakSet;
+```
+
+
 ## weakmap
 
 A native `WeakMap` subclass with one extra method: `put(key, value)`. It stores
 the entry like `set`, but returns the value instead of the map reference itself.
 
+Also available as `@webreflection/utils/weak-map` — the dash is the only
+difference; both paths resolve to the same module.
+
 ```js
 import WeakMap from '@webreflection/utils/weakmap';
+// or: import WeakMap from '@webreflection/utils/weak-map';
 
 const map = new WeakMap;
 const key = {};
@@ -979,8 +996,12 @@ like the native `WeakMap`.
 A native `WeakSet` subclass with one extra method: `put(value)`. It stores the
 entry like `add`, but returns the value instead of the set reference itself.
 
+Also available as `@webreflection/utils/weak-set` — the dash is the only
+difference; both paths resolve to the same module.
+
 ```js
 import WeakSet from '@webreflection/utils/weakset';
+// or: import WeakSet from '@webreflection/utils/weak-set';
 
 const set = new WeakSet;
 const item = {};

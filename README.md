@@ -38,8 +38,9 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[shared-array-buffer](./src#shared-array-buffer)** - simulate *SAB* when not available
   * **[signals](./src#signals)** - minimalistic signals with explicit (manual) dependency lists: `signal`, `computed`, `batch`, and `effect`
   * **[sticky](./src#sticky)** - keep useful values stable once per realm
-  * **[weakmap](./src#weakmap)** - native `WeakMap` subclass with [Map `put`](#map-put-convention)
-  * **[weakset](./src#weakset)** - native `WeakSet` subclass with [Set `put`](#set-put-convention)
+  * **[weak](./src#weak)** - import both [weakmap](./src#weakmap) and [weakset](./src#weakset) together when both are needed
+  * **[weakmap](./src#weakmap)** / `weak-map` - native `WeakMap` subclass with [Map `put`](#map-put-convention)
+  * **[weakset](./src#weakset)** / `weak-set` - native `WeakSet` subclass with [Set `put`](#set-put-convention)
   * **[with-resolvers](./src#with-resolvers)** - use a self-bound `Promise.withResolvers()` helper for older runtimes
 
 - - -
