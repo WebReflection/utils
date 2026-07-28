@@ -17,6 +17,7 @@
     "./content": "./types/content.d.ts",
     "./dedent": "./types/dedent.d.ts",
     "./devtools": "./types/devtools.d.ts",
+    "./dispose": "./types/dispose.d.ts",
     "./dom-content": "./types/dom-content.d.ts",
     "./dom-signals": "./types/dom-signals.d.ts",
     "./empty": "./types/empty.d.ts",
@@ -95,6 +96,10 @@
     "./devtools": {
       "types": "./types/devtools.d.ts",
       "import": "./src/devtools.js"
+    },
+    "./dispose": {
+      "types": "./types/dispose.d.ts",
+      "import": "./src/dispose.js"
     },
     "./dom-content": {
       "types": "./types/dom-content.d.ts",
@@ -193,6 +198,7 @@
     "cache",
     "caller-of",
     "dedent",
+    "dispose",
     "dom-content",
     "has-own",
     "id",

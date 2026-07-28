@@ -18,6 +18,7 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[content](./src#content)** - build factories that parse markup strings into `DocumentFragment` instances within a chosen element context
   * **[dedent](./src#dedent)** - strip common leading indentation from the first non-empty line, as a template tag or on strings
   * **[devtools](./src#devtools)** - DevTools-style `$`, `$$`, and `$x` helpers for CSS and XPath queries
+  * **[dispose](./src#dispose)** - `Symbol.dispose` when available, otherwise `Symbol.for('dispose')` (not a polyfill)
   * **[dom-content](./src#dom-content)** - parse HTML or SVG markup strings into a `DocumentFragment` via ready-made `html` and `svg` helpers
   * **[dom-signals](./src#dom-signals)** - [signals](./src#signals) plus DOM subscribe/unsubscribe with MutationObserver lifecycle so detached nodes cannot leak listeners
   * **[empty](./src#empty)** - frozen shared empty references: array, object, or null-prototype object
