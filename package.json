@@ -1,6 +1,6 @@
 {
   "name": "@webreflection/utils",
-  "version": "0.3.32",
+  "version": "0.3.33",
   "type": "module",
   "types": {
     "./accessor": "./types/accessor.d.ts",
