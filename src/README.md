@@ -889,6 +889,10 @@ API surface:
   `ref[dispose]()` to clear subscribers (`Signal`) or detach from sources
   (`Computed`)
 
+Nested `batch` calls rely on `Set.prototype.union`. Engines that do not ship it
+yet need a one-time import of `@webreflection/utils/patch/set-union` before
+using signals (or [dom-signals](#dom-signals) / [ref-signals](#ref-signals)).
+
 `Signal#add` / `Signal#delete` are available when a custom subscriber is needed.
 For DOM nodes that should react while attached and drop listeners when removed
 (or resume when reinserted), use [dom-signals](#dom-signals). For arbitrary
