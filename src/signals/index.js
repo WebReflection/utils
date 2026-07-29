@@ -1,6 +1,6 @@
 // @ts-check
 
-import dispose from '../dispose.js';
+import dispose from '../patch/dispose.js';
 
 /**
  * @typedef {() => void} Subscriber

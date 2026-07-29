@@ -17,7 +17,6 @@
     "./content": "./types/content.d.ts",
     "./dedent": "./types/dedent.d.ts",
     "./devtools": "./types/devtools.d.ts",
-    "./dispose": "./types/dispose.d.ts",
     "./dom-content": "./types/dom-content.d.ts",
     "./dom-signals": "./types/dom-signals.d.ts",
     "./empty": "./types/empty.d.ts",
@@ -29,6 +28,7 @@
     "./json-callback": "./types/json-callback.d.ts",
     "./json-storage": "./types/json-storage.d.ts",
     "./map": "./types/map.d.ts",
+    "./patch/dispose": "./types/patch/dispose.d.ts",
     "./plain-tag": "./types/plain-tag.d.ts",
     "./ref-id": "./types/ref-id.d.ts",
     "./ref-signals": "./types/ref-signals.d.ts",
@@ -101,10 +101,6 @@
       "types": "./types/devtools.d.ts",
       "import": "./src/devtools.js"
     },
-    "./dispose": {
-      "types": "./types/dispose.d.ts",
-      "import": "./src/dispose.js"
-    },
     "./dom-content": {
       "types": "./types/dom-content.d.ts",
       "import": "./src/dom-content.js"
@@ -148,6 +144,13 @@
     "./map": {
       "types": "./types/map.d.ts",
       "import": "./src/map.js"
+    },
+    "./patch/dispose": {
+      "types": "./types/patch/dispose.d.ts",
+      "import": "./src/patch/dispose.js"
+    },
+    "./patch/set-union": {
+      "import": "./src/patch/set-union.js"
     },
     "./plain-tag": {
       "types": "./types/plain-tag.d.ts",
@@ -218,7 +221,6 @@
     "cache",
     "caller-of",
     "dedent",
-    "dispose",
     "dom-content",
     "has-own",
     "id",
@@ -227,6 +229,7 @@
     "json-callback",
     "json-storage",
     "map",
+    "patch",
     "plain-tag",
     "ref-id",
     "ref-signals",

@@ -1,4 +1,4 @@
-import dispose from '../dispose.js';
+import dispose from '../patch/dispose.js';
 export type Subscriber = () => void;
 export { dispose };
 /**

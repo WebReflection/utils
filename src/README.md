@@ -360,30 +360,6 @@ Each helper accepts an optional root node. When omitted, it defaults to
 `Element`.
 
 
-## dispose
-
-A single symbol key for disposal that works where `Symbol.dispose` exists
-(Chromium, Edge, Firefox, …) and where it does not yet (Safari / WebKit). When
-the well-known symbol is missing, it falls back to `Symbol.for('dispose')`.
-
-This is **not** a polyfill: it never assigns `Symbol.dispose` on the global
-`Symbol` object.
-
-```js
-import dispose from '@webreflection/utils/dispose';
-
-const resource = {
-  [dispose]() {
-    // release handles, listeners, …
-  },
-};
-
-resource[dispose]();
-```
-
-Same symbol is re-exported from [signals](#signals) for disposable signals.
-
-
 ## dom-content
 
 A ready-made [content](#content) instance for the two most common contexts,
@@ -909,8 +885,9 @@ API surface:
 - `effect(fn, signals)` — runs `fn` immediately and again when any listed signal
   notifies; `fn` may return a cleanup; the returned function unsubscribes and
   runs that cleanup
-- `dispose` — re-exported from [dispose](#dispose); call `ref[dispose]()` to
-  clear subscribers (`Signal`) or detach from sources (`Computed`)
+- `dispose` — re-exported from `@webreflection/utils/patch/dispose`; call
+  `ref[dispose]()` to clear subscribers (`Signal`) or detach from sources
+  (`Computed`)
 
 `Signal#add` / `Signal#delete` are available when a custom subscriber is needed.
 For DOM nodes that should react while attached and drop listeners when removed

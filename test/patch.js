@@ -1,4 +1,4 @@
-import dispose from '../src/dispose.js';
+import dispose from '../src/patch/dispose.js';
 
 console.assert(typeof dispose === 'symbol');
 console.assert(
