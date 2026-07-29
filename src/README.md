@@ -6,6 +6,77 @@ Each utility can be loaded from a *CDN* via either `https://esm.run/@webreflecti
 This document describes each utility separately.
 
 
+## accessor
+
+Wrap a `{ get, set }` descriptor as a single synchronous function. Argument
+count selects the operation: call with no arguments to read, or with exactly
+one argument to write.
+
+The descriptor may be any object or class instance that defines or inherits
+both methods. Extra properties are allowed. `get` takes no parameters and
+returns a value. `set` takes exactly one value and may return void. The
+returned accessor is synchronous: `ref()` returns `T`, `ref(value)` returns
+`undefined`.
+
+This mirrors `ref.value` for reads; writes are `ref(value)` since assignment
+syntax cannot be expressed via property descriptors alone.
+
+`get` and `set` are invoked with a `this` context. When the accessor is called
+standalone (`ref()`), that context is the descriptor object passed to
+`accessor`. When it is assigned to a host and called as a property
+(`host.ref()`), the context is the host instead. The same descriptor can
+therefore target either its own backing fields or those on another object,
+depending on how the returned function is used.
+
+```js
+import accessor from '@webreflection/utils/accessor';
+
+// Standalone: `this` in get/set is the descriptor object itself.
+const value = accessor({
+  value: 42,
+  get() {
+    return this.value;
+  },
+  set(next) {
+    this.value = next;
+  },
+});
+
+value();      // 42
+value(43);    // undefined
+value();      // 43
+```
+
+When the accessor is installed on a host object, `get` and `set` see that host
+as `this` instead:
+
+```js
+const object = Object.defineProperty({ _: 42 }, 'value', {
+  enumerable: true,
+  writable: true,
+  value: accessor({
+    get() {
+      return this._;
+    },
+    set(next) {
+      this._ = next;
+    },
+  }),
+});
+
+object.value();      // 42
+object.value(43);    // undefined
+object.value();      // 43
+object._;            // 43
+```
+
+In TypeScript, annotate the expected context on `get` / `set` with `@this` in
+JSDoc, or with an explicit `this` parameter in `.d.ts` consumers. The context
+type can differ between the two patterns above: a standalone accessor usually
+types `this` as the descriptor (or a shape it includes), while a host property
+accessor types `this` as the host object.
+
+
 ## all
 
 A `Promise.all` companion with one extra convenience: when called with a

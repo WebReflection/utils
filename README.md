@@ -7,6 +7,7 @@
 
 A curated, *TypeScript*-friendly [collection](./src/) of utilities:
 
+  * **[accessor](./src#accessor)** - wrap a `{ get, set }` descriptor as one function: zero args read, one arg write
   * **[all](./src/#all)** - `Promise.all` via object destructuring
   * **[ascii](./src#ascii)** - basic string-to-buffer conversion without validation
   * **[async-accessor](./src#async-accessor)** - wrap a `{ get, set }` descriptor as one async function: zero args read, one arg write

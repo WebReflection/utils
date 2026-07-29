@@ -3,6 +3,7 @@
   "version": "0.3.32",
   "type": "module",
   "types": {
+    "./accessor": "./types/accessor.d.ts",
     "./all": "./types/all.d.ts",
     "./ascii": "./types/ascii.d.ts",
     "./async-accessor": "./types/async-accessor.d.ts",
@@ -45,6 +46,10 @@
     "./with-resolvers": "./types/with-resolvers.d.ts"
   },
   "exports": {
+    "./accessor": {
+      "types": "./types/accessor.d.ts",
+      "import": "./src/accessor.js"
+    },
     "./all": {
       "types": "./types/all.d.ts",
       "import": "./src/all.js"
@@ -211,6 +216,7 @@
     "./package.json": "./package.json"
   },
   "tests": [
+    "accessor",
     "all",
     "ascii",
     "async-accessor",
