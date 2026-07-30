@@ -31,6 +31,7 @@
     "./json-storage": "./types/json-storage.d.ts",
     "./map": "./types/map.d.ts",
     "./patch/dispose": "./types/patch/dispose.d.ts",
+    "./patch/set-union": "./types/patch/set-union.d.ts",
     "./plain-tag": "./types/plain-tag.d.ts",
     "./ref-id": "./types/ref-id.d.ts",
     "./ref-signals": "./types/ref-signals.d.ts",
@@ -161,6 +162,7 @@
       "import": "./src/patch/dispose.js"
     },
     "./patch/set-union": {
+      "types": "./types/patch/set-union.d.ts",
       "import": "./src/patch/set-union.js"
     },
     "./plain-tag": {
