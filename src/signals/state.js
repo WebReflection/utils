@@ -76,7 +76,7 @@ export const create = object => {
  * Useful when subscribing or unsubscribing to a single field through
  * `ref-signals` or `dom-signals`.
  *
- * @template {Record<string, unknown>} T
+ * @template {State} T
  * @param {T} state a state object from {@link create}
  * @param {keyof T & string} key a known property name
  * @returns {Signal<unknown> | Computed<unknown> | undefined}
@@ -92,7 +92,7 @@ export const raw = (state, key) => (
  * Assign `object` onto `state` inside a single {@link batch}, so dependents
  * run once after all listed keys are updated.
  *
- * @template {Record<string, unknown>} T
+ * @template {State} T
  * @param {T} state a state object from {@link create}
  * @param {Partial<T>} object a partial of known keys to write
  * @returns {T} the same `state` reference

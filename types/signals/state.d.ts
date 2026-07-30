@@ -27,19 +27,19 @@ export declare const create: <T extends Record<string, unknown>>(object: T) => T
  * Useful when subscribing or unsubscribing to a single field through
  * `ref-signals` or `dom-signals`.
  *
- * @template {Record<string, unknown>} T
+ * @template {State} T
  * @param {T} state a state object from {@link create}
  * @param {keyof T & string} key a known property name
  * @returns {Signal<unknown> | Computed<unknown> | undefined}
  */
-export declare const raw: <T extends Record<string, unknown>>(state: T, key: keyof T & string) => Signal<unknown> | Computed<unknown> | undefined;
+export declare const raw: <T extends State>(state: T, key: keyof T & string) => Signal<unknown> | Computed<unknown> | undefined;
 /**
  * Assign `object` onto `state` inside a single {@link batch}, so dependents
  * run once after all listed keys are updated.
  *
- * @template {Record<string, unknown>} T
+ * @template {State} T
  * @param {T} state a state object from {@link create}
  * @param {Partial<T>} object a partial of known keys to write
  * @returns {T} the same `state` reference
  */
-export declare const update: <T extends Record<string, unknown>>(state: T, object: Partial<T>) => T;
+export declare const update: <T extends State>(state: T, object: Partial<T>) => T;

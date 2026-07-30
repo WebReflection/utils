@@ -1,4 +1,4 @@
-import { Computed, Signal, signal, computed, create, update, raw } from '../src/state-signals.js';
+import { Computed, Signal, signal, computed, create, update, raw, subscribe, unsubscribe } from '../src/state-signals.js';
 
 // explicit signal
 const count = signal(0);
@@ -30,6 +30,12 @@ const assert = (actual, expected, message) => {
   }
 };
 
+let subscribed = 0;
+assert(typeof subscribe(state, 'count', function testCallback() {
+  subscribed++;
+  unsubscribe(state, 'count', testCallback);
+}), 'function');
+
 assert(state.whole, 'John is 0 years old');
 assert(raw(state, 'count') instanceof Signal, true);
 assert(raw(state, 'name') instanceof Signal, true);
@@ -45,3 +51,7 @@ assert(state.count, 1);
 assert(state.name, 'Jane');
 assert(state.whole, 'Jane is 1 years old');
 assert(state.comp, 'reactive 1');
+
+count.value++;
+
+assert(subscribed, 1);

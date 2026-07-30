@@ -38,7 +38,7 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[set](./src#set)** - native `Set` subclass with [Set `put`](#set-put-convention)
   * **[shared-array-buffer](./src#shared-array-buffer)** - simulate *SAB* when not available
   * **[signals](./src#signals)** - minimalistic signals with explicit (manual) dependency lists: `signal`, `computed`, `batch`, and `effect`
-  * **[state-signals](./src#state-signals)** - [signals](./src#signals) plus `create` / `update` / `raw` helpers that turn plain objects into reactive state
+  * **[state-signals](./src#state-signals)** - [signals](./src#signals) plus `create` / `update` / `raw` helpers that turn plain objects into reactive state, with `subscribe` / `unsubscribe` by property key
   * **[sticky](./src#sticky)** - keep useful values stable once per realm
   * **[weak](./src#weak)** - import both [weakmap](./src#weakmap) and [weakset](./src#weakset) together when both are needed
   * **[weakmap](./src#weakmap)** / `weak-map` - native `WeakMap` subclass with [Map `put`](#map-put-convention)

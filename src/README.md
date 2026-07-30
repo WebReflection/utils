@@ -555,8 +555,8 @@ bindings in sync with DOM attachment. Prefer this entry over importing
 follow node lifetime. For custom add/remove handling without signals, use
 [dom-observer](#dom-observer) directly. For arbitrary objects or symbols (no DOM
 lifecycle), use [ref-signals](#ref-signals). For object-shaped reactive state
-with property syntax, use [state-signals](#state-signals) (often with
-`raw(state, key)` to subscribe a single field). For environments without a
+with property syntax, use [state-signals](#state-signals) (its own
+`subscribe` / `unsubscribe` take a property key). For environments without a
 `document`, use [signals](#signals) or [ref-signals](#ref-signals) directly.
 
 
@@ -860,8 +860,8 @@ the callback from the signal. Prefer this entry over importing
 [signals](#signals) alone when subscriptions should die with an arbitrary
 object or symbol. For DOM nodes that should also pause and resume with
 attachment, use [dom-signals](#dom-signals) instead. For object-shaped reactive
-state with property syntax, use [state-signals](#state-signals) (often with
-`raw(state, key)` to subscribe a single field).
+state with property syntax, use [state-signals](#state-signals) (its own
+`subscribe` / `unsubscribe` take a property key).
 
 
 ## registry
@@ -1022,9 +1022,14 @@ read and write like ordinary properties while staying reactive, use
 ## state-signals
 
 Companion to [signals](#signals): the same minimal core, plus helpers that turn
-a plain object into reactive state. Each data property becomes a signal-backed
-accessor — reads return the current value, writes update the underlying signal —
-so call sites can use ordinary property syntax instead of `.value`.
+a plain object into reactive state, and explicit `subscribe` / `unsubscribe`
+helpers that bind a callback to a state key (like [dom-signals](#dom-signals)
+and [ref-signals](#ref-signals), but keyed by property name instead of a DOM
+node or WeakKey).
+
+Each data property becomes a signal-backed accessor — reads return the current
+value, writes update the underlying signal — so call sites can use ordinary
+property syntax instead of `.value`.
 
 ```js
 import {
@@ -1033,6 +1038,8 @@ import {
   create,
   update,
   raw,
+  subscribe,
+  unsubscribe,
   Signal,
   Computed,
 } from '@webreflection/utils/state-signals';
@@ -1052,9 +1059,15 @@ const state = create({
 state.whole; // 'John is 0'
 state.name;  // 'John'
 
+const sync = subscribe(state, 'count', () => {
+  // react to state.count changes
+});
+
 update(state, { count: 1, name: 'Jane' });
 state.whole; // 'Jane is 1'
 state.label; // 'n=1'
+
+unsubscribe(state, 'count', sync);
 
 raw(state, 'count') instanceof Signal;   // true
 raw(state, 'whole') instanceof Computed; // true
@@ -1072,8 +1085,12 @@ API surface beyond [signals](#signals):
   `batch`, so dependents run once after all listed keys are written
 - `raw(state, key)` — returns the underlying `Signal` or `Computed` for that
   key (touching the key first so lazy getter-only computeds initialize). Use
-  this when wiring a single field through [dom-signals](#dom-signals) or
-  [ref-signals](#ref-signals) subscribe/unsubscribe
+  this when you need the signal instance itself (for example wiring a field
+  through [dom-signals](#dom-signals) or [ref-signals](#ref-signals))
+- `subscribe(state, key, callback)` — registers `callback` on the underlying
+  signal for `key` (via `raw`) and returns that callback
+- `unsubscribe(state, key, callback)` — removes that callback from the
+  underlying signal for `key`; returns whether it was present
 
 Prefer this entry when object-shaped state and property syntax are a better fit
 than holding individual signal references. Nested `batch` still needs
