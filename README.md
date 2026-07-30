@@ -20,7 +20,8 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[dedent](./src#dedent)** - strip common leading indentation from the first non-empty line, as a template tag or on strings
   * **[devtools](./src#devtools)** - DevTools-style `$`, `$$`, and `$x` helpers for CSS and XPath queries
   * **[dom-content](./src#dom-content)** - parse HTML or SVG markup strings into a `DocumentFragment` via ready-made `html` and `svg` helpers
-  * **[dom-signals](./src#dom-signals)** - [signals](./src#signals) plus DOM subscribe/unsubscribe with MutationObserver lifecycle so detached nodes cannot leak listeners
+  * **[dom-observer](./src#dom-observer)** - shared document-wide `MutationObserver` (including shadow roots) with a subscriber set for add/remove tracking
+  * **[dom-signals](./src#dom-signals)** - [signals](./src#signals) plus DOM subscribe/unsubscribe via [dom-observer](./src#dom-observer) so detached nodes cannot leak listeners
   * **[empty](./src#empty)** - frozen shared empty references: array, object, or null-prototype object
   * **[global](./src#global)** - lazily trap `globalThis` so native constructors and prototypes cannot be polluted after first access
   * **[has-own](./src#has-own)** - quick polyfill for `Object.hasOwn()` on older browsers
@@ -37,6 +38,7 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[set](./src#set)** - native `Set` subclass with [Set `put`](#set-put-convention)
   * **[shared-array-buffer](./src#shared-array-buffer)** - simulate *SAB* when not available
   * **[signals](./src#signals)** - minimalistic signals with explicit (manual) dependency lists: `signal`, `computed`, `batch`, and `effect`
+  * **[state-signals](./src#state-signals)** - [signals](./src#signals) plus `create` / `update` / `raw` helpers that turn plain objects into reactive state
   * **[sticky](./src#sticky)** - keep useful values stable once per realm
   * **[weak](./src#weak)** - import both [weakmap](./src#weakmap) and [weakset](./src#weakset) together when both are needed
   * **[weakmap](./src#weakmap)** / `weak-map` - native `WeakMap` subclass with [Map `put`](#map-put-convention)

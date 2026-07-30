@@ -4,8 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script type="module">
-    import { Signal, Computed, signal, computed, batch, effect, dispose } from '../src/signals/index.js';
-    import { subscribe, unsubscribe } from '../src/signals/dom-subscriber.js';
+    import { Signal, Computed, signal, computed, batch, effect, dispose, subscribe, unsubscribe } from '../src/dom-signals.js';
 
     let { app } = globalThis;
     let text = signal('test');
@@ -19,12 +18,27 @@
       });
     }(globalThis));
 
-    document.body.appendChild(app);
+    document.body.prepend(app);
 
     globalThis.text = text;
     globalThis.num = num;
+    globalThis.comp = comp;
+    globalThis.subscribe = subscribe;
 
-    (globalThis.fr = new FinalizationRegistry(console.log)).register(app, 'gone');
+    globalThis.fr = new FinalizationRegistry(console.log);
+    fr.register(app, 'gone');
+
+    customElements.define('test-shadow', class extends HTMLElement {
+      constructor() {
+        super();
+        const shadow = this.attachShadow({ mode: 'closed' });
+        const div = shadow.appendChild(document.createElement('div'));
+        subscribe(div, comp, () => {
+          div.textContent = `Shadow: ${comp.value}`;
+        });
+        fr.register(div, 'gone shadow');
+      }
+    });
 
     setTimeout(batch, 5000, () => {
       text.value = 'test2';
@@ -34,5 +48,21 @@
 </head>
 <body>
   <div id="app"></div>
+  <test-shadow></test-shadow>
+  <other-shadow></other-shadow>
+  <script type="module">
+    customElements.define('other-shadow', class extends HTMLElement {
+      constructor() {
+        super();
+        const shadow = this.attachShadow({ mode: 'closed' });
+        const div = shadow.appendChild(document.createElement('div'));
+        subscribe(div, comp, () => {
+          div.textContent = `Other Shadow: ${comp.value}`;
+        });
+        fr.register(div, 'gone other shadow');
+        globalThis.otherShadow = this;
+      }
+    });
+  </script>
 </body>
 </html>

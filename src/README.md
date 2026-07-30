@@ -452,16 +452,54 @@ global `document`, so it is browser-oriented. For SSR, or when a specific
 argument.
 
 
+## dom-observer
+
+Shared browser helper that runs one document-wide `MutationObserver` and lets
+any number of subscribers react to added or removed nodes. Importing the module
+starts observing `document` with `{ childList: true, subtree: true }` and
+patches `Element.prototype.attachShadow` so every new shadow root is observed
+too.
+
+```js
+import { subscribers, shadows } from '@webreflection/utils/dom-observer';
+
+subscribers.add(mutations => {
+  for (const { addedNodes, removedNodes } of mutations) {
+    // react to tree changes, including inside shadow roots
+  }
+});
+
+// later
+const host = document.querySelector('my-element');
+const root = shadows.get(host); // ShadowRoot attached after this module loaded
+```
+
+Exports:
+
+- `subscribers` — a `Set` of `(mutations: MutationRecord[]) => void` callbacks.
+  Add your listener once; every mutation batch is forwarded to all subscribers
+- `shadows` — a `WeakMap` from host `Node` to the `ShadowRoot` created via the
+  patched `attachShadow`, including closed roots that are otherwise unreachable
+
+Use this when several features need the same add/remove notifications without
+each spinning up its own observer or `attachShadow` patch. Prefer importing it
+as early as possible so shadow roots attached before the patch are not missed.
+[dom-signals](#dom-signals) is built on top of this module.
+
+
 ## dom-signals
 
 Browser companion to [signals](#signals): the same minimal core, plus explicit
 `subscribe` / `unsubscribe` helpers that bind a callback to both a DOM node and
 a signal.
 
-Importing this module starts a document-wide `MutationObserver` (and patches
-`Element.prototype.attachShadow` so shadow roots are observed too). Associations
-are stored in a `WeakMap`, so a node that becomes unreachable can be garbage
-collected without leaving signal subscriptions behind.
+Built on [dom-observer](#dom-observer): importing this entry registers one
+subscriber on the shared observer (and therefore inherits its document-wide
+watch plus `attachShadow` patch). Associations are stored in a `WeakMap`, so a
+node that becomes unreachable can be garbage collected without leaving signal
+subscriptions behind. Subtree walks also follow shadow roots recorded in
+`shadows`, so nodes inside open or closed shadow DOM pause and resume with
+their host.
 
 ```js
 import {
@@ -501,7 +539,8 @@ unsubscribe(app, label, sync);
 and remembers the pair on `node`. `unsubscribe` removes that pair and deletes
 the callback from the signal.
 
-Lifecycle is automatic when nodes move in or out of the tree:
+Lifecycle is automatic when nodes move in or out of the tree (light DOM or
+shadow):
 
 - **disconnected** — the observer walks the removed subtree and `delete`s every
   associated callback from its signal, so detached UI stops reacting and does
@@ -513,9 +552,12 @@ Lifecycle is automatic when nodes move in or out of the tree:
 You still choose what to subscribe; the observer only keeps those explicit
 bindings in sync with DOM attachment. Prefer this entry over importing
 [signals](#signals) alone when the app runs in the browser and updates should
-follow node lifetime. For arbitrary objects or symbols (no DOM lifecycle), use
-[ref-signals](#ref-signals). For environments without a `document`, use
-[signals](#signals) or [ref-signals](#ref-signals) directly.
+follow node lifetime. For custom add/remove handling without signals, use
+[dom-observer](#dom-observer) directly. For arbitrary objects or symbols (no DOM
+lifecycle), use [ref-signals](#ref-signals). For object-shaped reactive state
+with property syntax, use [state-signals](#state-signals) (often with
+`raw(state, key)` to subscribe a single field). For environments without a
+`document`, use [signals](#signals) or [ref-signals](#ref-signals) directly.
 
 
 ## empty
@@ -817,7 +859,9 @@ and remembers the pair under `ref`. `unsubscribe` removes that pair and deletes
 the callback from the signal. Prefer this entry over importing
 [signals](#signals) alone when subscriptions should die with an arbitrary
 object or symbol. For DOM nodes that should also pause and resume with
-attachment, use [dom-signals](#dom-signals) instead.
+attachment, use [dom-signals](#dom-signals) instead. For object-shaped reactive
+state with property syntax, use [state-signals](#state-signals) (often with
+`raw(state, key)` to subscribe a single field).
 
 
 ## registry
@@ -962,13 +1006,79 @@ API surface:
 
 Nested `batch` calls rely on `Set.prototype.union`. Engines that do not ship it
 yet need a one-time import of `@webreflection/utils/patch/set-union` before
-using signals (or [dom-signals](#dom-signals) / [ref-signals](#ref-signals)).
+using signals (or [dom-signals](#dom-signals) / [ref-signals](#ref-signals) /
+[state-signals](#state-signals)).
 
 `Signal#add` / `Signal#delete` are available when a custom subscriber is needed.
 For DOM nodes that should react while attached and drop listeners when removed
-(or resume when reinserted), use [dom-signals](#dom-signals). For arbitrary
-objects or symbols whose subscriptions should end when the key is collected,
-use [ref-signals](#ref-signals).
+(or resume when reinserted), use [dom-signals](#dom-signals). For raw
+add/remove notifications without signal bindings, use [dom-observer](#dom-observer).
+For arbitrary objects or symbols whose subscriptions should end when the key is
+collected, use [ref-signals](#ref-signals). For plain objects whose fields should
+read and write like ordinary properties while staying reactive, use
+[state-signals](#state-signals).
+
+
+## state-signals
+
+Companion to [signals](#signals): the same minimal core, plus helpers that turn
+a plain object into reactive state. Each data property becomes a signal-backed
+accessor — reads return the current value, writes update the underlying signal —
+so call sites can use ordinary property syntax instead of `.value`.
+
+```js
+import {
+  signal,
+  computed,
+  create,
+  update,
+  raw,
+  Signal,
+  Computed,
+} from '@webreflection/utils/state-signals';
+
+const count = signal(0);
+const label = computed(() => `n=${count.value}`, [count]);
+
+const state = create({
+  count,
+  label,
+  name: 'John',
+  get whole() {
+    return `${this.name} is ${this.count}`;
+  },
+});
+
+state.whole; // 'John is 0'
+state.name;  // 'John'
+
+update(state, { count: 1, name: 'Jane' });
+state.whole; // 'Jane is 1'
+state.label; // 'n=1'
+
+raw(state, 'count') instanceof Signal;   // true
+raw(state, 'whole') instanceof Computed; // true
+```
+
+API surface beyond [signals](#signals):
+
+- `create(object)` — returns a state object with the same keys. Plain values
+  become new signals; existing `Signal` or `Computed` instances are reused
+  (`Computed` properties have no setter). Own getter-only accessors become lazy
+  `Computed` values that depend on every signal already present when first
+  read (typically all data properties). Accessors that define both `get` and
+  `set` are left unchanged
+- `update(state, partial)` — assigns the partial onto `state` inside one
+  `batch`, so dependents run once after all listed keys are written
+- `raw(state, key)` — returns the underlying `Signal` or `Computed` for that
+  key (touching the key first so lazy getter-only computeds initialize). Use
+  this when wiring a single field through [dom-signals](#dom-signals) or
+  [ref-signals](#ref-signals) subscribe/unsubscribe
+
+Prefer this entry when object-shaped state and property syntax are a better fit
+than holding individual signal references. Nested `batch` still needs
+`Set.prototype.union` (or `@webreflection/utils/patch/set-union`) as with
+[signals](#signals).
 
 
 ## sticky

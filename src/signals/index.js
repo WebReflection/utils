@@ -1,5 +1,6 @@
 // @ts-check
 
+import Set from '../set.js';
 import dispose from '../patch/dispose.js';
 
 /**

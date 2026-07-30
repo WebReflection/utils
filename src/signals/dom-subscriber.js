@@ -1,58 +1,53 @@
 // @ts-check
 
-import WeakMap from '../weakmap.js';
 import Map from '../map.js';
+import WeakMap from '../weakmap.js';
+import { subscribers, shadows } from '../dom-observer.js';
 
-import { array } from '../empty.js';
+import { array as _ } from '../empty.js';
 
 const tracked = new WeakMap;
 
 /**
  * @param {Node} node
+ * @returns {NodeList}
  */
-const track = node => {
-  for (const [fn, signal] of (tracked.get(node) ?? array)) {
-      signal.add(fn);
-      fn();
-  }
-  node.childNodes?.forEach(track);
-};
+const sub = node => (shadows.get(node) ?? /** @type {Element} */(node)).querySelectorAll?.('*') || _;
 
 /**
- * @param {Node} node
+ * @param {NodeList} nodes
+ * @param {Set<Node>} added
+ * @param {Set<Node>} removed
+ * @param {boolean} connected
  */
-const untrack = node => {
-  for (const [fn, signal] of (tracked.get(node) ?? array)) {
-    signal.delete(fn);
-  }
-  node.childNodes?.forEach(untrack);
-};
-
-const options = {
-  childList: true,
-  subtree: true,
-};
-
-const mo = new MutationObserver(
-  mutations => {
-    for (const { removedNodes, addedNodes } of mutations) {
-      removedNodes.forEach(untrack);
-      addedNodes.forEach(track);
+const loop = (nodes, added, removed, connected) => {
+  for (let i = 0, node, observed; i < nodes.length; i++) {
+    node = nodes[i];
+    if (connected) {
+      if (!added.has(node)) {
+        added.add(node);
+        removed.delete(node);
+        observed = tracked.get(node);
+        if (observed) for (const [f, s] of observed) s.put(f)();
+        loop(sub(node), added, removed, connected);
+      }
+    }
+    else if (!removed.has(node)) {
+      removed.add(node);
+      added.delete(node);
+      observed = tracked.get(node);
+      if (observed) for (const [f, s] of observed) s.delete(f);
+      loop(sub(node), added, removed, connected);
     }
   }
-);
+};
 
-mo.observe(document.documentElement, options);
-
-const method = 'attachShadow';
-const attachShadow = Element.prototype[method];
-Object.defineProperty(Element.prototype, method, {
-  value() {
-    // @ts-ignore apply forwards the original arguments list
-    const shadowRoot = attachShadow.apply(this, arguments);
-    mo.observe(shadowRoot, options);
-    return shadowRoot;
-  },
+subscribers.add(mutations => {
+  const added = new Set, removed = new Set;
+  for (const { addedNodes, removedNodes } of mutations) {
+    loop(removedNodes, added, removed, false);
+    loop(addedNodes, added, removed, true);
+  }
 });
 
 /**
@@ -65,10 +60,8 @@ const observe = node => (tracked.get(node) ?? tracked.put(node, new Map));
  * @param {import('./index.js').Signal<unknown>} signal
  * @param {import('./index.js').Subscriber} callback
  */
-export const subscribe = (node, signal, callback) => {
-  observe(node).put(callback, signal).add(callback);
-  return callback;
-};
+export const subscribe = (node, signal, callback) =>
+  observe(node).put(callback, signal).put(callback);
 
 /**
  * @param {Node} node

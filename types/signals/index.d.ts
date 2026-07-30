@@ -1,3 +1,4 @@
+import Set from '../set.js';
 import dispose from '../patch/dispose.js';
 export type Subscriber = () => void;
 export { dispose };

@@ -19,6 +19,7 @@
     "./dedent": "./types/dedent.d.ts",
     "./devtools": "./types/devtools.d.ts",
     "./dom-content": "./types/dom-content.d.ts",
+    "./dom-observer": "./types/dom-observer.d.ts",
     "./dom-signals": "./types/dom-signals.d.ts",
     "./empty": "./types/empty.d.ts",
     "./global": "./types/global.d.ts",
@@ -37,6 +38,7 @@
     "./set": "./types/set.d.ts",
     "./shared-array-buffer": "./types/shared-array-buffer.d.ts",
     "./signals": "./types/signals.d.ts",
+    "./state-signals": "./types/state-signals.d.ts",
     "./sticky": "./types/sticky.d.ts",
     "./weak": "./types/weak.d.ts",
     "./weak-map": "./types/weakmap.d.ts",
@@ -109,6 +111,10 @@
     "./dom-content": {
       "types": "./types/dom-content.d.ts",
       "import": "./src/dom-content.js"
+    },
+    "./dom-observer": {
+      "types": "./types/dom-observer.d.ts",
+      "import": "./src/dom-observer.js"
     },
     "./dom-signals": {
       "types": "./types/dom-signals.d.ts",
@@ -185,6 +191,10 @@
       "types": "./types/signals.d.ts",
       "import": "./src/signals.js"
     },
+    "./state-signals": {
+      "types": "./types/state-signals.d.ts",
+      "import": "./src/state-signals.js"
+    },
     "./sticky": {
       "types": "./types/sticky.d.ts",
       "import": "./src/sticky.js"
@@ -243,6 +253,7 @@
     "set",
     "shared-array-buffer",
     "signals",
+    "state-signals",
     "sticky",
     "weakmap",
     "weakset",
