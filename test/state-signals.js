@@ -1,4 +1,4 @@
-import { Computed, Signal, signal, computed, create, update, raw, subscribe, unsubscribe } from '../src/state-signals.js';
+import { Computed, Signal, signal, computed, create, dispose, update, raw, subscribe, unsubscribe } from '../src/state-signals.js';
 
 // explicit signal
 const count = signal(0);
@@ -55,3 +55,4 @@ assert(state.comp, 'reactive 1');
 count.value++;
 
 assert(subscribed, 1);
+state[dispose]();

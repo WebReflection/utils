@@ -1,11 +1,20 @@
 // @ts-check
 
 import { Signal, Computed, batch, computed, signal } from './index.js';
+import dispose from '../patch/dispose.js';
 
 const { assign, entries, values, getOwnPropertyDescriptors, defineProperties } = Object;
+
+/** @type {WeakMap<State, [Set<Signal<unknown>>, Record<string, Signal<unknown>>]>} */
 const subscriptions = new WeakMap;
 
-export class State {}
+export class State {
+  [dispose]() {
+    // @ts-ignore
+    const [created] = subscriptions.get(this);
+    for (const signal of created) signal[dispose]();
+  }
+}
 
 /**
  * Create a reactive state object with the same keys and value types as `object`.
@@ -27,16 +36,19 @@ export class State {}
 export const create = object => {
   /** @type {PropertyDescriptorMap} */
   const descriptors = {};
-  /** @type {Record<string, unknown>} */
+  /** @type {Record<string, Signal<unknown>>} */
   const signals = {};
+  /** @type {Set<Signal<unknown>>} */
+  const created = new Set;
   for (let [key, descriptor] of entries(getOwnPropertyDescriptors(object))) {
     if ('value' in descriptor) {
       let isSignal = descriptor.value instanceof Signal;
       let $ = isSignal ? descriptor.value : signal(descriptor.value);
       signals[key] = $;
+      if (!isSignal) created.add($);
       descriptors[key] = {
-        configurable: false,
-        enumerable: true,
+        configurable: descriptor.configurable,
+        enumerable: descriptor.enumerable,
         get: () => $.value,
         set: isSignal && $ instanceof Computed ?
           void 0 :
@@ -45,15 +57,15 @@ export const create = object => {
     }
     else {
       if (!descriptor.set) {
-        let get = descriptor.get, init = true;
+        let get = /** @type {function | Computed<unknown>} */ (descriptor.get), init = true;
         descriptor = {
           ...descriptor,
           get() {
             if (init) {
               init = false;
-              // @ts-ignore
-              get = computed(get.bind(this), [...values(signals)]);
+              get = computed(/** @type {() => unknown} */ (get).bind(this), [...values(signals)]);
               signals[key] = get;
+              created.add(get);
             }
             // @ts-ignore
             return get.value;
@@ -64,7 +76,7 @@ export const create = object => {
     }
   }
   const state = new State;
-  subscriptions.set(state, signals);
+  subscriptions.set(state, [created, signals]);
   return /** @type {T} */ (defineProperties(state, descriptors));
 };
 
@@ -85,7 +97,8 @@ export const raw = (state, key) => (
   // ensure lazy computed initialization
   state[key],
   // return the raw signal or computed
-  subscriptions.get(state)[key]
+  // @ts-ignore
+  subscriptions.get(state)[1][key]
 );
 
 /**

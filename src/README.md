@@ -1040,6 +1040,7 @@ import {
   raw,
   subscribe,
   unsubscribe,
+  dispose,
   Signal,
   Computed,
 } from '@webreflection/utils/state-signals';
@@ -1071,6 +1072,15 @@ unsubscribe(state, 'count', sync);
 
 raw(state, 'count') instanceof Signal;   // true
 raw(state, 'whole') instanceof Computed; // true
+
+// tear down signals create() allocated (not ones reused from the input)
+state[dispose]();
+
+// or, where Symbol.dispose is available, let `using` dispose at block end:
+// {
+//   using scoped = create({ name: 'temp' });
+//   scoped.name; // 'temp'
+// }
 ```
 
 API surface beyond [signals](#signals):
@@ -1091,6 +1101,11 @@ API surface beyond [signals](#signals):
   signal for `key` (via `raw`) and returns that callback
 - `unsubscribe(state, key, callback)` — removes that callback from the
   underlying signal for `key`; returns whether it was present
+- `dispose` — same re-export as [signals](#signals); call `state[dispose]()` to
+  dispose every signal or computed that `create` allocated for that state
+  (reused input `Signal` / `Computed` instances are left alone). Because the
+  method is keyed by `Symbol.dispose` when the engine provides it, a state can
+  also be disposed automatically via the ECMAScript `using` declaration
 
 Prefer this entry when object-shaped state and property syntax are a better fit
 than holding individual signal references. Nested `batch` still needs

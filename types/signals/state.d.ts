@@ -1,5 +1,7 @@
 import { Signal, Computed } from './index.js';
+import dispose from '../patch/dispose.js';
 export declare class State {
+    [dispose]: () => void;
 }
 /**
  * Create a reactive state object with the same keys and value types as `object`.
