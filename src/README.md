@@ -98,6 +98,9 @@ This preserves the shape and names of object-literal work, avoiding the
 positional array juggling required by `Promise.all`. For arrays, or for two or
 more arguments, it behaves like `Promise.all` and resolves to an array.
 
+To await a single promise, use `await` (or `Promise.resolve`) directly — **all**
+is for resolving many values at once, not a substitute for awaiting one promise.
+
 
 ## ascii
 
@@ -333,6 +336,32 @@ value should only be stored if missing. Use `put(key, value)` for the faster
 are acceptable.
 
 
+## caller-of
+
+Borrow any function or method so the caller passes `this` explicitly as the
+first argument. It is a one-liner over `Function.prototype.call.bind`:
+
+```js
+import callerOf from '@webreflection/utils/caller-of';
+
+const hasOwn = callerOf(Object.prototype.hasOwnProperty);
+hasOwn({ a: 1 }, 'a'); // true
+
+const toString = callerOf(Object.prototype.toString);
+toString([]); // '[object Array]'
+```
+
+Unlike [bound](#bound), which binds methods to a fixed host object, **caller-of**
+keeps `this` free: each call supplies a different `thisArg`. That is useful for
+safe borrowed natives (`hasOwnProperty`, `toString`, …) without touching the
+target’s prototype chain, and without allocating a new bound function per host.
+
+```js
+// equivalent
+const hasOwn = Function.prototype.call.bind(Object.prototype.hasOwnProperty);
+```
+
+
 ## content
 
 A tiny factory builder for turning markup strings into `DocumentFragment`
@@ -455,10 +484,15 @@ argument.
 ## dom-observer
 
 Shared browser helper that runs one document-wide `MutationObserver` and lets
-any number of subscribers react to added or removed nodes. Importing the module
-starts observing `document` with `{ childList: true, subtree: true }` and
-patches `Element.prototype.attachShadow` so every new shadow root is observed
-too.
+any number of subscribers react to added or removed nodes. The first import in
+the realm (via [sticky](#sticky)) starts observing `document` with
+`{ childList: true, subtree: true }` and patches `Element.prototype.attachShadow`
+so every new shadow root is observed too. Later copies of the module — for
+example after re-bundling — reuse the same `subscribers` and `shadows` and skip
+setup, so there is only one observer and one `attachShadow` patch per realm.
+
+Requires a DOM (`document`, `MutationObserver`, `Element`). In Node, provide one
+(e.g. linkedom) or do not import this entry.
 
 ```js
 import { subscribers, shadows } from '@webreflection/utils/dom-observer';
@@ -483,8 +517,8 @@ Exports:
 
 Use this when several features need the same add/remove notifications without
 each spinning up its own observer or `attachShadow` patch. Prefer importing it
-as early as possible so shadow roots attached before the patch are not missed.
-[dom-signals](#dom-signals) is built on top of this module.
+as early as possible so shadow roots attached before the first sticky install are
+not missed. [dom-signals](#dom-signals) is built on top of this module.
 
 
 ## dom-signals
@@ -494,12 +528,12 @@ Browser companion to [signals](#signals): the same minimal core, plus explicit
 a signal.
 
 Built on [dom-observer](#dom-observer): importing this entry registers one
-subscriber on the shared observer (and therefore inherits its document-wide
-watch plus `attachShadow` patch). Associations are stored in a `WeakMap`, so a
-node that becomes unreachable can be garbage collected without leaving signal
-subscriptions behind. Subtree walks also follow shadow roots recorded in
-`shadows`, so nodes inside open or closed shadow DOM pause and resume with
-their host.
+subscriber on the shared observer (and therefore inherits its sticky
+once-per-realm document-wide watch plus `attachShadow` patch). Associations are
+stored in a `WeakMap`, so a node that becomes unreachable can be garbage
+collected without leaving signal subscriptions behind. Subtree walks also follow
+shadow roots recorded in `shadows`, so nodes inside open or closed shadow DOM
+pause and resume with their host.
 
 ```js
 import {
@@ -760,6 +794,11 @@ Use `getOrInsert(key, value)` to create a value only when the key is absent, or
 `getOrInsertComputed(key, callback)` when the initial value should be computed
 from the key. A second constructor argument can replace the native *JSON* API as
 long as it provides compatible `parse(source)` and `stringify(value)` methods.
+
+Store JSON-serializable values that `stringify` turns into a string. `null` is
+fine (`JSON.stringify(null)` is `"null"`). If `stringify` returns `null` or
+`undefined` (as default *JSON* does for `undefined`), `set` / `put` remove the
+key instead of writing — so a later `get` is `undefined` and `has` is `false`.
 
 
 ## map

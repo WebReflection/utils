@@ -1,13 +1,11 @@
 /**
- * This helper provides a unique observer for the whole DOM,
- * including all shadow roots. This should be used to register
- * multiple subscribers that would like to track added or removed nodes
- * within shadow roots or the main document.
+ * Unique document-wide MutationObserver (including shadow roots) for multiple
+ * subscribers tracking added or removed nodes. Setup runs once per realm via
+ * sticky; later module copies reuse the same `subscribers` and `shadows`.
+ * Requires a DOM (`document`, `MutationObserver`, `Element`).
  */
 import WeakMap from './weakmap.js';
 export type Subscriber = (mutations: MutationRecord[]) => void;
 /** @typedef {(mutations: MutationRecord[]) => void} Subscriber */
-/** @type {WeakMap<Node, ShadowRoot>} */
-export declare const shadows: WeakMap<Node, ShadowRoot>;
-/** @type {Set<Subscriber>} */
-export declare const subscribers: Set<Subscriber>;
+declare const shadows: WeakMap<Node, ShadowRoot>, subscribers: Set<Subscriber>;
+export { shadows, subscribers };

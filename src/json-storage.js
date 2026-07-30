@@ -147,6 +147,7 @@ export default class JSONStorage {
   set(key, value) {
     const str = this.#stringify(value);
     if (str != null) this.#storage.setItem(key, str);
+    else this.#storage.removeItem(key);
     return this;
   }
 

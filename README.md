@@ -16,11 +16,12 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[bound-key](./src#bound-key)** - cache bound functions per context key, for DOM and other reuse
   * **[bound](./src#bound)** - retrieve one-off bound methods
   * **[cache](./src#cache)** - temporal `Map` for same-tick or short-lived memoization; supports [Map `put`](#map-put-convention) and `getOrInsert` helpers
+  * **[caller-of](./src#caller-of)** - borrow a method as `(thisArg, ...args) => result` via `fn.call.bind(fn)`
   * **[content](./src#content)** - build factories that parse markup strings into `DocumentFragment` instances within a chosen element context
   * **[dedent](./src#dedent)** - strip common leading indentation from the first non-empty line, as a template tag or on strings
   * **[devtools](./src#devtools)** - DevTools-style `$`, `$$`, and `$x` helpers for CSS and XPath queries
   * **[dom-content](./src#dom-content)** - parse HTML or SVG markup strings into a `DocumentFragment` via ready-made `html` and `svg` helpers
-  * **[dom-observer](./src#dom-observer)** - shared document-wide `MutationObserver` (including shadow roots) with a subscriber set for add/remove tracking
+  * **[dom-observer](./src#dom-observer)** - shared document-wide `MutationObserver` (including shadow roots) with a subscriber set for add/remove tracking; sticky once per realm
   * **[dom-signals](./src#dom-signals)** - [signals](./src#signals) plus DOM subscribe/unsubscribe via [dom-observer](./src#dom-observer) so detached nodes cannot leak listeners
   * **[empty](./src#empty)** - frozen shared empty references: array, object, or null-prototype object
   * **[global](./src#global)** - lazily trap `globalThis` so native constructors and prototypes cannot be polluted after first access

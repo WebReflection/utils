@@ -61,6 +61,12 @@ function test(type) {
   console.assert([...storage.keys()].join(',') === 'foo', '[...storage.keys()].join(",") === "foo"');
   console.assert([...storage.values()].join(',') === 'baz', '[...storage.values()].join(",") === "baz"');
   console.assert(storage.put('foo', 'bar') === 'bar', 'storage.put("foo", "bar") === "bar"');
+  console.assert(storage.set('nil', null) === storage, 'storage.set("nil", null) === storage');
+  console.assert(storage.has('nil') && storage.get('nil') === null, 'null roundtrips');
+  storage.set('foo', void 0);
+  console.assert(!storage.has('foo') && storage.get('foo') === void 0, 'set(undefined) removes the key');
+  console.assert(storage.put('nil', void 0) === void 0, 'storage.put("nil", void 0) === void 0');
+  console.assert(!storage.has('nil'), 'put(undefined) removes the key');
   storage.clear();
   console.assert([...storage].length === 0, '[...storage].length === 0');
 
