@@ -953,8 +953,15 @@ dependency tracking: every `computed` and `effect` takes the list of signals it
 depends on. That keeps the runtime small and the dataflow obvious at the call
 site.
 
+By default, writing a signal value notifies subscribers only when the new value
+is not `Object.is`-equal to the previous one. Same-value writes are no-ops, so
+dependents (including `computed` and `effect`) do not re-run. Pass `eager` as
+`true` (`new Signal(value, true)`) when every write should notify instead —
+useful for instrumentation, or whenever identity equality is the wrong gate.
+
 ```js
 import {
+  Signal,
   signal,
   computed,
   batch,
@@ -971,6 +978,8 @@ c.value; // 3
 a.value = 3;
 c.value; // 5
 
+a.value = 3; // Object.is-equal — no notify, c does not recompute
+
 batch(() => {
   a.value = 4;
   batch(() => {
@@ -979,12 +988,17 @@ batch(() => {
 });
 c.value; // 9 — recomputed once after the outer batch
 
+// escape hatch: eager — notify on every write, even when unchanged
+const ticks = new Signal(0, true);
+ticks.value = 0; // still notifies
+
 const stop = effect(() => {
-  console.log(c.value);
+  const id = setInterval(() => console.log(c.value), 1000);
+  return () => clearInterval(id); // runs before the next effect, and on stop()
 }, [c]);
 
-a.value = 5; // effect runs again
-stop();      // unsubscribe and run optional cleanup
+a.value = 5; // previous interval cleared, effect runs again
+stop();      // unsubscribe and run the last cleanup
 c[dispose]();
 a[dispose]();
 b[dispose]();
@@ -993,13 +1007,19 @@ b[dispose]();
 API surface:
 
 - `signal(value)` / `Signal` — readable and writable `.value`; subscribers run
-  on each set (or once after an outer `batch`)
+  when the new value is not `Object.is`-equal to the previous one (or once after
+  an outer `batch`). The `signal(value)` helper uses equality gating;
+  `new Signal(value, true)` sets `eager` so every write notifies instead
 - `computed(fn, signals)` / `Computed` — readonly `.value`, recomputed when any
-  listed signal notifies; the dependency list is mandatory
+  listed signal notifies; the dependency list is mandatory. A same-value write
+  on a source does not recompute. When a source *does* notify, dependents of the
+  computed still run even if `fn`'s result is unchanged — `Computed` is
+  constructed with `eager` because its parent signal stores a stable recompute
+  callback reference
 - `batch(fn)` — coalesces nested updates so dependent work runs once afterward
 - `effect(fn, signals)` — runs `fn` immediately and again when any listed signal
-  notifies; `fn` may return a cleanup; the returned function unsubscribes and
-  runs that cleanup
+  notifies; `fn` may return a cleanup, which runs before the next `fn` and again
+  when the returned dispose function unsubscribes
 - `dispose` — re-exported from `@webreflection/utils/patch/dispose`; call
   `ref[dispose]()` to clear subscribers (`Signal`) or detach from sources
   (`Computed`)
@@ -1085,12 +1105,14 @@ state[dispose]();
 
 API surface beyond [signals](#signals):
 
-- `create(object)` — returns a state object with the same keys. Plain values
-  become new signals; existing `Signal` or `Computed` instances are reused
-  (`Computed` properties have no setter). Own getter-only accessors become lazy
-  `Computed` values that depend on every signal already present when first
-  read (typically all data properties). Accessors that define both `get` and
-  `set` are left unchanged
+- `create(object)` — returns a `State` with the same keys (`Created<T>` in
+  TypeScript). Plain values become new signals; existing `Signal` or `Computed`
+  instances are reused (`Computed` properties have no setter). TS unwraps
+  those fields to their `.value` types, and the result is a `State` so `raw` /
+  `update` / `subscribe` / `dispose` accept it without casts. Own getter-only
+  accessors become lazy `Computed` values that depend on every signal already
+  present when first read (typically all data properties). Accessors that
+  define both `get` and `set` are left unchanged
 - `update(state, partial)` — assigns the partial onto `state` inside one
   `batch`, so dependents run once after all listed keys are written
 - `raw(state, key)` — returns the underlying `Signal` or `Computed` for that

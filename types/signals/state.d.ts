@@ -3,6 +3,16 @@ import dispose from '../patch/dispose.js';
 export declare class State {
     [dispose]: () => void;
 }
+export type Created<T extends Record<string, unknown>> = State & {
+    [K in keyof T]: T[K] extends Signal<infer V> ? V : T[K];
+};
+/**
+ * Result of {@link create}: a {@link State} plus the input's own keys, with any
+ * {@link Signal} / {@link Computed} values unwrapped to their `.value` type.
+ *
+ * @template {Record<string, unknown>} T
+ * @typedef {State & { [K in keyof T]: T[K] extends Signal<infer V> ? V : T[K] }} Created
+ */
 /**
  * Create a reactive state object with the same keys and value types as `object`.
  * Each data property is backed by a signal: reads return the current value,
@@ -18,9 +28,9 @@ export declare class State {
  *
  * @template {Record<string, unknown>} T
  * @param {T} object initial values; each own enumerable key becomes a property
- * @returns {T} a state object with the same shape as `object`
+ * @returns {Created<T>} a state object with the same shape as `object`
  */
-export declare const create: <T extends Record<string, unknown>>(object: T) => T;
+export declare const create: <T extends Record<string, unknown>>(object: T) => Created<T>;
 /**
  * Return the raw {@link Signal} or {@link Computed} for a key on a state object
  * from {@link create}. Touching the key first ensures lazy getter-only

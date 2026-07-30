@@ -3,6 +3,8 @@
 import Set from '../set.js';
 import dispose from '../patch/dispose.js';
 
+const { is } = Object;
+
 /**
  * @typedef {() => void} Subscriber
  */
@@ -37,16 +39,21 @@ export { dispose };
  * @extends {Set<Subscriber>}
  */
 export class Signal extends Set {
+  /** @type {boolean} */
+  #eager;
+
   /** @type {T} */
-  // @ts-ignore assigned via super().#value in the constructor
   #value;
 
   /**
    * @param {T} value
+   * @param {boolean} [eager=false] when `true`, every write notifies; otherwise
+   * skips notify when `Object.is` says the value did not change
    */
-  constructor(value) {
-    // @ts-ignore
-    super().#value = value;
+  constructor(value, eager = false) {
+    super();
+    this.#eager = eager;
+    this.#value = value;
   }
 
   /** @type {T} */
@@ -58,10 +65,12 @@ export class Signal extends Set {
    * @param {T} value
    */
   set value(value) {
-    this.#value = value;
-    if (batching === null) this.forEach(invoke);
-    // @ts-ignore
-    else batching = batching.union(this);
+    if (this.#eager || !is(this.#value, value)) {
+      this.#value = value;
+      if (batching === null) this.forEach(invoke);
+      // @ts-ignore
+      else batching = batching.union(this);
+    }
   }
 
   [dispose]() {
@@ -94,7 +103,7 @@ export class Computed extends Signal {
       // triggers listeners via Signal accessor
       super.value = callback;
     };
-    super(callback);
+    super(callback, true);
     this.#signals = signals;
     loop(signals, 'add', callback);
     callback();
@@ -129,15 +138,20 @@ export const batch = callback => {
 };
 
 /**
- * @param {() => void | (() => void)} callback effect callback; returns a cleanup
+ * @param {() => (function | undefined)} callback effect callback; returns a cleanup
  * @param {Signal<unknown>[]} signals signals to track
  * @returns {() => void} dispose function that unsubscribes and runs cleanup
  */
 export const effect = (callback, signals) => {
-  loop(signals, 'add', callback);
-  const cleanup = callback();
+  /** @type {function | undefined} */
+  let cleanup, wrap = () => {
+    cleanup?.();
+    cleanup = callback();
+  };
+  loop(signals, 'add', wrap);
+  wrap();
   return () => {
-    loop(signals, 'delete', callback);
+    loop(signals, 'delete', wrap);
     cleanup?.();
   };
 };
@@ -145,7 +159,8 @@ export const effect = (callback, signals) => {
 /**
  * @template T
  * @param {T} value
- * @returns {Signal<T>}
+ * @returns {Signal<T>} a signal that notifies only when the value changes
+ * per `Object.is` (see `new Signal(value, true)` / `eager` to notify on every write)
  */
 export const signal = value => new Signal(value);
 

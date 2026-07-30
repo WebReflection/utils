@@ -5,7 +5,7 @@ import { raw } from './state.js';
  * @param {T} state
  * @param {keyof T & string} key a known property name
  * @param {import('./index.js').Subscriber} callback
- * @returns
+ * @returns {import('./index.js').Subscriber | undefined}
  */
 export const subscribe = (state, key, callback) => raw(state, key)?.put(callback);
 

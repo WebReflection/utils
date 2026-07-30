@@ -37,7 +37,7 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[registry](./src#registry)** - validated `Map` with duplicate-key protection by default; inherits [Map `put`](#map-put-convention)
   * **[set](./src#set)** - native `Set` subclass with [Set `put`](#set-put-convention)
   * **[shared-array-buffer](./src#shared-array-buffer)** - simulate *SAB* when not available
-  * **[signals](./src#signals)** - minimalistic signals with explicit (manual) dependency lists: `signal`, `computed`, `batch`, and `effect`
+  * **[signals](./src#signals)** - minimalistic signals with explicit dependency lists; `Object.is` skips same-value writes (`new Signal(v, true)` / `eager` to notify every write): `signal`, `computed`, `batch`, and `effect`
   * **[state-signals](./src#state-signals)** - [signals](./src#signals) plus `create` / `update` / `raw` helpers that turn plain objects into reactive state, with `subscribe` / `unsubscribe` by property key and `dispose` (also via `using`)
   * **[sticky](./src#sticky)** - keep useful values stable once per realm
   * **[weak](./src#weak)** - import both [weakmap](./src#weakmap) and [weakset](./src#weakset) together when both are needed

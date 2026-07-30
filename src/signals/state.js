@@ -17,6 +17,14 @@ export class State {
 }
 
 /**
+ * Result of {@link create}: a {@link State} plus the input's own keys, with any
+ * {@link Signal} / {@link Computed} values unwrapped to their `.value` type.
+ *
+ * @template {Record<string, unknown>} T
+ * @typedef {State & { [K in keyof T]: T[K] extends Signal<infer V> ? V : T[K] }} Created
+ */
+
+/**
  * Create a reactive state object with the same keys and value types as `object`.
  * Each data property is backed by a signal: reads return the current value,
  * writes update that signal.
@@ -31,7 +39,7 @@ export class State {
  *
  * @template {Record<string, unknown>} T
  * @param {T} object initial values; each own enumerable key becomes a property
- * @returns {T} a state object with the same shape as `object`
+ * @returns {Created<T>} a state object with the same shape as `object`
  */
 export const create = object => {
   /** @type {PropertyDescriptorMap} */
@@ -77,7 +85,7 @@ export const create = object => {
   }
   const state = new State;
   subscriptions.set(state, [created, signals]);
-  return /** @type {T} */ (defineProperties(state, descriptors));
+  return /** @type {Created<T>} */ (defineProperties(state, descriptors));
 };
 
 /**

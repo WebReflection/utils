@@ -11,8 +11,10 @@ export declare class Signal<T> extends Set<Subscriber> {
     [dispose]: () => void;
     /**
      * @param {T} value
+     * @param {boolean} [eager=false] when `true`, every write notifies; otherwise
+     * skips notify when `Object.is` says the value did not change
      */
-    constructor(value: T);
+    constructor(value: T, eager?: boolean);
     /** @type {T} */
     get value(): T;
     /**
@@ -42,15 +44,16 @@ export declare class Computed<T> extends Signal<any> {
  */
 export declare const batch: (callback: () => void) => void;
 /**
- * @param {() => void | (() => void)} callback effect callback; returns a cleanup
+ * @param {() => (function | undefined)} callback effect callback; returns a cleanup
  * @param {Signal<unknown>[]} signals signals to track
  * @returns {() => void} dispose function that unsubscribes and runs cleanup
  */
-export declare const effect: (callback: () => void | (() => void), signals: Signal<unknown>[]) => () => void;
+export declare const effect: (callback: () => (Function | undefined), signals: Signal<unknown>[]) => () => void;
 /**
  * @template T
  * @param {T} value
- * @returns {Signal<T>}
+ * @returns {Signal<T>} a signal that notifies only when the value changes
+ * per `Object.is` (see `new Signal(value, true)` / `eager` to notify on every write)
  */
 export declare const signal: <T>(value: T) => Signal<T>;
 /**
