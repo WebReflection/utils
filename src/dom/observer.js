@@ -7,13 +7,14 @@
  * Requires a DOM (`document`, `MutationObserver`, `Element`).
  */
 
-import WeakMap from './weakmap.js';
-import sticky from './sticky.js';
+import WeakMap from '../weak/map.js';
+import sticky from '../sticky.js';
+import named from '../prefixed.js';
 
 /** @typedef {(mutations: MutationRecord[]) => void} Subscriber */
 
 const [{ shadows, subscribers }, known] = sticky(
-  '@webreflection/utils/dom-observer',
+  named('dom/observer'),
   {
     /** @type {WeakMap<Node, ShadowRoot>} */
     shadows: new WeakMap,

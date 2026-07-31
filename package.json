@@ -4,6 +4,7 @@
   "type": "module",
   "types": {
     "./accessor": "./types/accessor.d.ts",
+    "./accessor/async": "./types/async-accessor.d.ts",
     "./all": "./types/all.d.ts",
     "./ascii": "./types/ascii.d.ts",
     "./async-accessor": "./types/async-accessor.d.ts",
@@ -18,23 +19,25 @@
     "./content": "./types/content.d.ts",
     "./dedent": "./types/dedent.d.ts",
     "./devtools": "./types/devtools.d.ts",
-    "./dom-content": "./types/dom-content.d.ts",
-    "./dom-observer": "./types/dom-observer.d.ts",
-    "./dom-signals": "./types/dom-signals.d.ts",
+    "./dom-content": "./types/dom/content.d.ts",
+    "./dom-observer": "./types/dom/observer.d.ts",
+    "./dom-signals": "./types/dom/signals.d.ts",
     "./empty": "./types/empty.d.ts",
     "./global": "./types/global.d.ts",
     "./has-own": "./types/has-own.d.ts",
     "./id": "./types/id.d.ts",
     "./instance-of": "./types/instance-of.d.ts",
     "./iterable": "./types/iterable.d.ts",
-    "./json-callback": "./types/json-callback.d.ts",
-    "./json-storage": "./types/json-storage.d.ts",
+    "./json/callback": "./types/json/callback.d.ts",
+    "./json/storage": "./types/json/storage.d.ts",
+    "./json-callback": "./types/json/callback.d.ts",
+    "./json-storage": "./types/json/storage.d.ts",
     "./map": "./types/map.d.ts",
     "./patch/dispose": "./types/patch/dispose.d.ts",
     "./patch/set-union": "./types/patch/set-union.d.ts",
     "./plain-tag": "./types/plain-tag.d.ts",
-    "./ref-id": "./types/ref-id.d.ts",
-    "./ref-signals": "./types/ref-signals.d.ts",
+    "./ref-id": "./types/ref/id.d.ts",
+    "./ref-signals": "./types/ref/signals.d.ts",
     "./registry": "./types/registry.d.ts",
     "./set": "./types/set.d.ts",
     "./shared-array-buffer": "./types/shared-array-buffer.d.ts",
@@ -42,16 +45,20 @@
     "./state-signals": "./types/state-signals.d.ts",
     "./sticky": "./types/sticky.d.ts",
     "./weak": "./types/weak.d.ts",
-    "./weak-map": "./types/weakmap.d.ts",
-    "./weak-set": "./types/weakset.d.ts",
-    "./weakmap": "./types/weakmap.d.ts",
-    "./weakset": "./types/weakset.d.ts",
+    "./weak-map": "./types/weak/map.d.ts",
+    "./weak-set": "./types/weak/set.d.ts",
+    "./weakmap": "./types/weak/map.d.ts",
+    "./weakset": "./types/weak/set.d.ts",
     "./with-resolvers": "./types/with-resolvers.d.ts"
   },
   "exports": {
     "./accessor": {
       "types": "./types/accessor.d.ts",
       "import": "./src/accessor.js"
+    },
+    "./accessor/async": {
+      "types": "./types/async-accessor.d.ts",
+      "import": "./src/async-accessor.js"
     },
     "./all": {
       "types": "./types/all.d.ts",
@@ -89,6 +96,14 @@
       "types": "./types/bound.d.ts",
       "import": "./src/bound.js"
     },
+    "./bound/once": {
+      "types": "./types/bound-once.d.ts",
+      "import": "./src/bound-once.js"
+    },
+    "./bound/key": {
+      "types": "./types/bound-key.d.ts",
+      "import": "./src/bound-key.js"
+    },
     "./cache": {
       "types": "./types/cache.d.ts",
       "import": "./src/cache.js"
@@ -109,17 +124,29 @@
       "types": "./types/devtools.d.ts",
       "import": "./src/devtools.js"
     },
+    "./dom/content": {
+      "types": "./types/dom/content.d.ts",
+      "import": "./src/dom/content.js"
+    },
+    "./dom/observer": {
+      "types": "./types/dom/observer.d.ts",
+      "import": "./src/dom/observer.js"
+    },
+    "./dom/signals": {
+      "types": "./types/dom/signals.d.ts",
+      "import": "./src/dom/signals.js"
+    },
     "./dom-content": {
-      "types": "./types/dom-content.d.ts",
-      "import": "./src/dom-content.js"
+      "types": "./types/dom/content.d.ts",
+      "import": "./src/dom/content.js"
     },
     "./dom-observer": {
-      "types": "./types/dom-observer.d.ts",
-      "import": "./src/dom-observer.js"
+      "types": "./types/dom/observer.d.ts",
+      "import": "./src/dom/observer.js"
     },
     "./dom-signals": {
-      "types": "./types/dom-signals.d.ts",
-      "import": "./src/dom-signals.js"
+      "types": "./types/dom/signals.d.ts",
+      "import": "./src/dom/signals.js"
     },
     "./empty": {
       "types": "./types/empty.d.ts",
@@ -145,13 +172,25 @@
       "types": "./types/iterable.d.ts",
       "import": "./src/iterable.js"
     },
+    "./json": {
+      "types": "./types/json.d.ts",
+      "import": "./src/json.js"
+    },
+    "./json/callback": {
+      "types": "./types/json/callback.d.ts",
+      "import": "./src/json/callback.js"
+    },
+    "./json/storage": {
+      "types": "./types/json/storage.d.ts",
+      "import": "./src/json/storage.js"
+    },
     "./json-callback": {
-      "types": "./types/json-callback.d.ts",
-      "import": "./src/json-callback.js"
+      "types": "./types/json/callback.d.ts",
+      "import": "./src/json/callback.js"
     },
     "./json-storage": {
-      "types": "./types/json-storage.d.ts",
-      "import": "./src/json-storage.js"
+      "types": "./types/json/storage.d.ts",
+      "import": "./src/json/storage.js"
     },
     "./map": {
       "types": "./types/map.d.ts",
@@ -169,13 +208,25 @@
       "types": "./types/plain-tag.d.ts",
       "import": "./src/plain-tag.js"
     },
+    "./ref": {
+      "types": "./types/ref.d.ts",
+      "import": "./src/ref.js"
+    },
+    "./ref/id": {
+      "types": "./types/ref/id.d.ts",
+      "import": "./src/ref/id.js"
+    },
+    "./ref/signals": {
+      "types": "./types/ref/signals.d.ts",
+      "import": "./src/ref/signals.js"
+    },
     "./ref-id": {
-      "types": "./types/ref-id.d.ts",
-      "import": "./src/ref-id.js"
+      "types": "./types/ref/id.d.ts",
+      "import": "./src/ref/id.js"
     },
     "./ref-signals": {
-      "types": "./types/ref-signals.d.ts",
-      "import": "./src/ref-signals.js"
+      "types": "./types/ref/signals.d.ts",
+      "import": "./src/ref/signals.js"
     },
     "./registry": {
       "types": "./types/registry.d.ts",
@@ -193,6 +244,18 @@
       "types": "./types/signals.d.ts",
       "import": "./src/signals.js"
     },
+    "./signals/state": {
+      "types": "./types/state-signals.d.ts",
+      "import": "./src/state-signals.js"
+    },
+    "./signals/ref": {
+      "types": "./types/ref/signals.d.ts",
+      "import": "./src/ref/signals.js"
+    },
+    "./signals/dom": {
+      "types": "./types/dom/signals.d.ts",
+      "import": "./src/dom/signals.js"
+    },
     "./state-signals": {
       "types": "./types/state-signals.d.ts",
       "import": "./src/state-signals.js"
@@ -205,21 +268,29 @@
       "types": "./types/weak.d.ts",
       "import": "./src/weak.js"
     },
+    "./weak/map": {
+      "types": "./types/weak/map.d.ts",
+      "import": "./src/weak/map.js"
+    },
+    "./weak/set": {
+      "types": "./types/weak/set.d.ts",
+      "import": "./src/weak/set.js"
+    },
     "./weak-map": {
-      "types": "./types/weakmap.d.ts",
-      "import": "./src/weakmap.js"
+      "types": "./types/weak/map.d.ts",
+      "import": "./src/weak/map.js"
     },
     "./weak-set": {
-      "types": "./types/weakset.d.ts",
-      "import": "./src/weakset.js"
+      "types": "./types/weak/set.d.ts",
+      "import": "./src/weak/set.js"
     },
     "./weakmap": {
-      "types": "./types/weakmap.d.ts",
-      "import": "./src/weakmap.js"
+      "types": "./types/weak/map.d.ts",
+      "import": "./src/weak/map.js"
     },
     "./weakset": {
-      "types": "./types/weakset.d.ts",
-      "import": "./src/weakset.js"
+      "types": "./types/weak/set.d.ts",
+      "import": "./src/weak/set.js"
     },
     "./with-resolvers": {
       "types": "./types/with-resolvers.d.ts",

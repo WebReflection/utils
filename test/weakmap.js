@@ -1,4 +1,4 @@
-import WeakMap from '../src/weakmap.js';
+import WeakMap from '../src/weak/map.js';
 
 const map = new WeakMap();
 

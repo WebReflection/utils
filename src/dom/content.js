@@ -1,7 +1,7 @@
 // @ts-check
 /// <reference lib="dom" />
 
-import content from './content.js';
+import content from '../content.js';
 
 const fragments = content(
   {

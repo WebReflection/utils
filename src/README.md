@@ -15,11 +15,11 @@ one argument to write.
 The descriptor may be any object or class instance that defines or inherits
 both methods. Extra properties are allowed. `get` takes no parameters and
 returns a value. `set` takes exactly one value and may return void. The
-returned accessor is synchronous: `ref()` returns `T`, `ref(value)` returns
-`undefined`.
+returned accessor is synchronous: both `ref()` and `ref(value)` return `T`.
 
-This mirrors `ref.value` for reads; writes are `ref(value)` since assignment
-syntax cannot be expressed via property descriptors alone.
+This mirrors `(value = x)` where assignment yields the assigned value. Writes
+are `ref(value)` since assignment syntax cannot be expressed via property
+descriptors alone.
 
 `get` and `set` are invoked with a `this` context. When the accessor is called
 standalone (`ref()`), that context is the descriptor object passed to
@@ -43,7 +43,7 @@ const value = accessor({
 });
 
 value();      // 42
-value(43);    // undefined
+value(43);    // 43
 value();      // 43
 ```
 
@@ -65,7 +65,7 @@ const object = Object.defineProperty({ _: 42 }, 'value', {
 });
 
 object.value();      // 42
-object.value(43);    // undefined
+object.value(43);    // 43
 object.value();      // 43
 object._;            // 43
 ```
@@ -131,12 +131,13 @@ argument to write.
 
 The descriptor may be any object or class instance that defines or inherits
 both methods. Extra properties are allowed. `get` takes no parameters and may
-return a value or a promise. `set` takes exactly one value and may return void
-or a promise. The returned accessor is always async: `await ref()` resolves to
-`T`, `await ref(value)` resolves to `undefined`.
+return a value or a promise. `set` takes exactly one value; its return value
+is ignored and may be sync or async. The returned accessor is always async:
+both `await ref()` and `await ref(value)` resolve to `T`.
 
-This mirrors `await ref.value` for reads; writes are `await ref(value)` since
-assignment syntax cannot be expressed via property descriptors alone.
+This mirrors `(value = x)` where assignment yields the assigned value. Writes
+are `await ref(value)` since assignment syntax cannot be expressed via
+property descriptors alone.
 
 `get` and `set` are invoked with a `this` context. When the accessor is called
 standalone (`await ref()`), that context is the descriptor object passed to
@@ -160,7 +161,7 @@ const value = asyncAccessor({
 });
 
 await value();      // 42
-await value(43);    // undefined
+await value(43);    // 43
 await value();      // 43
 ```
 
@@ -182,7 +183,7 @@ const object = Object.defineProperty({ _: 42 }, 'value', {
 });
 
 await object.value();      // 42
-await object.value(43);    // undefined
+await object.value(43);    // 43
 await object.value();      // 43
 object._;                  // 43
 ```

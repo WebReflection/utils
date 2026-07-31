@@ -1,4 +1,4 @@
-import WeakSet from '../src/weakset.js';
+import WeakSet from '../src/weak/set.js';
 
 const set = new WeakSet();
 

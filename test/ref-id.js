@@ -1,4 +1,4 @@
-import id from '../src/ref-id.js';
+import id from '../src/ref/id.js';
 
 const set = Set.prototype.has;
 Set.prototype.has = function (id) {

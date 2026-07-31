@@ -1,4 +1,4 @@
-import toJSONCallback from '../src/json-callback.js';
+import toJSONCallback from '../src/json/callback.js';
 
 const assert = (fn, expected) => {
   const clean = toJSONCallback(fn);

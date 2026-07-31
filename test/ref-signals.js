@@ -1,4 +1,4 @@
-import { signal, subscribe, unsubscribe } from '../src/ref-signals.js';
+import { signal, subscribe, unsubscribe } from '../src/ref/signals.js';
 
 const num = signal(0);
 const subscriber = () => {

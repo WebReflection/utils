@@ -18,9 +18,10 @@
  * consumers) to type the expected context.
  *
  * **Accessor contract** ({@link AccessorFn}): the returned function returns
- * a `T` for reads (`ref()`) and always returns `undefined` for writes
- * (`ref(value)`), mirroring `ref.value = x` where assignment can not be
- * expressed via descriptors alone.
+ * a `T` for both reads (`ref()`) and writes (`ref(value)`), mirroring
+ * `(value = x)` where assignment yields the assigned value. Writes are
+ * `ref(value)` since assignment syntax cannot be expressed via descriptors
+ * alone.
  *
  * @template T
  * @template [C=any]
@@ -46,7 +47,7 @@
  * @template T
  * @typedef {{
  *   (): T,
- *   (value: T): void
+ *   (value: T): T
  * }} AccessorFn
  */
 
@@ -70,6 +71,7 @@ const accessor = descriptor => {
       const context = this || descriptor;
       if (arguments.length < 1) return get.call(context);
       set.call(context, value);
+      return value;
     }
   );
 };

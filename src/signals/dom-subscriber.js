@@ -1,8 +1,8 @@
 // @ts-check
 
 import Map from '../map.js';
-import WeakMap from '../weakmap.js';
-import { subscribers, shadows } from '../dom-observer.js';
+import WeakMap from '../weak/map.js';
+import { subscribers, shadows } from '../dom/observer.js';
 
 import { array as _ } from '../empty.js';
 

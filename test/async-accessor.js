@@ -14,34 +14,38 @@ const value = asyncAccessor({
   /** @this {{ value: number }} */
   set(/** @type {number} */ value) {
     this.value = value;
+    return value;
   },
 });
 
 console.assert((await value()) === 42);
 
-console.assert((await value(43)) === undefined);
+console.assert((await value(43)) === 43);
 
 console.assert((await value()) === 43);
 
 // Host property accessor: `this` in get/set is the host object.
-const object = Object.defineProperty({ _: 42 }, 'value', {
-  enumerable: true,
-  writable: true,
-  value: asyncAccessor({
-    /** @this {{ _: number }} */
-    get() {
-      return this._;
-    },
-    /** @this {{ _: number }} */
-    set(/** @type {number} */ value) {
-      this._ = value;
-    },
+const object = /** @type {{ _: number, value: import('../types/async-accessor.js').AsyncAccessorFn<number> }} */ (
+  Object.defineProperty({ _: 42 }, 'value', {
+    enumerable: true,
+    writable: true,
+    value: asyncAccessor({
+      /** @this {{ _: number }} */
+      get() {
+        return this._;
+      },
+      /** @this {{ _: number }} */
+      set(/** @type {number} */ value) {
+        this._ = value;
+        return value;
+      },
+    })
   })
-});
+);
 
 console.assert((await object.value()) === 42);
 
-console.assert((await object.value(43)) === undefined);
+console.assert((await object.value(43)) === 43);
 
 console.assert((await object.value()) === 43);
 

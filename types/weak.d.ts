@@ -1,3 +1,3 @@
-import WeakMap from './weakmap.js';
-import WeakSet from './weakset.js';
+import WeakMap from './weak/map.js';
+import WeakSet from './weak/set.js';
 export { WeakMap, WeakSet };

@@ -2,6 +2,7 @@
 
 import Map from './map.js';
 import sticky from './sticky.js';
+import named from './prefixed.js';
 
 const methods = /** @type {WeakMap<object, Map<string | symbol, (...args: any[]) => unknown>>} */ (new WeakMap);
 
@@ -14,7 +15,7 @@ const handler = {
 };
 
 export default sticky(
-  '@webreflection/utils/bound-once',
+  named('bound-once'),
   /**
    * @template {object} T
    * @param {T} target

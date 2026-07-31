@@ -2,7 +2,7 @@
 
 import Map from '../map.js';
 
-import unique from '../ref-id.js';
+import unique from '../ref/id.js';
 
 const tracked = new Map;
 

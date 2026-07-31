@@ -14,12 +14,13 @@ const value = accessor({
   /** @this {{ value: number }} */
   set(/** @type {number} */ value) {
     this.value = value;
+    return value;
   },
 });
 
 console.assert(value() === 42);
 
-console.assert(value(43) === undefined);
+console.assert(value(43) === 43);
 
 console.assert(value() === 43);
 
@@ -36,6 +37,7 @@ const object = /** @type {{ _: number, value: import('../types/accessor.js').Acc
       /** @this {{ _: number }} */
       set(/** @type {number} */ value) {
         this._ = value;
+        return value;
       },
     })
   })
@@ -43,7 +45,7 @@ const object = /** @type {{ _: number, value: import('../types/accessor.js').Acc
 
 console.assert(object.value() === 42);
 
-console.assert(object.value(43) === undefined);
+console.assert(object.value(43) === 43);
 
 console.assert(object.value() === 43);
 

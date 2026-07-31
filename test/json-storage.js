@@ -26,7 +26,7 @@ class Storage extends Map {
   }
 }
 
-const { default: JSONStorage } = await import('../src/json-storage.js');
+const { default: JSONStorage } = await import('../src/json/storage.js');
 
 function test(type) {
   // setup - if flag is not passed to store data

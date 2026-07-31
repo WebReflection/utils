@@ -1,6 +1,6 @@
 // @ts-check
 
-import id from './id.js';
+import id from '../id.js';
 
 const next = id();
 
