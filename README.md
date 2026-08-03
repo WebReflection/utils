@@ -24,6 +24,7 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[dom-observer](./src#dom-observer)** - shared document-wide `MutationObserver` (including shadow roots) with a subscriber set for add/remove tracking; sticky once per realm
   * **[dom-signals](./src#dom-signals)** - [signals](./src#signals) plus DOM subscribe/unsubscribe via [dom-observer](./src#dom-observer) so detached nodes cannot leak listeners
   * **[empty](./src#empty)** - frozen shared empty references: array, object, or null-prototype object
+  * **[fetch](./src#fetch)** - proxied `fetch` that exposes Response fields as thenables (`await fetch(url).text`, `await fetch(url).status`)
   * **[global](./src#global)** - lazily trap `globalThis` so native constructors and prototypes cannot be polluted after first access
   * **[has-own](./src#has-own)** - quick polyfill for `Object.hasOwn()` on older browsers
   * **[id](./src#id)** - unique `int32` counter that wraps automatically at `2 ** 31 - 1`

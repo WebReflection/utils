@@ -23,6 +23,7 @@
     "./dom-observer": "./types/dom/observer.d.ts",
     "./dom-signals": "./types/dom/signals.d.ts",
     "./empty": "./types/empty.d.ts",
+    "./fetch": "./types/fetch.d.ts",
     "./global": "./types/global.d.ts",
     "./has-own": "./types/has-own.d.ts",
     "./id": "./types/id.d.ts",
@@ -151,6 +152,10 @@
     "./empty": {
       "types": "./types/empty.d.ts",
       "import": "./src/empty.js"
+    },
+    "./fetch": {
+      "types": "./types/fetch.d.ts",
+      "import": "./src/fetch.js"
     },
     "./global": {
       "types": "./types/global.d.ts",

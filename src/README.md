@@ -612,6 +612,40 @@ const items = [...array, 'new'];
 - `nil` — a frozen, shared empty object with a `null` prototype
 
 
+## fetch
+
+A drop-in `fetch` proxy that keeps the usual `Promise<Response>` behavior while
+also exposing Response fields directly as thenables on the returned promise.
+
+Promise methods (`then`, `catch`, `finally`) forward to the underlying promise,
+so `await fetch(url)` and `fetch(url).then(...)` still yield a `Response`.
+Body and clone methods (`text`, `json`, `arrayBuffer`, `blob`, `bytes`,
+`formData`, `clone`) are invoked automatically when accessed: if `response.ok`
+is false they reject with that Response, otherwise they resolve to the method
+result. Other Response properties (`status`, `ok`, `headers`, ...) resolve to
+the property value.
+
+```js
+import fetch from '@webreflection/utils/fetch';
+
+// still a normal Response promise
+const ok = await fetch(location.href).then(r => r.ok);
+
+// Response properties as thenables
+const status = await fetch(location.href).status;
+
+// body readers are auto-invoked (no `.text()` call)
+const html = await fetch(location.href).text;
+
+// non-OK responses reject with the Response when reading a body
+try {
+  await fetch('/missing').json;
+} catch (response) {
+  console.log(response.status); // 404
+}
+```
+
+
 ## global
 
 A lazily trapped view of `globalThis` for pages that must keep using native
