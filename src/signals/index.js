@@ -47,10 +47,10 @@ export class Signal extends Set {
 
   /**
    * @param {T} value
-   * @param {boolean} [eager=false] when `true`, every write notifies; otherwise
+   * @param {boolean} eager when `true`, every write notifies; otherwise
    * skips notify when `Object.is` says the value did not change
    */
-  constructor(value, eager = false) {
+  constructor(value, eager) {
     super();
     this.#eager = eager;
     this.#value = value;
@@ -162,7 +162,7 @@ export const effect = (callback, signals) => {
  * @returns {Signal<T>} a signal that notifies only when the value changes
  * per `Object.is` (see `new Signal(value, true)` / `eager` to notify on every write)
  */
-export const signal = value => new Signal(value);
+export const signal = value => new Signal(value, false);
 
 /**
  * @template T

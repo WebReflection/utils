@@ -993,11 +993,12 @@ dependency tracking: every `computed` and `effect` takes the list of signals it
 depends on. That keeps the runtime small and the dataflow obvious at the call
 site.
 
-By default, writing a signal value notifies subscribers only when the new value
-is not `Object.is`-equal to the previous one. Same-value writes are no-ops, so
-dependents (including `computed` and `effect`) do not re-run. Pass `eager` as
-`true` (`new Signal(value, true)`) when every write should notify instead —
-useful for instrumentation, or whenever identity equality is the wrong gate.
+`signal(value)` always creates a non-eager signal: writes notify subscribers
+only when the new value is not `Object.is`-equal to the previous one.
+Same-value writes are no-ops, so dependents (including `computed` and
+`effect`) do not re-run. When every write should notify instead — useful for
+instrumentation, or whenever identity equality is the wrong gate — construct
+an eager signal explicitly with `new Signal(value, true)`.
 
 ```js
 import {
@@ -1028,7 +1029,7 @@ batch(() => {
 });
 c.value; // 9 — recomputed once after the outer batch
 
-// escape hatch: eager — notify on every write, even when unchanged
+// eager only via the class — notify on every write, even when unchanged
 const ticks = new Signal(0, true);
 ticks.value = 0; // still notifies
 
@@ -1046,16 +1047,17 @@ b[dispose]();
 
 API surface:
 
-- `signal(value)` / `Signal` — readable and writable `.value`; subscribers run
-  when the new value is not `Object.is`-equal to the previous one (or once after
-  an outer `batch`). The `signal(value)` helper uses equality gating;
-  `new Signal(value, true)` sets `eager` so every write notifies instead
+- `signal(value)` — readable and writable `.value`; creates a non-eager
+  signal so subscribers run when the new value is not `Object.is`-equal to the
+  previous one (or once after an outer `batch`)
+- `new Signal(value, eager)` — same `.value` API; pass `true` for an eager
+  signal that notifies on every write. Prefer `signal(value)` unless you need
+  that behavior
 - `computed(fn, signals)` / `Computed` — readonly `.value`, recomputed when any
   listed signal notifies; the dependency list is mandatory. A same-value write
   on a source does not recompute. When a source *does* notify, dependents of the
-  computed still run even if `fn`'s result is unchanged — `Computed` is
-  constructed with `eager` because its parent signal stores a stable recompute
-  callback reference
+  computed still run even if `fn`'s result is unchanged (`Computed` uses an
+  eager parent signal internally — an implementation detail)
 - `batch(fn)` — coalesces nested updates so dependent work runs once afterward
 - `effect(fn, signals)` — runs `fn` immediately and again when any listed signal
   notifies; `fn` may return a cleanup, which runs before the next `fn` and again

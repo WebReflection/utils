@@ -11,10 +11,10 @@ export declare class Signal<T> extends Set<Subscriber> {
     [dispose]: () => void;
     /**
      * @param {T} value
-     * @param {boolean} [eager=false] when `true`, every write notifies; otherwise
+     * @param {boolean} eager when `true`, every write notifies; otherwise
      * skips notify when `Object.is` says the value did not change
      */
-    constructor(value: T, eager?: boolean);
+    constructor(value: T, eager: boolean);
     /** @type {T} */
     get value(): T;
     /**
