@@ -242,6 +242,39 @@ values all work. Both helpers also accept `alphabet: 'base64url'` and other
 options forwarded to the native base64 APIs, such as `omitPadding` on encode and
 `lastChunkHandling` on decode.
 
+Use `stream()` when the decoded (and optionally decompressed) payload should stay
+a `Response` / readable stream instead of being buffered into a string or
+`ArrayBuffer`. The `format` option still drives `DecompressionStream`; `type`
+sets the response `Content-Type` (default `application/octet-stream`).
+
+```js
+import { encode, stream } from '@webreflection/utils/base64';
+
+const compressed = await encode('Hello, world!', { format: 'deflate' });
+const response = await stream(compressed, { format: 'deflate' });
+
+console.log(await response.text());
+// Hello, world!
+```
+
+`Transformer` is a `TransformStream` that turns base64 text chunks into
+`Uint8Array` chunks. Pipe a stream of base64 through it when decoding should
+happen incrementally rather than in one shot:
+
+```js
+import { encode, Transformer } from '@webreflection/utils/base64';
+
+const encoded = await encode('Hello, world!');
+const { body } = await fetch(`data:application/octet-stream,${encoded}`);
+const response = new Response(body.pipeThrough(new Transformer));
+
+console.log(await response.text());
+// Hello, world!
+```
+
+Both `stream` and `Transformer` are also available as standalone subpaths:
+`@webreflection/utils/base64/stream` and `@webreflection/utils/base64/transformer`.
+
 
 ## bound-once
 

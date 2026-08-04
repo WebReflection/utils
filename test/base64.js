@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { decode, encode } from '../src/base64.js';
+import { decode, encode, stream, Transformer } from '../src/base64.js';
 
 const value = 'Hello, world!';
 
@@ -12,6 +12,13 @@ const compressed = await encode(value, { format: 'deflate' });
 const decompressed = await decode(compressed, { format: 'deflate' });
 
 assert.equal(decompressed, value);
+assert.equal(await (await stream(compressed, { format: 'deflate' })).text(), value);
+assert.equal(await (await stream(await encode(value))).text(), value);
+
+
+const { body } = await fetch(`data:application/octet-stream,${encoded}`);
+const response = new Response(body.pipeThrough(new Transformer));
+assert.equal(await response.text(), value);
 
 const buffer = await decode(compressed, { format: 'deflate', buffer: true });
 

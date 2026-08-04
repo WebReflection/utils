@@ -11,6 +11,8 @@
     "./base64": "./types/base64.d.ts",
     "./base64/decode": "./types/base64/decode.d.ts",
     "./base64/encode": "./types/base64/encode.d.ts",
+    "./base64/stream": "./types/base64/stream.d.ts",
+    "./base64/transformer": "./types/base64/transformer.d.ts",
     "./bound-once": "./types/bound-once.d.ts",
     "./bound-key": "./types/bound-key.d.ts",
     "./bound": "./types/bound.d.ts",
@@ -84,6 +86,14 @@
     "./base64/encode": {
       "types": "./types/base64/encode.d.ts",
       "import": "./src/base64/encode.js"
+    },
+    "./base64/stream": {
+      "types": "./types/base64/stream.d.ts",
+      "import": "./src/base64/stream.js"
+    },
+    "./base64/transformer": {
+      "types": "./types/base64/transformer.d.ts",
+      "import": "./src/base64/transformer.js"
     },
     "./bound-once": {
       "types": "./types/bound-once.d.ts",

@@ -4,10 +4,12 @@ export type Options = {
     format?: '' | import('../base64.js').Format;
     lastChunkHandling?: 'loose' | 'strict' | 'stop-before-partial';
 };
+/** @typedef {{ alphabet?: import('../base64.js').Alphabet, buffer?: boolean, format?: '' | import('../base64.js').Format, lastChunkHandling?: 'loose' | 'strict' | 'stop-before-partial'}} Options */
+export declare const decoder: TextDecoder;
 export default _default;
 /**
  * @param {string} value
- * @param {Options} options
+ * @param {Options} [options]
  * @returns {Promise<string | ArrayBuffer>}
  */
-declare function _default(value: string, options: Options): Promise<string | ArrayBuffer>;
+declare function _default(value: string, options?: Options): Promise<string | ArrayBuffer>;

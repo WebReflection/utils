@@ -2,11 +2,11 @@
 
 /** @typedef {{ alphabet?: import('../base64.js').Alphabet, buffer?: boolean, format?: '' | import('../base64.js').Format, lastChunkHandling?: 'loose' | 'strict' | 'stop-before-partial'}} Options */
 
-const decoder = new TextDecoder;
+export const decoder = new TextDecoder;
 
 /**
  * @param {string} value
- * @param {Options} options
+ * @param {Options} [options]
  * @returns {Promise<string | ArrayBuffer>}
  */
 export default async (value, options) => {

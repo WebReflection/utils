@@ -4,7 +4,7 @@
 
 /**
  * @param {BlobPart} value
- * @param {Options} options
+ * @param {Options} [options]
  * @returns {Promise<string>}
  */
 export default async (value, options) => {

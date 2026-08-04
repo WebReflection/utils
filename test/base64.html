@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="module">
+    import fetch from '../src/fetch.js';
+    import { encode, stream } from '../src/base64.js';
+    const text = await fetch('./base64.txt').text;
+    const response = await stream(text, { format: 'gzip' });
+    result.textContent = await response.text();
+
+    console.log(await encode(await fetch(location.href).text, { format: 'gzip' }));
+  </script>
+</head>
+<body>
+  <pre id="result"></pre>
+</body>
+</html>
