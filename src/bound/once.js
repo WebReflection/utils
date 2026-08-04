@@ -1,8 +1,8 @@
 //@ts-check
 
-import Map from './map.js';
-import sticky from './sticky.js';
-import named from './prefixed.js';
+import Map from '../map.js';
+import sticky from '../sticky.js';
+import named from '../prefixed.js';
 
 const methods = /** @type {WeakMap<object, Map<string | symbol, (...args: any[]) => unknown>>} */ (new WeakMap);
 
@@ -19,7 +19,7 @@ export default sticky(
   /**
    * @template {object} T
    * @param {T} target
-   * @returns {import('./bound.js').Bound<T>}
+   * @returns {import('./index.js').Bound<T>}
    */
   target => {
     if (!methods.has(target)) methods.set(target, new Map);

@@ -1,10 +1,10 @@
 // @ts-check
 
-import Map from './map.js';
+import Map from '../map.js';
 
 /**
  * @template {(...args: any[]) => any} F
- * @typedef {(key: ThisParameterType<F>) => import('./bound.js').BoundMethod<F>} BoundKey
+ * @typedef {(key: ThisParameterType<F>) => import('./index.js').BoundMethod<F>} BoundKey
  */
 
 /**

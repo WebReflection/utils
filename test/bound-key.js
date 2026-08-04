@@ -1,4 +1,4 @@
-import boundKey from '../src/bound-key.js';
+import boundKey from '../src/bound/key.js';
 
 function test() {
   return `Hello ${this}!`;

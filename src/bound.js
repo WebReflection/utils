@@ -1,25 +1,8 @@
 //@ts-check
 
-/**
- * @template F
- * @typedef {unknown extends ThisParameterType<F> ? F : F extends (this: any, ...args: infer A) => infer R ? (...args: A) => R : never} BoundMethod
- */
+import bound from './bound/index.js';
+import key from './bound/key.js';
+import once from './bound/once.js';
 
-/**
- * @template T
- * @typedef {{[K in keyof T as T[K] extends Function ? K : never]: BoundMethod<T[K]>}} Bound
- */
-
-/**
- * @type {ProxyHandler<any>}
- */
-const handler = {
-  get: (target, prop) => target[prop].bind(target),
-};
-
-/**
- * @template {object} T
- * @param {T} target
- * @returns {Bound<T>}
- */
-export default target => new Proxy(target, handler);
+export default bound;
+export { key, once };

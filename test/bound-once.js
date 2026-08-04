@@ -1,4 +1,4 @@
-import bound from '../src/bound-once.js';
+import bound from '../src/bound/once.js';
 
 const obj = {
   /** @type {number} */

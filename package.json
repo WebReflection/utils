@@ -13,8 +13,10 @@
     "./base64/encode": "./types/base64/encode.d.ts",
     "./base64/stream": "./types/base64/stream.d.ts",
     "./base64/transformer": "./types/base64/transformer.d.ts",
-    "./bound-once": "./types/bound-once.d.ts",
-    "./bound-key": "./types/bound-key.d.ts",
+    "./bound/once": "./types/bound/once.d.ts",
+    "./bound/key": "./types/bound/key.d.ts",
+    "./bound-once": "./types/bound/once.d.ts",
+    "./bound-key": "./types/bound/key.d.ts",
     "./bound": "./types/bound.d.ts",
     "./cache": "./types/cache.d.ts",
     "./caller-of": "./types/caller-of.d.ts",
@@ -96,24 +98,24 @@
       "import": "./src/base64/transformer.js"
     },
     "./bound-once": {
-      "types": "./types/bound-once.d.ts",
-      "import": "./src/bound-once.js"
+      "types": "./types/bound/once.d.ts",
+      "import": "./src/bound/once.js"
     },
     "./bound-key": {
-      "types": "./types/bound-key.d.ts",
-      "import": "./src/bound-key.js"
+      "types": "./types/bound/key.d.ts",
+      "import": "./src/bound/key.js"
     },
     "./bound": {
       "types": "./types/bound.d.ts",
       "import": "./src/bound.js"
     },
     "./bound/once": {
-      "types": "./types/bound-once.d.ts",
-      "import": "./src/bound-once.js"
+      "types": "./types/bound/once.d.ts",
+      "import": "./src/bound/once.js"
     },
     "./bound/key": {
-      "types": "./types/bound-key.d.ts",
-      "import": "./src/bound-key.js"
+      "types": "./types/bound/key.d.ts",
+      "import": "./src/bound/key.js"
     },
     "./cache": {
       "types": "./types/cache.d.ts",
