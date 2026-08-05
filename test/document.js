@@ -11,6 +11,8 @@ globalThis.document = {
       contents = node;
     },
     createContextualFragment: () => {
+      // length !== 1 so dom/content's default `detach` returns the fragment as-is
+      contents.childNodes = { length: 0 };
       return contents;
     },
   }),
