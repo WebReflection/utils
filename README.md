@@ -34,6 +34,7 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[json-storage](./src#json-storage)** - JSON-aware, iterable, Map-like `localStorage` / `sessionStorage` facade with [Map `put`](#map-put-convention)
   * **[map](./src#map)** - native `Map` subclass with [Map `put`](#map-put-convention)
   * **[plain-tag](./src#plain-tag)** - transform a generic template tag into a plain string
+  * **[python-tag](./src#python-tag)** - bootstrap Pyodide or MicroPython and run Python via a template tag, a string call, or a bound options tag
   * **[ref-id](./src#ref-id)** - unique `int32` identifier per WeakMap-compatible key
   * **[ref-signals](./src#ref-signals)** - [signals](./src#signals) plus subscribe/unsubscribe tied to any WeakMap-compatible key, cleaned up via `FinalizationRegistry` when the ref is collected
   * **[registry](./src#registry)** - validated `Map` with duplicate-key protection by default; inherits [Map `put`](#map-put-convention)

@@ -903,6 +903,81 @@ console.log(plainTag`Hello, ${'world'}!`);
 ```
 
 
+## python-tag
+
+Bootstrap a [Pyodide](https://pyodide.org/) or
+[MicroPython](https://github.com/micropython/micropython/tree/master/ports/webassembly)
+WASM interpreter and return a runner that executes Python with the least
+ceremony. The default export is async: it dynamically imports the module URL,
+prefers `loadMicroPython` when present, otherwise calls `loadPyodide`, and
+forwards any extra arguments to that loader. The resolved value is the runner;
+the underlying instance is also available as `.interpreter`.
+
+```js
+import pythonTag from '@webreflection/utils/python-tag';
+
+// Pyodide (default module URL is https://esm.run/pyodide)
+const py = await pythonTag();
+
+// or pin a CDN build / use MicroPython instead
+// const py = await pythonTag('https://cdn.jsdelivr.net/pyodide/v0.28.0/full/pyodide.mjs');
+// const py = await pythonTag(micropythonURL, { url: wasmURL });
+```
+
+Code is always [dedent](#dedent)ed after [plain-tag](#plain-tag) interpolation.
+The last expression's value is returned (same as Pyodide's `runPython` /
+`runPythonAsync`).
+
+### Template literal (async, default)
+
+Tagged use runs via `runPythonAsync`, so top-level `await` works and the result
+is a promise:
+
+```js
+const result = await py`
+  print('Hello, world!')
+  1 + 2
+`;
+// 3
+```
+
+### String + optional options
+
+Pass a code string, and optionally an options object shaped like
+[Pyodide's `runPython` options](https://pyodide.org/en/stable/usage/api/js-api.html#pyodide.runPython)
+(`globals`, `locals`, `filename`, …). This utility also accepts `sync: true`,
+which selects synchronous `runPython` instead of `runPythonAsync` and is
+stripped before the call. MicroPython's WASM runner takes the code only, so
+fields like `globals` are ignored; `sync` remains handled here.
+
+```js
+await py(`print(123)`);
+// async via runPythonAsync
+
+py(`print(123)`, { sync: true });
+// sync via runPython
+
+const globals = py.interpreter.toPy({ test: true });
+await py(`'test' in globals() and globals()['test']`, { globals });
+// true
+```
+
+### Bound options tag
+
+Pass only the options object to get a template tag that reuses those options on
+every invoke (including a persistent `sync: true`):
+
+```js
+const syncPy = py({ sync: true });
+syncPy`1 + 2`;
+// 3 (not a Promise)
+
+const withGlobals = py({ globals });
+await withGlobals`'test' in globals()`;
+// true
+```
+
+
 ## ref-id
 
 Assigns a unique `int32` identifier to any WeakMap-compatible key (object or

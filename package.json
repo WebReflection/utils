@@ -41,6 +41,7 @@
     "./patch/dispose": "./types/patch/dispose.d.ts",
     "./patch/set-union": "./types/patch/set-union.d.ts",
     "./plain-tag": "./types/plain-tag.d.ts",
+    "./python-tag": "./types/python-tag.d.ts",
     "./ref-id": "./types/ref/id.d.ts",
     "./ref-signals": "./types/ref/signals.d.ts",
     "./registry": "./types/registry.d.ts",
@@ -224,6 +225,10 @@
     "./plain-tag": {
       "types": "./types/plain-tag.d.ts",
       "import": "./src/plain-tag.js"
+    },
+    "./python-tag": {
+      "types": "./types/python-tag.d.ts",
+      "import": "./src/python-tag.js"
     },
     "./ref": {
       "types": "./types/ref.d.ts",
