@@ -27,6 +27,8 @@
     "./dom/content": "./types/dom/content.d.ts",
     "./dom-diff": "./types/dom/diff.d.ts",
     "./dom/diff": "./types/dom/diff.d.ts",
+    "./dom-fragment": "./types/dom/fragment.d.ts",
+    "./dom/fragment": "./types/dom/fragment.d.ts",
     "./dom-observer": "./types/dom/observer.d.ts",
     "./dom/observer": "./types/dom/observer.d.ts",
     "./dom-signals": "./types/dom/signals.d.ts",
@@ -154,6 +156,14 @@
     "./dom/diff": {
       "types": "./types/dom/diff.d.ts",
       "import": "./src/dom/diff.js"
+    },
+    "./dom/fragment": {
+      "types": "./types/dom/fragment.d.ts",
+      "import": "./src/dom/fragment.js"
+    },
+    "./dom-fragment": {
+      "types": "./types/dom/fragment.d.ts",
+      "import": "./src/dom/fragment.js"
     },
     "./dom/observer": {
       "types": "./types/dom/observer.d.ts",

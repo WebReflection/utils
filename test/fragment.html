@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="module">
+    import fragment from '../src/dom/fragment.js';
+    import diff from '../src/dom/diff.js';
+
+    const pin = document.body.appendChild(document.createComment('pin'));
+
+    let f = document.createDocumentFragment();
+    f.appendChild(document.createElement('div')).textContent = 'Hello';
+    f.appendChild(document.createElement('div')).textContent = 'World';
+
+    globalThis.fragment = fragment(f);
+
+    let hr, list = diff([], [document.createElement('hr'), f, document.createElement('hr')], pin);
+
+    list = diff(list, [document.createElement('hr'), f], pin);
+    list = diff(list, [f, hr = document.createElement('hr')], pin);
+
+    list = diff(list, [hr, f], pin);
+    list = diff(list, [f, hr], pin);
+  </script>
+</head>
+</html>

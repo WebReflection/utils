@@ -518,7 +518,8 @@ argument.
 ## dom-diff
 
 Reconcile a live list of DOM nodes against a desired future list, anchored to a
-pin node that marks where the list ends in the parent.
+pin node that marks where the list ends in the parent. Entries may be ordinary
+`ChildNode`s or persistent fragments from [dom-fragment](#dom-fragment).
 
 ```js
 import diff from '@webreflection/utils/dom-diff';
@@ -539,19 +540,82 @@ nodes = diff(nodes, [c, a], pin);
 nodes = diff(nodes, [], pin);
 ```
 
+Persistent fragments count as a single list entry while their children occupy a
+range in the parent. Diff places them via `valueOf()` and then advances the pin
+to the fragment’s start marker, so siblings still line up correctly:
+
+```js
+import diff from '@webreflection/utils/dom-diff';
+import fragment from '@webreflection/utils/dom-fragment';
+
+const pin = document.body.appendChild(document.createComment(''));
+const group = fragment(document.createDocumentFragment());
+group.append(document.createElement('div'), document.createElement('div'));
+
+let nodes = [];
+nodes = diff(nodes, [hr1, group, hr2], pin);
+nodes = diff(nodes, [group, hr2], pin); // drop hr1, keep the group range
+```
+
 Signature: `diff(current, future, pin) => future`.
 
 - nodes present in `current` but missing from `future` are removed
 - nodes in `future` are walked right-to-left and placed so each ends up
-  immediately before the pin (then the pin advances to that node), producing
-  the future order as consecutive siblings ending at the original pin
-- when the pin is connected and a node already lives under the same parent,
-  `parentNode.moveBefore` is preferred over `insertBefore` so state is preserved;
-  otherwise `insertBefore` is used
+  immediately before the pin (then the pin advances), producing the future
+  order as consecutive siblings ending at the original pin
+- for a persistent fragment (`nodeType === 11`), placement uses
+  `pin.before(node.valueOf())` and the pin becomes `node.firstChild` (the start
+  comment); for a normal node, the pin becomes that node
+- when the pin is connected and a normal node already lives under the same
+  parent, `parentNode.moveBefore` is preferred so state is preserved; otherwise
+  `pin.before(...)` inserts or re-homes the entry (including fragments)
 - returns `future` so the caller can keep that array as the next `current`
 
-Requires a DOM parent on `pin.parentNode`. Useful for keyed list updates where
-you already hold node identity and only need remove / insert / reorder.
+Requires a DOM parent on `pin.parentNode`, and a pin that supports `before`
+(any `ChildNode`). Useful for keyed list updates where you already hold node
+identity — including multi-node groups via [dom-fragment](#dom-fragment) — and
+only need remove / insert / reorder.
+
+
+## dom-fragment
+
+Augment a `DocumentFragment` so it can live in the tree as a persistent range
+instead of dissolving on insert. The fragment keeps stable `<>` / `</>` comment
+markers as `firstChild` / `lastChild`; when it is placed into a parent, its
+content sits between those markers and can be moved, removed, or replaced as
+one unit. Designed to work as a single entry in [dom-diff](#dom-diff) lists.
+
+```js
+import fragment from '@webreflection/utils/dom-fragment';
+
+const pin = document.body.appendChild(document.createComment(''));
+const group = fragment(document.createDocumentFragment());
+group.append(
+  document.createElement('li'),
+  document.createElement('li'),
+);
+
+// markers + children land before `pin`; `group` remains the handle
+pin.before(group);
+group.remove(); // drops everything from the start marker through the end marker
+```
+
+Signature: `fragment(documentFragment) => persistentFragment`.
+
+The returned fragment is the same object, with:
+
+- `firstChild` / `lastChild` — comment markers that bound the live range
+- `parentNode` — the parent of the start marker when the range is in the tree
+- `before(...nodes)` — insert before the start marker
+- `remove()` — delete the range (markers and everything between) from the parent
+- `replaceWith(node)` — replace the whole range with a single node
+- `valueOf()` — if children are live under a parent, gather the range back into
+  the fragment and return it, so a later insert moves the group again
+
+Use this when a list item is logically one entry but renders as several nodes
+(a view “block”, a row with multiple cells, and so on). Pair it with
+[dom-diff](#dom-diff) so the group participates in reconcile like any other
+node. Requires a DOM (`document`, `Range`, comments).
 
 
 ## dom-observer
