@@ -20,6 +20,7 @@
     "./bound": "./types/bound.d.ts",
     "./cache": "./types/cache.d.ts",
     "./caller-of": "./types/caller-of.d.ts",
+    "./class": "./types/class.d.ts",
     "./content": "./types/content.d.ts",
     "./dedent": "./types/dedent.d.ts",
     "./devtools": "./types/devtools.d.ts",
@@ -136,6 +137,10 @@
     "./caller-of": {
       "types": "./types/caller-of.d.ts",
       "import": "./src/caller-of.js"
+    },
+    "./class": {
+      "types": "./types/class.d.ts",
+      "import": "./src/class.js"
     },
     "./content": {
       "types": "./types/content.d.ts",
@@ -358,6 +363,7 @@
     "bound",
     "cache",
     "caller-of",
+    "class",
     "dedent",
     "dom-content",
     "dom-diff",

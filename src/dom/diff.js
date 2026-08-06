@@ -3,7 +3,7 @@
 
 /**
  * A live child node, or a persistent fragment from `dom/fragment`.
- * @typedef {ChildNode | import('./fragment.js').PersistentFragment} Diffable
+ * @typedef {ChildNode | import('./fragment.js').default} Diffable
  */
 
 /**

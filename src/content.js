@@ -1,6 +1,8 @@
 // @ts-check
 /// <reference lib="dom" />
 
+import createRange from './dom/range.js';
+
 const { entries } = Object;
 
 /**
@@ -28,7 +30,7 @@ export default (contents, document = globalThis.document) => {
   /** @type {Record<string, (value: string) => DocumentFragment>} */
   const content = {};
 
-  const range = document.createRange();
+  const range = createRange();
 
   for (const [key, node] of entries(contents)) {
     content[key] = value => {

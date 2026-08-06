@@ -1,14 +1,22 @@
-export type PersistentFragment = Omit<DocumentFragment, 'firstChild' | 'lastChild'> & {
-    firstChild: ChildNode;
-    lastChild: ChildNode;
+declare const Fragment_base: new (target: DocumentFragment) => DocumentFragment;
+export default class Fragment extends Fragment_base {
+    #private;
+    /**
+     * @param {DocumentFragment} fragment
+     */
+    constructor(fragment: DocumentFragment);
+    get firstChild(): Comment;
+    get lastChild(): Comment;
+    get parentNode(): ParentNode | null;
+    /**
+     * @param {...(Node | string)} nodes
+     */
     before(...nodes: (Node | string)[]): void;
     remove(): void;
+    /**
+     * @param {Node} node
+     */
     replaceWith(node: Node): void;
-    valueOf(): PersistentFragment;
-};
-export default _default;
-/**
- * @param {DocumentFragment} fragment
- * @returns {PersistentFragment}
- */
-declare function _default(fragment: DocumentFragment): PersistentFragment;
+    valueOf(): this;
+}
+export {};

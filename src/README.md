@@ -396,6 +396,64 @@ const hasOwn = Function.prototype.call.bind(Object.prototype.hasOwnProperty);
 ```
 
 
+## class
+
+Upgrade an existing instance to a real subclass **without** invoking the base
+constructor as `super()`. Pass any constructor `Base` to get a bridge whose
+`.prototype` is the same object as `Base.prototype`; then `class Sub extends
+custom(Base)` works like a normal class, while `new Sub(target)` only runs
+`Object.setPrototypeOf(target, new.target.prototype)` and returns that same
+`target`.
+
+This is the same idea as
+[`custom-function/factory`](https://github.com/WebReflection/custom-function/tree/main#any-illegal-constructor-custom-functionfactory),
+with tighter TypeScript generics so the bridge and `InstanceType` stay aligned.
+
+```js
+import custom from '@webreflection/utils/class';
+
+class Strong extends custom(String) {
+  constructor(value) {
+    super(new String(value));
+  }
+}
+
+const strong = new Strong('hello');
+strong instanceof String;  // true
+strong instanceof Strong;  // true
+String(strong);            // "hello"
+```
+
+Typical use: bases whose constructor is awkward or wrong to re-run on an object
+you already have — `Function` (would imply `eval`), DOM element constructors,
+boxed primitives, and so on. You keep the original identity and engine shape,
+and still get `instanceof`, methods, getters, `super`, and private fields.
+
+```js
+import custom from '@webreflection/utils/class';
+
+const Div = custom(HTMLDivElement);
+
+class MyDiv extends Div {
+  constructor(...childNodes) {
+    super(document.createElement('div'));
+    this.append(...childNodes);
+  }
+}
+
+document.body.appendChild(
+  new MyDiv(
+    new MyDiv('A'),
+    new MyDiv('B', 'C'),
+  ),
+);
+```
+
+Signature: `custom(Base) => Bridge`, where `new Sub(target)` returns
+`target` typed as `InstanceType<typeof Base>` after the prototype swap.
+[dom-fragment](#dom-fragment) is built on this pattern.
+
+
 ## content
 
 A tiny factory builder for turning markup strings into `DocumentFragment`
@@ -546,10 +604,10 @@ to the fragment’s start marker, so siblings still line up correctly:
 
 ```js
 import diff from '@webreflection/utils/dom-diff';
-import fragment from '@webreflection/utils/dom-fragment';
+import Fragment from '@webreflection/utils/dom-fragment';
 
 const pin = document.body.appendChild(document.createComment(''));
-const group = fragment(document.createDocumentFragment());
+const group = new Fragment(document.createDocumentFragment());
 group.append(document.createElement('div'), document.createElement('div'));
 
 let nodes = [];
@@ -579,30 +637,38 @@ only need remove / insert / reorder.
 
 ## dom-fragment
 
-Augment a `DocumentFragment` so it can live in the tree as a persistent range
-instead of dissolving on insert. The fragment keeps stable `<>` / `</>` comment
-markers as `firstChild` / `lastChild`; when it is placed into a parent, its
-content sits between those markers and can be moved, removed, or replaced as
-one unit. Designed to work as a single entry in [dom-diff](#dom-diff) lists.
+A `DocumentFragment` subclass (via [class](#class)) that keeps a live range in
+the tree instead of dissolving on insert. Construct with an existing fragment;
+`super` swaps its prototype onto the subclass without re-running
+`DocumentFragment` as a constructor, so the same object becomes
+`instanceof Fragment` while remaining a real fragment.
+
+The instance wraps content between stable `<>` / `</>` comment markers
+(`firstChild` / `lastChild`). Once placed in a parent, that range can be moved,
+removed, or replaced as one unit. Designed as a single entry in
+[dom-diff](#dom-diff) lists.
 
 ```js
-import fragment from '@webreflection/utils/dom-fragment';
+import Fragment from '@webreflection/utils/dom-fragment';
 
 const pin = document.body.appendChild(document.createComment(''));
-const group = fragment(document.createDocumentFragment());
-group.append(
+const fragment = document.createDocumentFragment();
+fragment.append(
   document.createElement('li'),
   document.createElement('li'),
 );
+
+// guards fragment childNodes via surrounding comments
+const group = new Fragment(document.createDocumentFragment());
 
 // markers + children land before `pin`; `group` remains the handle
 pin.before(group);
 group.remove(); // drops everything from the start marker through the end marker
 ```
 
-Signature: `fragment(documentFragment) => persistentFragment`.
+Signature: `new Fragment(documentFragment)`.
 
-The returned fragment is the same object, with:
+The constructed instance is the same fragment object, with:
 
 - `firstChild` / `lastChild` — comment markers that bound the live range
 - `parentNode` — the parent of the start marker when the range is in the tree

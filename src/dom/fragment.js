@@ -1,123 +1,74 @@
 // @ts-check
 /// <reference lib="dom" />
 
-import comment from './comment.js';
+import createComment from './comment.js';
+import createRange from './range.js';
+import custom from '../class.js';
 
-const { defineProperties } = Object;
+const range = createRange();
 
-const childNodes = Symbol('childNodes');
-const configurable = true;
-const range = document.createRange();
+export default class Fragment extends custom(DocumentFragment) {
+  #firstChild;
+  #lastChild;
+  #nodes;
 
-/**
- * A `DocumentFragment` that can live as a persistent range between comment
- * markers, with `ChildNode`-like helpers for use with `dom/diff`.
- * @typedef {Omit<DocumentFragment, 'firstChild' | 'lastChild'> & {
- *   firstChild: ChildNode,
- *   lastChild: ChildNode,
- *   before(...nodes: (Node | string)[]): void,
- *   remove(): void,
- *   replaceWith(node: Node): void,
- *   valueOf(): PersistentFragment,
- * }} PersistentFragment
- */
+  #drop() {
+    range.setStartAfter(this.#firstChild);
+    range.setEndAfter(this.#lastChild);
+    range.deleteContents();
+    return this.#firstChild;
+  }
 
-/**
- * @param {Pick<PersistentFragment, 'firstChild' | 'lastChild'>} _
- * @returns {ChildNode}
- */
-const drop = ({ firstChild, lastChild }) => {
-  range.setStartAfter(firstChild);
-  range.setEndAfter(lastChild);
-  range.deleteContents();
-  return firstChild;
-};
-
-const before = {
-  configurable,
   /**
-   * @this {PersistentFragment}
+   * @param {DocumentFragment} fragment
+   */
+  constructor(fragment) {
+    super(fragment);
+    this.#firstChild = fragment.insertBefore(createComment('<>'), fragment.firstChild);
+    this.#lastChild = fragment.appendChild(createComment('</>'));
+    this.#nodes = [...fragment.childNodes];
+  }
+
+  get firstChild() {
+    return this.#firstChild;
+  }
+
+  get lastChild() {
+    return this.#lastChild;
+  }
+
+  get parentNode() {
+    return this.#firstChild.parentNode;
+  }
+
+  /**
    * @param {...(Node | string)} nodes
    */
-  value(...nodes) {
-    this.firstChild.before(...nodes);
+  before(...nodes) {
+    this.#firstChild.before(...nodes);
   }
-};
 
-const parentNode = {
-  configurable,
+  remove() {
+    this.#drop().remove();
+  }
+
   /**
-   * @this {PersistentFragment}
-   * @returns {ParentNode | null}
-   */
-  get() {
-    return this.firstChild.parentNode;
-  }
-};
-
-const remove = {
-  configurable,
-  /** @this {PersistentFragment} */
-  value() {
-    drop(this).remove();
-  }
-};
-
-const replaceWith = {
-  configurable,
-  /**
-   * @this {PersistentFragment}
    * @param {Node} node
    */
-  value(node) {
-    drop(this).replaceWith(node);
+  replaceWith(node) {
+    this.#drop().replaceWith(node);
   }
-};
 
-const valueOf = {
-  configurable,
-  /**
-   * @this {PersistentFragment & { [key: symbol]: Node[] }}
-   * @returns {PersistentFragment}
-   */
-  value() {
-    let { firstChild, lastChild } = this, { parentNode } = firstChild;
+  valueOf() {
+    let firstChild = /** @type {ChildNode} */ (this.#firstChild), { parentNode } = firstChild;
     if (parentNode !== this) {
       if (parentNode) {
-        this[childNodes] = [firstChild];
-        while (firstChild !== lastChild)
-          this[childNodes].push((firstChild = /** @type {ChildNode} */ (firstChild.nextSibling)));
+        this.#nodes = [firstChild];
+        while (firstChild !== this.#lastChild)
+          this.#nodes.push((firstChild = /** @type {ChildNode} */ (firstChild.nextSibling)));
       }
-      this.replaceChildren(...this[childNodes]);
+      this.replaceChildren(...this.#nodes);
     }
     return this;
   }
-};
-
-/**
- * @param {DocumentFragment} fragment
- * @returns {PersistentFragment}
- */
-export default fragment => {
-  /** @type {Node[]} */
-  const value = [];
-  defineProperties(fragment, {
-    [childNodes]: {
-      writable: true,
-      value
-    },
-    firstChild: {
-      value: fragment.insertBefore(comment('<>'), fragment.firstChild)
-    },
-    lastChild: {
-      value: fragment.appendChild(comment('</>'))
-    },
-    before,
-    parentNode,
-    remove,
-    replaceWith,
-    valueOf,
-  });
-  value.push(...fragment.childNodes);
-  return /** @type {PersistentFragment} */ (fragment);
-};
+}

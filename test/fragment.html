@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script type="module">
-    import fragment from '../src/dom/fragment.js';
+    import Fragment from '../src/dom/fragment.js';
     import diff from '../src/dom/diff.js';
 
     const pin = document.body.appendChild(document.createComment('pin'));
@@ -13,7 +13,7 @@
     f.appendChild(document.createElement('div')).textContent = 'Hello';
     f.appendChild(document.createElement('div')).textContent = 'World';
 
-    globalThis.fragment = fragment(f);
+    globalThis.fragment = new Fragment(f);
 
     let hr, list = diff([], [document.createElement('hr'), f, document.createElement('hr')], pin);
 

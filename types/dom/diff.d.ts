@@ -1,11 +1,11 @@
-export type Diffable = ChildNode | import('./fragment.js').PersistentFragment;
+export type Diffable = ChildNode | import('./fragment.js').default;
 export type DiffParent = ParentNode & {
     moveBefore?: (node: Node, child: Node | null) => void;
 };
 export default _default;
 /**
  * A live child node, or a persistent fragment from `dom/fragment`.
- * @typedef {ChildNode | import('./fragment.js').PersistentFragment} Diffable
+ * @typedef {ChildNode | import('./fragment.js').default} Diffable
  */
 /**
  * Parent that may expose the newer `moveBefore` DOM API.
