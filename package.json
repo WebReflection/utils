@@ -24,8 +24,13 @@
     "./dedent": "./types/dedent.d.ts",
     "./devtools": "./types/devtools.d.ts",
     "./dom-content": "./types/dom/content.d.ts",
+    "./dom/content": "./types/dom/content.d.ts",
+    "./dom-diff": "./types/dom/diff.d.ts",
+    "./dom/diff": "./types/dom/diff.d.ts",
     "./dom-observer": "./types/dom/observer.d.ts",
+    "./dom/observer": "./types/dom/observer.d.ts",
     "./dom-signals": "./types/dom/signals.d.ts",
+    "./dom/signals": "./types/dom/signals.d.ts",
     "./empty": "./types/empty.d.ts",
     "./fetch": "./types/fetch.d.ts",
     "./global": "./types/global.d.ts",
@@ -43,7 +48,9 @@
     "./plain-tag": "./types/plain-tag.d.ts",
     "./python-tag": "./types/python-tag.d.ts",
     "./ref-id": "./types/ref/id.d.ts",
+    "./ref/id": "./types/ref/id.d.ts",
     "./ref-signals": "./types/ref/signals.d.ts",
+    "./ref/signals": "./types/ref/signals.d.ts",
     "./registry": "./types/registry.d.ts",
     "./set": "./types/set.d.ts",
     "./shared-array-buffer": "./types/shared-array-buffer.d.ts",
@@ -52,7 +59,9 @@
     "./sticky": "./types/sticky.d.ts",
     "./weak": "./types/weak.d.ts",
     "./weak-map": "./types/weak/map.d.ts",
+    "./weak/map": "./types/weak/map.d.ts",
     "./weak-set": "./types/weak/set.d.ts",
+    "./weak/set": "./types/weak/set.d.ts",
     "./weakmap": "./types/weak/map.d.ts",
     "./weakset": "./types/weak/set.d.ts",
     "./with-resolvers": "./types/with-resolvers.d.ts"
@@ -142,6 +151,10 @@
       "types": "./types/dom/content.d.ts",
       "import": "./src/dom/content.js"
     },
+    "./dom/diff": {
+      "types": "./types/dom/diff.d.ts",
+      "import": "./src/dom/diff.js"
+    },
     "./dom/observer": {
       "types": "./types/dom/observer.d.ts",
       "import": "./src/dom/observer.js"
@@ -153,6 +166,10 @@
     "./dom-content": {
       "types": "./types/dom/content.d.ts",
       "import": "./src/dom/content.js"
+    },
+    "./dom-diff": {
+      "types": "./types/dom/diff.d.ts",
+      "import": "./src/dom/diff.js"
     },
     "./dom-observer": {
       "types": "./types/dom/observer.d.ts",
@@ -333,6 +350,7 @@
     "caller-of",
     "dedent",
     "dom-content",
+    "dom-diff",
     "has-own",
     "id",
     "instance-of",

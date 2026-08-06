@@ -515,6 +515,45 @@ global `document`, so it is browser-oriented. For SSR, or when a specific
 argument.
 
 
+## dom-diff
+
+Reconcile a live list of DOM nodes against a desired future list, anchored to a
+pin node that marks where the list ends in the parent.
+
+```js
+import diff from '@webreflection/utils/dom-diff';
+
+const parent = document.querySelector('#list');
+const pin = document.createComment('');
+parent.append(pin);
+
+let nodes = [];
+
+// insert a, b, c before the pin
+nodes = diff(nodes, [a, b, c], pin);
+
+// reorder and drop b
+nodes = diff(nodes, [c, a], pin);
+
+// clear the list
+nodes = diff(nodes, [], pin);
+```
+
+Signature: `diff(current, future, pin) => future`.
+
+- nodes present in `current` but missing from `future` are removed
+- nodes in `future` are walked right-to-left and placed so each ends up
+  immediately before the pin (then the pin advances to that node), producing
+  the future order as consecutive siblings ending at the original pin
+- when the pin is connected and a node already lives under the same parent,
+  `parentNode.moveBefore` is preferred over `insertBefore` so state is preserved;
+  otherwise `insertBefore` is used
+- returns `future` so the caller can keep that array as the next `current`
+
+Requires a DOM parent on `pin.parentNode`. Useful for keyed list updates where
+you already hold node identity and only need remove / insert / reorder.
+
+
 ## dom-observer
 
 Shared browser helper that runs one document-wide `MutationObserver` and lets
