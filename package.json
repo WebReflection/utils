@@ -24,6 +24,7 @@
     "./content": "./types/content.d.ts",
     "./dedent": "./types/dedent.d.ts",
     "./devtools": "./types/devtools.d.ts",
+    "./dom": "./types/dom.d.ts",
     "./dom-content": "./types/dom/content.d.ts",
     "./dom/content": "./types/dom/content.d.ts",
     "./dom-diff": "./types/dom/diff.d.ts",
@@ -153,6 +154,10 @@
     "./devtools": {
       "types": "./types/devtools.d.ts",
       "import": "./src/devtools.js"
+    },
+    "./dom": {
+      "types": "./types/dom.d.ts",
+      "import": "./src/dom.js"
     },
     "./dom/content": {
       "types": "./types/dom/content.d.ts",
