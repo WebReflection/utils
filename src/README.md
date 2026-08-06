@@ -598,6 +598,16 @@ nodes = diff(nodes, [c, a], pin);
 nodes = diff(nodes, [], pin);
 ```
 
+The pin can also be bound once so every later call remembers where to differ:
+
+```js
+const update = diff.bind(pin);
+
+nodes = update(nodes, [a, b, c]);
+nodes = update(nodes, [c, a]);
+nodes = update(nodes, []);
+```
+
 Persistent fragments count as a single list entry while their children occupy a
 range in the parent. Diff places them via `valueOf()` and then advances the pin
 to the fragment’s start marker, so siblings still line up correctly:
@@ -615,9 +625,12 @@ nodes = diff(nodes, [hr1, group, hr2], pin);
 nodes = diff(nodes, [group, hr2], pin); // drop hr1, keep the group range
 ```
 
-Signature: `diff(current, future, pin) => future`.
+Signature: `diff(current, future, pin?) => future` — pass `pin` each time, or
+omit it after `diff.bind(pin)`.
 
-- nodes present in `current` but missing from `future` are removed
+- nodes present in `current` but missing from `future` are removed — skipped
+  entirely when `current` and `future` are the same array reference (in-place
+  mutate / reorder only needs placement)
 - nodes in `future` are walked right-to-left and placed so each ends up
   immediately before the pin (then the pin advances), producing the future
   order as consecutive siblings ending at the original pin
