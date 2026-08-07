@@ -23,11 +23,10 @@ export default class Fragment extends custom(DocumentFragment) {
    * @param {DocumentFragment} fragment
    */
   constructor(fragment) {
-    const { firstChild } = fragment;
     super(fragment);
-    this.#firstChild = fragment.insertBefore(createComment('<>'), firstChild);
-    this.#lastChild = fragment.appendChild(createComment('</>'));
-    this.#nodes = [...fragment.childNodes];
+    this.#firstChild = super.insertBefore(createComment('<>'), super.firstChild);
+    this.#lastChild = super.appendChild(createComment('</>'));
+    this.#nodes = [...super.childNodes];
   }
 
   get firstChild() { return this.#firstChild }
@@ -43,6 +42,9 @@ export default class Fragment extends custom(DocumentFragment) {
 
   /** @param {...(Node | string)} nodes */
   append(...nodes) { this.#lastChild.before(...nodes) }
+
+  /** @type {typeof DocumentFragment.prototype.appendChild} */
+  appendChild(node) { this.#lastChild.before(node); return node }
 
   /** @param {...(Node | string)} nodes */
   before(...nodes) { this.#firstChild.before(...nodes) }
