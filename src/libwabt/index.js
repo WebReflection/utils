@@ -10,7 +10,10 @@ import WabtModule from './libwabt.js';
  */
 export default async (moduleArg = {}) => {
   const url = URL.createObjectURL(
-    new Blob([await decode(libwabt, { format: 'deflate', buffer: true })], { type: 'application/wasm' })
+    new Blob([
+      await decode(libwabt, { format: 'deflate', buffer: true })],
+      { type: 'application/wasm' }
+    )
   );
   const wabt = await WabtModule({ ...moduleArg, locateFile: () => url });
   URL.revokeObjectURL(url);
