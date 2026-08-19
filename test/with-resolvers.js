@@ -10,4 +10,4 @@ console.assert(promise instanceof Promise);
 
 resolve('OK');
 
-console.log(await promise);
+console.log(await promise, 'with-resolvers');

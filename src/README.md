@@ -1121,6 +1121,66 @@ Use `set` when chaining on the map is needed; use `put` when the stored value
 should flow directly into the next expression.
 
 
+## next-resolver
+
+The former [`next-resolver`](https://github.com/WebReflection/next-resolver)
+package, brought into this collection because that module depended on
+`@webreflection/utils` as a whole — a heavy extra dependency for such a small
+helper — and size needed to stay constrained. The logic now sits next to
+[id](#id) and [with-resolvers](#with-resolvers), which it already used.
+
+It simplifies the repeated unique-ID + promise dance: `next()` yields a unique
+identifier and a promise; `resolve(id, value)` (or `resolve(id, null, error)`
+to reject) settles that promise later.
+
+```js
+import nextResolver from '@webreflection/utils/next-resolver';
+
+const [next, resolve] = nextResolver();
+
+// next unique identifier and its promise
+const [id, promise] = next();
+
+// pass the promise around, hold the id ...
+// ... so that whenever it's done:
+if (condition) {
+  resolve(id, value);
+
+  // or reject via
+  resolve(id, null, new Error('reason'));
+}
+```
+
+The default `nextResolver()` accepts an optional callback that will receive a
+unique identifier that can be used to return something else:
+
+```js
+// use strings instead of numbers as IDs
+const [next, resolve] = nextResolver(String);
+
+const [id, promise] = next();
+typeof id; // string
+
+// use any Map key variant
+const [next, resolve] = nextResolver(id => {
+  // make it stronger (not really useful)
+  return `${id}-${crypto.randomUUID()}`;
+  // make it a unique ref
+  return { id };
+});
+```
+
+If the returned value is still awaited, the next `id` will be passed to create
+a new identifier (so don't put too much logic within the `id` creation; it's
+already granted to be unique per that logic/session).
+
+This is mostly needed to brand async operations, so a prefix is often enough:
+
+```js
+const [next, resolve] = nextResolver(id => `my-logic-${id}`);
+```
+
+
 ## plain-tag
 
 Transform a generic tagged template function into a plain string by

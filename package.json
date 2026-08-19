@@ -47,6 +47,7 @@
     "./json-callback": "./types/json/callback.d.ts",
     "./json-storage": "./types/json/storage.d.ts",
     "./map": "./types/map.d.ts",
+    "./next-resolver": "./types/next-resolver.d.ts",
     "./patch/dispose": "./types/patch/dispose.d.ts",
     "./patch/set-union": "./types/patch/set-union.d.ts",
     "./plain-tag": "./types/plain-tag.d.ts",
@@ -255,6 +256,10 @@
       "types": "./types/map.d.ts",
       "import": "./src/map.js"
     },
+    "./next-resolver": {
+      "types": "./types/next-resolver.d.ts",
+      "import": "./src/next-resolver.js"
+    },
     "./patch/dispose": {
       "types": "./types/patch/dispose.d.ts",
       "import": "./src/patch/dispose.js"
@@ -400,6 +405,7 @@
     "weakmap",
     "weakset",
     "with-resolvers",
+    "next-resolver",
     "global"
   ],
   "scripts": {

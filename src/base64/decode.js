@@ -2,6 +2,8 @@
 
 /** @typedef {{ alphabet?: import('../base64.js').Alphabet, buffer?: boolean, format?: '' | import('../base64.js').Format, lastChunkHandling?: 'loose' | 'strict' | 'stop-before-partial'}} Options */
 
+import pipe from './pipe.js';
+
 export const decoder = new TextDecoder;
 
 /**
@@ -13,7 +15,7 @@ export default async (value, options) => {
   // @ts-ignore
   let blob = new Blob([Uint8Array.fromBase64(value, options)]), buffer;
   // @ts-ignore
-  if (options?.format) blob = new Response(blob.stream().pipeThrough(new DecompressionStream(options.format)));
+  if (options?.format) blob = new Response(pipe(blob.stream(), options));
   buffer = await blob.arrayBuffer();
   return options?.buffer ? buffer : decoder.decode(buffer);
 };

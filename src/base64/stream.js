@@ -2,6 +2,8 @@
 
 /** @typedef {{ alphabet?: import('../base64.js').Alphabet, format?: '' | import('../base64.js').Format, lastChunkHandling?: 'loose' | 'strict' | 'stop-before-partial', type?: string } & RequestInit} Options */
 
+import pipe from './pipe.js';
+
 const type = 'application/octet-stream';
 
 /**
@@ -14,7 +16,7 @@ export default async (value, options) => {
   const { body } = await fetch(`data:${type};base64,${value}`);
   return new Response(
     // @ts-ignore
-    options?.format ? body.pipeThrough(new DecompressionStream(options.format)) : body,
+    options?.format ? pipe(body, options) : body,
     { headers: { 'content-type': options?.type ?? type } }
   );
 };

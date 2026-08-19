@@ -4,7 +4,6 @@ export type Options = {
     format?: '' | import('../base64.js').Format;
     lastChunkHandling?: 'loose' | 'strict' | 'stop-before-partial';
 };
-/** @typedef {{ alphabet?: import('../base64.js').Alphabet, buffer?: boolean, format?: '' | import('../base64.js').Format, lastChunkHandling?: 'loose' | 'strict' | 'stop-before-partial'}} Options */
 export declare const decoder: TextDecoder;
 export default _default;
 /**
