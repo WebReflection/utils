@@ -6,6 +6,7 @@
     "./accessor": "./types/accessor.d.ts",
     "./accessor/async": "./types/async-accessor.d.ts",
     "./all": "./types/all.d.ts",
+    "./array": "./types/array.d.ts",
     "./ascii": "./types/ascii.d.ts",
     "./async-accessor": "./types/async-accessor.d.ts",
     "./base64": "./types/base64.d.ts",
@@ -84,6 +85,10 @@
     "./all": {
       "types": "./types/all.d.ts",
       "import": "./src/all.js"
+    },
+    "./array": {
+      "types": "./types/array.d.ts",
+      "import": "./src/array.js"
     },
     "./ascii": {
       "types": "./types/ascii.d.ts",
@@ -373,6 +378,7 @@
   "tests": [
     "accessor",
     "all",
+    "array",
     "ascii",
     "async-accessor",
     "base64",
