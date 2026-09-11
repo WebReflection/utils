@@ -48,6 +48,7 @@
     "./json-storage": "./types/json/storage.d.ts",
     "./map": "./types/map.d.ts",
     "./next-resolver": "./types/next-resolver.d.ts",
+    "./password": "./types/password.d.ts",
     "./patch/dispose": "./types/patch/dispose.d.ts",
     "./patch/set-union": "./types/patch/set-union.d.ts",
     "./plain-tag": "./types/plain-tag.d.ts",
@@ -260,6 +261,10 @@
       "types": "./types/next-resolver.d.ts",
       "import": "./src/next-resolver.js"
     },
+    "./password": {
+      "types": "./types/password.d.ts",
+      "import": "./src/password.js"
+    },
     "./patch/dispose": {
       "types": "./types/patch/dispose.d.ts",
       "import": "./src/patch/dispose.js"
@@ -392,6 +397,7 @@
     "json-callback",
     "json-storage",
     "map",
+    "password",
     "patch",
     "plain-tag",
     "ref-id",
