@@ -1181,6 +1181,58 @@ const [next, resolve] = nextResolver(id => `my-logic-${id}`);
 ```
 
 
+## password
+
+Derive an encryption key from a provided password and expose `encrypt` /
+`decrypt` helpers that wrap WebCrypto `subtle`. The password itself is used as
+both the raw key material and the PBKDF2 salt, so the same password plus default
+options always yield the same key — and the same ciphertext for identical input.
+
+```js
+import password from '@webreflection/utils/password';
+
+const { encrypt, decrypt } = password('1234567890');
+
+const encrypted = await encrypt('Hello 🌍 !');
+const decrypted = await decrypt(encrypted);
+
+console.log(decrypted);
+// Hello 🌍 !
+```
+
+By default `encrypt` returns a base64 string, delegating the encoding step to the
+[base64](#base64) `encode` utility. Pass `{ buffer: true }` to skip base64 and
+receive (or later send) a raw `ArrayBuffer` instead — handy when no intermediate
+string or compression is needed:
+
+```js
+const view = new Uint8Array(await encrypt('Hello 🌍 !', { buffer: true }));
+
+console.assert(await decrypt(view) === 'Hello 🌍 !');
+// decrypt(view, { buffer: true }) returns an ArrayBuffer, not a string
+```
+
+Compression is forwarded from [base64](#base64) through the `format` option.
+Supported values are `brotli`, `gzip`, `deflate`, `deflate-raw`, and `zstd`; pass
+the same `format` to both sides:
+
+```js
+const compressed = await encrypt('Hello 🌍 !', { format: 'deflate' });
+console.log(await decrypt(compressed, { format: 'deflate' }));
+// Hello 🌍 !
+```
+
+The `alphabet` option — also from [base64](#base64) — selects a non-default
+`base64url` encoding on `encrypt` and the matching decode on `decrypt`.
+
+The password — a `string`, `ArrayBuffer`, or `ArrayBuffer`-backed view — is the
+sole required argument. Optional key-derivation settings default to
+`iterations: 8192`, `method: 'AES-CBC'`, `name: 'PBKDF2'`, a zeroed 16-byte `iv`,
+and `SHA-256`; override them only when interoperating with another tool that
+requires specific parameters. Both `encrypt` and `decrypt` accept a per-call `iv`
+option that overrides the default IV for that single operation.
+
+
 ## plain-tag
 
 Transform a generic tagged template function into a plain string by
