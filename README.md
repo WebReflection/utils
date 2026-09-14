@@ -37,7 +37,8 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[json-storage](./src#json-storage)** - JSON-aware, iterable, Map-like `localStorage` / `sessionStorage` facade with [Map `put`](#map-put-convention)
   * **[libwabt](./src#libwabt)** - bootstrap the original WABT `libwabt.js` in place to parse, test, and convert WAT ↔ WASM with no extra files; [wat-tag](./src#wat-tag) wraps the common compile-and-instantiate path as a template tag
   * **[map](./src#map)** - native `Map` subclass with [Map `put`](#map-put-convention)
-  * **[next-resolver](./src#next-resolver)** - unique ID + promise pairs; the old [next-resolver](https://github.com/WebReflection/next-resolver) module, brought in to drop that package’s heavy `@webreflection/utils` dependency and keep size constrained
+  * **[next-resolver](./src#next-resolver)** - unique ID + promise pairs; the old [next-resolver](https://github.com/WebReflection/next-resolver) module, brought in to drop that package's heavy `@webreflection/utils` dependency and keep size constrained
+  * **[password](./src#password)** - encrypt and decrypt data around a provided password, returning base64 (optionally compressed) or ArrayBuffer
   * **[plain-tag](./src#plain-tag)** - transform a generic template tag into a plain string
   * **[python-tag](./src#python-tag)** - bootstrap Pyodide or MicroPython and run Python via a template tag, a string call, or a bound options tag
   * **[ref-id](./src#ref-id)** - unique `int32` identifier per WeakMap-compatible key
