@@ -13,13 +13,14 @@ class Test {
 }
 
 let p = new Proxy(
-  { test: 123 },
+  { test: 123, get then() { throw new Error('nope') } },
   new Test
 );
 
 console.assert('test' in p);
 console.assert(!('nope' in p));
 console.assert(await p === p);
+console.assert(p.then === undefined);
 console.assert(p.test === 123);
 console.assert(p.nope === undefined);
 console.assert(p instanceof Object);

@@ -1696,6 +1696,29 @@ export default module;
 Because the sticky logic is intentionally simple, using a "*first come, first served*" global symbol lookup, avoid storing sensitive values there directly when secrecy or module-level isolation matters.
 
 
+## unthenable
+
+A `Proxy` that filters `then` as `get(target, field)` so that instances can be awaited without ever bothering the `get` trap behind.
+
+```js
+import Proxy from '@webreflection/utils/unthenable';
+
+const p = new Proxy(
+  { test: 123 },
+  {
+    get(target, field) {
+      console.log('get trap', field);
+      return target[field];
+    }
+  },
+);
+
+await p === p; // true - no logs
+p.then; // undefined - no logs
+p.test; // 123 - logs "get trap" "test"
+```
+
+
 ## wat-tag
 
 A [libwabt](#libwabt) wrapper that returns an async template tag after options
