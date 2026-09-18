@@ -1696,6 +1696,22 @@ export default module;
 Because the sticky logic is intentionally simple, using a "*first come, first served*" global symbol lookup, avoid storing sensitive values there directly when secrecy or module-level isolation matters.
 
 
+## string
+
+Some common string utility optimized for performance or RAM.
+
+Currently availble: `split(content[, re = /\r?\n/g])` to loop over each line of a long content (it's a generator, no array bloat):
+
+```js
+import { split } from '@webreflection/utils/string';
+
+for (const line of split(globalThis.veryLongContent)) {
+  if (line === globalThis.word)
+    alert('found it!');
+}
+```
+
+
 ## unthenable
 
 A `Proxy` that filters `then` as `get(target, field)` so that instances can be awaited without ever bothering the `get` trap behind.

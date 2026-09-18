@@ -49,6 +49,7 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[signals](./src#signals)** - minimalistic signals with explicit dependency lists; `Object.is` skips same-value writes (`new Signal(v, true)` / `eager` to notify every write): `signal`, `computed`, `batch`, and `effect`
   * **[state-signals](./src#state-signals)** - [signals](./src#signals) plus `create` / `update` / `raw` helpers that turn plain objects into reactive state, with `subscribe` / `unsubscribe` by property key and `dispose` (also via `using`)
   * **[sticky](./src#sticky)** - keep useful values stable once per realm
+  * **[string](./src#string)** - some utility for common string operations, currently `split(content[, re = /\r?\n/g])` is the only one
   * **[unthenable](./src#unthenable)** - a `Proxy` that can be awaited by filtering `then` accessor
   * **[wat-tag](./src#wat-tag)** - [libwabt](./src#libwabt) as a template tag: pass `features`, `init`, and `import` once, then compile WAT and dispose via `using` or `[Symbol.dispose]()`
   * **[weak](./src#weak)** - import both [weakmap](./src#weakmap) and [weakset](./src#weakset) together when both are needed

@@ -63,6 +63,7 @@
     "./signals": "./types/signals.d.ts",
     "./state-signals": "./types/state-signals.d.ts",
     "./sticky": "./types/sticky.d.ts",
+    "./string": "./types/string.d.ts",
     "./unthenable": "./types/unthenable.d.ts",
     "./wat-tag": "./types/wat-tag.d.ts",
     "./weak": "./types/weak.d.ts",
@@ -338,6 +339,10 @@
       "types": "./types/sticky.d.ts",
       "import": "./src/sticky.js"
     },
+    "./string": {
+      "types": "./types/string.d.ts",
+      "import": "./src/string.js"
+    },
     "./unthenable": {
       "types": "./types/unthenable.d.ts",
       "import": "./src/unthenable.js"
@@ -413,6 +418,7 @@
     "signals",
     "state-signals",
     "sticky",
+    "string",
     "unthenable",
     "weakmap",
     "weakset",
