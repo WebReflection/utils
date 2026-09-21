@@ -33,6 +33,7 @@
     "./dom/fragment": "./types/dom/fragment.d.ts",
     "./dom-observer": "./types/dom/observer.d.ts",
     "./dom/observer": "./types/dom/observer.d.ts",
+    "./dom-raf": "./types/dom/raf.d.ts",
     "./dom-signals": "./types/dom/signals.d.ts",
     "./dom/signals": "./types/dom/signals.d.ts",
     "./empty": "./types/empty.d.ts",
@@ -199,6 +200,10 @@
     "./dom-observer": {
       "types": "./types/dom/observer.d.ts",
       "import": "./src/dom/observer.js"
+    },
+    "./dom-raf": {
+      "types": "./types/dom/raf.d.ts",
+      "import": "./src/dom/raf.js"
     },
     "./dom-signals": {
       "types": "./types/dom/signals.d.ts",

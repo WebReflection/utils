@@ -4,6 +4,7 @@ import * as signals from './dom/signals.js';
 import Fragment from './dom/fragment.js';
 import comment from './dom/comment.js';
 import diff from './dom/diff.js';
+import raf from './dom/raf.js';
 import range from './dom/range.js';
 
-export { Fragment, comment, content, diff, observer, range, signals };
+export { Fragment, comment, content, diff, observer, raf, range, signals };
