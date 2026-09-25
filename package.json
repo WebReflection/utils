@@ -13,6 +13,7 @@
     "./base64/encode": "./types/base64/encode.d.ts",
     "./base64/stream": "./types/base64/stream.d.ts",
     "./base64/transformer": "./types/base64/transformer.d.ts",
+    "./bitwise": "./types/bitwise.d.ts",
     "./bound/once": "./types/bound/once.d.ts",
     "./bound/key": "./types/bound/key.d.ts",
     "./bound-once": "./types/bound/once.d.ts",
@@ -116,6 +117,10 @@
     "./base64/transformer": {
       "types": "./types/base64/transformer.d.ts",
       "import": "./src/base64/transformer.js"
+    },
+    "./bitwise": {
+      "types": "./types/bitwise.d.ts",
+      "import": "./src/bitwise.js"
     },
     "./bound-once": {
       "types": "./types/bound/once.d.ts",
@@ -396,6 +401,7 @@
     "ascii",
     "async-accessor",
     "base64",
+    "bitwise",
     "bound-once",
     "bound-key",
     "bound",
