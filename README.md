@@ -9,6 +9,7 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
 
   * **[accessor](./src#accessor)** - wrap a `{ get, set }` descriptor as one function: zero args read, one arg write
   * **[all](./src/#all)** - `Promise.all` via object destructuring
+  * **[array](./src#array)** - proxy an array to pluck fields (`map(items).x`) or pick object slices (`mapObject(items)[['x', 'y']]`) without allocating a callback per access
   * **[ascii](./src#ascii)** - basic string-to-buffer conversion without validation
   * **[async-accessor](./src#async-accessor)** - wrap a `{ get, set }` descriptor as one async function: zero args read, one arg write
   * **[base64](./src#base64)** - encode and decode binary data as base64 strings, with optional compression - `base64/decode`, `base64/encode`, `base64/stream`, and `base64/transformer` provide respective utilities
