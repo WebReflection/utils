@@ -24,6 +24,7 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[dom-content](./src#dom-content)** - parse HTML or SVG markup strings into a `DocumentFragment` via ready-made `html` and `svg` helpers
   * **[dom-diff](./src#dom-diff)** - reconcile two arrays of DOM nodes (or [persistent fragments](./src#dom-fragment)) before a pin: remove extras, insert or reorder via `moveBefore` when available
   * **[dom-fragment](./src#dom-fragment)** - `DocumentFragment` subclass that keeps a persistent range between comment markers, with `ChildNode`-like helpers for [dom-diff](./src#dom-diff)
+  * **[dom-listeners](./src#dom-listeners)** - `Map<type, listener>` subclass that adds or remove its listeners all at once [dom-listeners](./src#dom-listeners)
   * **[dom-observer](./src#dom-observer)** - shared document-wide `MutationObserver` (including shadow roots) with a subscriber set for add/remove tracking; sticky once per realm
   * **[dom-signals](./src#dom-signals)** - [signals](./src#signals) plus DOM subscribe/unsubscribe via [dom-observer](./src#dom-observer) so detached nodes cannot leak listeners
   * **[empty](./src#empty)** - frozen shared empty references: array, object, or null-prototype object

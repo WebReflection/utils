@@ -32,6 +32,8 @@
     "./dom/diff": "./types/dom/diff.d.ts",
     "./dom-fragment": "./types/dom/fragment.d.ts",
     "./dom/fragment": "./types/dom/fragment.d.ts",
+    "./dom-listeners": "./types/dom/fragment.d.ts",
+    "./dom/listeners": "./types/dom/fragment.d.ts",
     "./dom-observer": "./types/dom/observer.d.ts",
     "./dom/observer": "./types/dom/observer.d.ts",
     "./dom-raf": "./types/dom/raf.d.ts",
@@ -185,6 +187,14 @@
     "./dom-fragment": {
       "types": "./types/dom/fragment.d.ts",
       "import": "./src/dom/fragment.js"
+    },
+    "./dom/listeners": {
+      "types": "./types/dom/listeners.d.ts",
+      "import": "./src/dom/listeners.js"
+    },
+    "./dom-listeners": {
+      "types": "./types/dom/listeners.d.ts",
+      "import": "./src/dom/listeners.js"
     },
     "./dom/observer": {
       "types": "./types/dom/observer.d.ts",

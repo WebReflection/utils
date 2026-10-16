@@ -697,6 +697,29 @@ Use this when a list item is logically one entry but renders as several nodes
 node. Requires a DOM (`document`, `Range`, comments).
 
 
+## dom-listeners
+
+A `Map<string, listener>` subclass with both `add(target[, optiopns])` and
+`remove(target[, options])` extra methods.
+
+It's a handy way to attach/detach all listeners at once.
+
+```js
+import Listeners from '@webreflection/utils/dom-listeners';
+
+const pointers = new Listeners([
+  ['pointerover', pointerover],
+  ['pointermove', pointermove],
+]);
+
+// add all listeners, it passes options too
+pointers.add(document.body, { once: true });
+
+// rmeove all listeners
+pointers.remove(document.body);
+```
+
+
 ## dom-observer
 
 Shared browser helper that runs one document-wide `MutationObserver` and lets
