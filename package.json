@@ -450,7 +450,7 @@
   "scripts": {
     "build": "npm run build:types && npm run test",
     "build:libwabt": "./build/libwabt.js",
-    "build:types": "tsc --allowJs --checkJs --declaration --emitDeclarationOnly --stripInternal --outDir types --target es2022 --lib es2025 --module nodenext --moduleResolution nodenext src/*.js",
+    "build:types": "tsc --allowJs --checkJs --declaration --emitDeclarationOnly --stripInternal --outDir types --target es2022 --lib es2025 --module nodenext --moduleResolution nodenext src/*.js src/dom/*.js",
     "coverage": "mkdir -p ./coverage; c8 report --reporter=text-lcov > ./coverage/lcov.info",
     "fetch:libwabt": "echo '// @ts-nocheck' > libwabt.js && curl -Ls https://raw.githubusercontent.com/WebAssembly/wabt/refs/heads/main/docs/demo/libwabt.js >> libwabt.js && curl -LO https://raw.githubusercontent.com/WebAssembly/wabt/refs/heads/main/docs/demo/libwabt.wasm && mv libwabt.* src/libwabt/",
     "test": "c8 node --expose-gc --localstorage-file './test/.storage' -e 'let q=Promise.resolve();for(const t of require(`./package.json`).tests)q=q.then(()=>import(`./test/${t}.js`));'"
