@@ -28,6 +28,7 @@
     "./dom": "./types/dom.d.ts",
     "./dom-content": "./types/dom/content.d.ts",
     "./dom/content": "./types/dom/content.d.ts",
+    "./dom/dataset-observer": "./types/dom/dataset-observer.d.ts",
     "./dom-diff": "./types/dom/diff.d.ts",
     "./dom/diff": "./types/dom/diff.d.ts",
     "./dom-fragment": "./types/dom/fragment.d.ts",
@@ -175,6 +176,10 @@
     "./dom/content": {
       "types": "./types/dom/content.d.ts",
       "import": "./src/dom/content.js"
+    },
+    "./dom/dataset-observer": {
+      "types": "./types/dom/dataset-observer.d.ts",
+      "import": "./src/dom/dataset-observer.js"
     },
     "./dom/diff": {
       "types": "./types/dom/diff.d.ts",

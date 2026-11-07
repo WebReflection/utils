@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DatasetObserver</title>
+    <script type="module">
+        import DatasetObserver from '../../src/dom/dataset-observer.js';
+
+        const invokes = [];
+
+        const observer = new DatasetObserver((target, name, oldValue, newValue) => {
+            invokes.push({ target, name, oldValue, newValue });
+            console.log(invokes.at(-1));
+        });
+
+        observer.observe(document.body, {
+            subtree: true
+        });
+
+        document.body.dataset.test = 'loaded';
+
+        document.body.innerHTML = `<div>
+            <p id="first-p" data-test="child">Child paragraph</p>
+            <p id="second-p">no data</p>
+        </div><p id="third-p" data-test="child">Child paragraph</p>`;
+
+        document.getElementById('first-p').dataset.test = 'updated';
+        document.getElementById('second-p').dataset.test = 'updated';
+
+        const third = document.getElementById('third-p');
+        third.dataset.testSomethingWierdY = true;
+        queueMicrotask(() => {
+            third.dataset.testSomethingWierdY = false;
+            queueMicrotask(() => {
+                third.removeAttribute('data-test-something-wierd-y');
+            });
+        });
+    </script>
+</head>
+<body data-test="initial"></body>
+</html>

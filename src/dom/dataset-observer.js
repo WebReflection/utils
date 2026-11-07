@@ -1,5 +1,7 @@
 // @ts-check
 
+/** @typedef {null|undefined} nullish */
+
 const re = /-(\S)/g;
 
 /**
@@ -16,13 +18,13 @@ const defaults = {
 
 export default class extends MutationObserver {
   /**
-   * @param {(target:HTMLElement, name:string, oldValue:string|undefined|null, newValue:string|undefined|null) => void} interceptor 
+   * @param {(target:HTMLElement, name:string, oldValue:string|nullish, newValue:string|nullish) => void} interceptor 
    */
   constructor(interceptor) {
     super(mutations => {
       for (const { target, attributeName, oldValue } of mutations) {
-        if (attributeName?.startsWith('data-')) {
-          const name = attributeName.slice(5).replace(re, place);
+        if (/** @type {string} */(attributeName).startsWith('data-')) {
+          const name = /** @type {string} */(attributeName).slice(5).replace(re, place);
           interceptor(
             /** @type {HTMLElement} */(target),
             name,
@@ -35,11 +37,12 @@ export default class extends MutationObserver {
   }
 
   /**
-   * Automatically adds `attributes:true` and `attributeOldValue:true`. 
-   * @param {HTMLElement} target 
-   * @param {{ subtree?: boolean, childList?: boolean }} [options]
+   * Automatically adds `attributes:true` and `attributeOldValue:true`.
+   * Allows setting the `subtree` value without hooking into childList.
+   * @param {HTMLElement} target
+   * @param {{ subtree?: boolean }} [options]
    */
   observe(target, options) {
-    super.observe(target, { ...defaults, ...options });
+    super.observe(target, { ...defaults, subtree: !!options?.subtree });
   }
 }
