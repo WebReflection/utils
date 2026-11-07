@@ -500,55 +500,6 @@ When omitted, the second argument defaults to `globalThis.document`. For the
 common HTML and SVG contexts in the browser, see [dom-content](#dom-content).
 
 
-## dataset-observer
-
-A `MutationObserver` subclass that filters out everything except `data-*`
-attribute changes and reports them through an interceptor callback as
-`(target, name, oldValue, newValue)`, where `name` is the camelCase dataset
-key: `data-some-name` is reported as `someName`.
-
-The constructor receives the interceptor; `observe(target, options)` always
-enables `attributes` and `attributeOldValue` for you, and accepts an optional
-`subtree` flag to also watch descendants without hooking into `childList`.
-
-```js
-import DatasetObserver from '@webreflection/utils/dom/dataset-observer';
-
-const observer = new DatasetObserver((target, name, oldValue, newValue) => {
-  console.log(target, name, oldValue, newValue);
-});
-
-// watch the element and all of its descendants
-observer.observe(document.body, { subtree: true });
-
-document.body.dataset.test = 'loaded';
-// <body> 'test' undefined 'loaded'
-```
-
-Behavior details:
-
-- only `data-*` attributes are reported; any other attribute change is ignored
-- `oldValue` comes from the mutation record, so it is `null` the first time a
-  `data-*` attribute is set
-- `newValue` is read live from `target.dataset[name]`, so removing the
-  attribute reports `undefined` as the new value
-- without `subtree`, only the observed element's own attributes are watched
-
-```js
-// given `<p id="first-p" data-test="child">` somewhere in the subtree
-document.getElementById('first-p').dataset.test = 'updated';
-// <p> 'test' 'child' 'updated'
-
-third.dataset.testSomethingWierdY = true;
-// <p> 'testSomethingWierdY' undefined 'true'
-
-third.removeAttribute('data-test-something-wierd-y');
-// <p> 'testSomethingWierdY' 'false' undefined
-```
-
-Requires a DOM (`MutationObserver`, `HTMLElement`).
-
-
 ## dedent
 
 Strip common leading indentation from multiline strings. The utility finds the
@@ -620,6 +571,55 @@ global `document`, so it is browser-oriented. For SSR, or when a specific
 `Document` or additional parsing contexts are required, use
 [content](#content) directly and pass the server-side document as its second
 argument.
+
+
+## dom-dataset-observer
+
+A `MutationObserver` subclass that filters out everything except `data-*`
+attribute changes and reports them through an interceptor callback as
+`(target, name, oldValue, newValue)`, where `name` is the camelCase dataset
+key: `data-some-name` is reported as `someName`.
+
+The constructor receives the interceptor; `observe(target, options)` always
+enables `attributes` and `attributeOldValue` for you, and accepts an optional
+`subtree` flag to also watch descendants without hooking into `childList`.
+
+```js
+import DatasetObserver from '@webreflection/utils/dom/dataset-observer';
+
+const observer = new DatasetObserver((target, name, oldValue, newValue) => {
+  console.log(target, name, oldValue, newValue);
+});
+
+// watch the element and all of its descendants
+observer.observe(document.body, { subtree: true });
+
+document.body.dataset.test = 'loaded';
+// <body> 'test' undefined 'loaded'
+```
+
+Behavior details:
+
+- only `data-*` attributes are reported; any other attribute change is ignored
+- `oldValue` comes from the mutation record, so it is `null` the first time a
+  `data-*` attribute is set
+- `newValue` is read live from `target.dataset[name]`, so removing the
+  attribute reports `undefined` as the new value
+- without `subtree`, only the observed element's own attributes are watched
+
+```js
+// given `<p id="first-p" data-test="child">` somewhere in the subtree
+document.getElementById('first-p').dataset.test = 'updated';
+// <p> 'test' 'child' 'updated'
+
+third.dataset.testSomethingWierdY = true;
+// <p> 'testSomethingWierdY' undefined 'true'
+
+third.removeAttribute('data-test-something-wierd-y');
+// <p> 'testSomethingWierdY' 'false' undefined
+```
+
+Requires a DOM (`MutationObserver`, `HTMLElement`).
 
 
 ## dom-diff
