@@ -500,6 +500,55 @@ When omitted, the second argument defaults to `globalThis.document`. For the
 common HTML and SVG contexts in the browser, see [dom-content](#dom-content).
 
 
+## dataset-observer
+
+A `MutationObserver` subclass that filters out everything except `data-*`
+attribute changes and reports them through an interceptor callback as
+`(target, name, oldValue, newValue)`, where `name` is the camelCase dataset
+key: `data-some-name` is reported as `someName`.
+
+The constructor receives the interceptor; `observe(target, options)` always
+enables `attributes` and `attributeOldValue` for you, and accepts an optional
+`subtree` flag to also watch descendants without hooking into `childList`.
+
+```js
+import DatasetObserver from '@webreflection/utils/dom/dataset-observer';
+
+const observer = new DatasetObserver((target, name, oldValue, newValue) => {
+  console.log(target, name, oldValue, newValue);
+});
+
+// watch the element and all of its descendants
+observer.observe(document.body, { subtree: true });
+
+document.body.dataset.test = 'loaded';
+// <body> 'test' undefined 'loaded'
+```
+
+Behavior details:
+
+- only `data-*` attributes are reported; any other attribute change is ignored
+- `oldValue` comes from the mutation record, so it is `null` the first time a
+  `data-*` attribute is set
+- `newValue` is read live from `target.dataset[name]`, so removing the
+  attribute reports `undefined` as the new value
+- without `subtree`, only the observed element's own attributes are watched
+
+```js
+// given `<p id="first-p" data-test="child">` somewhere in the subtree
+document.getElementById('first-p').dataset.test = 'updated';
+// <p> 'test' 'child' 'updated'
+
+third.dataset.testSomethingWierdY = true;
+// <p> 'testSomethingWierdY' undefined 'true'
+
+third.removeAttribute('data-test-something-wierd-y');
+// <p> 'testSomethingWierdY' 'false' undefined
+```
+
+Requires a DOM (`MutationObserver`, `HTMLElement`).
+
+
 ## dedent
 
 Strip common leading indentation from multiline strings. The utility finds the
@@ -758,6 +807,51 @@ Use this when several features need the same add/remove notifications without
 each spinning up its own observer or `attachShadow` patch. Prefer importing it
 as early as possible so shadow roots attached before the first sticky install are
 not missed. [dom-signals](#dom-signals) is built on top of this module.
+
+
+## dom-raf
+
+A tiny wrapper around `requestAnimationFrame` that starts a continuous
+animation loop and returns a small handle to observe and stop it. The callback
+is invoked once per frame, exactly like a `requestAnimationFrame` callback,
+and keeps being scheduled until the loop is cancelled.
+
+```js
+import raf from '@webreflection/utils/dom-raf';
+
+const loop = raf(now => {
+  element.style.transform = `translateX(${now / 10}px)`;
+});
+
+loop.delta;   // ms between the current and the previous frame
+loop.running; // true until the loop is cancelled
+
+// stop the loop
+loop.cancel();
+```
+
+Behavior details:
+
+- the next frame is requested *before* the callback runs, so calling
+  `cancel()` from within the callback prevents every future frame
+- `delta` starts at `0` and is then measured against
+  `document.timeline.currentTime` rather than `performance.now()`, so the
+  first computed delta is never negative
+- `cancel()` is idempotent: calling it multiple times is safe
+
+The handle also provides a `valueOf(explicit)` method that returns the
+currently scheduled frame id. Because implicit conversion calls `valueOf()`
+without arguments, the handle can be passed directly to
+`cancelAnimationFrame`, which both cancels the pending frame and stops the
+loop:
+
+```js
+cancelAnimationFrame(loop); // implicit valueOf() cancels the loop
+
+const id = loop.valueOf(true); // explicit: read the frame id, keep running
+```
+
+Requires a DOM (`requestAnimationFrame`, `document.timeline`).
 
 
 ## dom-signals

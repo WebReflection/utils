@@ -19,6 +19,7 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[caller-of](./src#caller-of)** - borrow a method as `(thisArg, ...args) => result` via `fn.call.bind(fn)`
   * **[class](./src#class)** - factory for subclassing “illegal” constructors (`Function`, DOM elements, …) via a prototype swap, with solid TypeScript types
   * **[content](./src#content)** - build factories that parse markup strings into `DocumentFragment` instances within a chosen element context
+  * **[dataset-observer](./src#dataset-observer)** - `MutationObserver` subclass that reports `data-*` attribute changes as `(target, name, oldValue, newValue)` with camelCase dataset names
   * **[dedent](./src#dedent)** - strip common leading indentation from the first non-empty line, as a template tag or on strings
   * **[devtools](./src#devtools)** - DevTools-style `$`, `$$`, and `$x` helpers for CSS and XPath queries
   * **[dom-content](./src#dom-content)** - parse HTML or SVG markup strings into a `DocumentFragment` via ready-made `html` and `svg` helpers
@@ -26,6 +27,7 @@ A curated, *TypeScript*-friendly [collection](./src/) of utilities:
   * **[dom-fragment](./src#dom-fragment)** - `DocumentFragment` subclass that keeps a persistent range between comment markers, with `ChildNode`-like helpers for [dom-diff](./src#dom-diff)
   * **[dom-listeners](./src#dom-listeners)** - `Map<type, listener>` subclass that adds or remove its listeners all at once [dom-listeners](./src#dom-listeners)
   * **[dom-observer](./src#dom-observer)** - shared document-wide `MutationObserver` (including shadow roots) with a subscriber set for add/remove tracking; sticky once per realm
+  * **[dom-raf](./src#dom-raf)** - continuous `requestAnimationFrame` loop with a handle exposing per-frame `delta`, a `running` flag, and `cancel` (also implicitly via `cancelAnimationFrame(this)`)
   * **[dom-signals](./src#dom-signals)** - [signals](./src#signals) plus DOM subscribe/unsubscribe via [dom-observer](./src#dom-observer) so detached nodes cannot leak listeners
   * **[empty](./src#empty)** - frozen shared empty references: array, object, or null-prototype object
   * **[fetch](./src#fetch)** - proxied `fetch` that exposes Response fields as thenables (`await fetch(url).text`, `await fetch(url).status`)
