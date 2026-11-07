@@ -30,7 +30,7 @@ export default (contents, document = globalThis.document) => {
   /** @type {Record<string, (value: string) => DocumentFragment>} */
   const content = {};
 
-  const range = createRange();
+  const range = createRange(document);
 
   for (const [key, node] of entries(contents)) {
     content[key] = value => {
@@ -41,6 +41,7 @@ export default (contents, document = globalThis.document) => {
       return range.createContextualFragment(value);
     };
   }
+
   return /** @type {{ [K in keyof T]: (value: string) => DocumentFragment }} */ (
     content
   );
