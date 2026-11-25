@@ -102,6 +102,47 @@ To await a single promise, use `await` (or `Promise.resolve`) directly — **all
 is for resolving many values at once, not a substitute for awaiting one promise.
 
 
+## array
+
+Project fields out of an array of objects without allocating a callback on
+every access. Both helpers wrap the array in a one-off `Proxy` whose handler
+is shared: property names are passed as `this`, so no inline functions are
+created, and the proxy itself is immediately collectable. Symbol keys such as
+`Symbol.iterator` and `Symbol.dispose` are forwarded to the array, with
+methods bound so `this` stays the array — `using`, spread, and `for...of`
+are not intercepted as field names.
+
+```js
+import { map, mapObject } from '@webreflection/utils/array';
+
+const rows = [
+  { x: 1, y: 2, z: 3 },
+  { x: 4, y: 5, z: 6 },
+];
+
+map(rows).x;           // [1, 4]
+mapObject(rows).x;     // [{ x: 1 }, { x: 4 }]
+```
+
+`map` plucks a single field into an array of values. `mapObject` picks one
+or more fields into an array of objects.
+
+Because `mapObject` splits the accessed key on commas, an array of keys
+works too: `['x', 'y', 'z']` stringifies as `'x,y,z'`.
+
+```js
+mapObject(rows)[['x', 'y', 'z']];
+// [{ x: 1, y: 2, z: 3 }, { x: 4, y: 5, z: 6 }]
+
+mapObject(rows)['x,y'];
+// [{ x: 1, y: 2 }, { x: 4, y: 5 }]
+```
+
+This is deliberately quick and dirty — field names that contain a comma
+cannot be picked as a single key — but it is cheap, and it avoids
+`.map(r => r.x)` or `.map(({ x, y, z }) => ({ x, y, z }))` at the call site.
+
+
 ## ascii
 
 An extremely small string to `Uint8Array` converter for known ASCII-compatible
