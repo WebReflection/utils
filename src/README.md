@@ -1343,11 +1343,37 @@ The `alphabet` option — also from [base64](#base64) — selects a non-default
 `base64url` encoding on `encrypt` and the matching decode on `decrypt`.
 
 The password — a `string`, `ArrayBuffer`, or `ArrayBuffer`-backed view — is the
-sole required argument. Optional key-derivation settings default to
-`iterations: 8192`, `method: 'AES-CBC'`, `name: 'PBKDF2'`, a zeroed 16-byte `iv`,
-and `SHA-256`; override them only when interoperating with another tool that
-requires specific parameters. Both `encrypt` and `decrypt` accept a per-call `iv`
-option that overrides the default IV for that single operation.
+sole required argument. The stronger password implementation proposed in
+[PR #13](https://github.com/WebReflection/utils/pull/13) recommends `iterations:
+32000` and `SHA-256`, with optional server-only `pepper` key material combined
+before PBKDF2 and never stored in the envelope.
+
+### PBKDF2 iteration guidance
+
+For password-derived encryption, a practical mobile-first baseline is
+**32,000 PBKDF2 iterations**. It is 4× stronger than the previous 8,192 default
+and remains small enough for responsive bootstrap use on mobile: one WebCrypto
+benchmark reported roughly 5 ms on an Android 15 flagship.
+
+- Use 32,000 iterations for latency-sensitive applications.
+- Consider 64,000–128,000 when slower bootstrap time is acceptable and stronger
+  offline guessing resistance is preferred.
+- 600,000 or more is a server-side / high-security option, not a sensible
+  universal mobile default.
+- Use the same iteration setting for encryption and decryption. If this setting
+  changes, keep it discoverable with the encrypted envelope or retain a separate
+  compatibility policy.
+
+For weak passwords, PBKDF2 iterations alone are not sufficient. Pass a
+server-only `pepper` with `{ pepper }` when the server or secret manager can keep
+it confidential. The pepper must never be sent to or stored in the browser or the
+encrypted envelope, and both sides must use the same value for encryption and
+decryption.
+
+Desktop and Android benchmark results are recorded in
+[PR #14](https://github.com/WebReflection/utils/pull/14). These are measured
+examples, not guarantees across all devices. The recommendations above describe
+the proposed implementation; they do not change the current released behavior.
 
 
 ## plain-tag
