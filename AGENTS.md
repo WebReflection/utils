@@ -196,13 +196,9 @@ etc. In Node provide a DOM (linkedom/jsdom) or do not import those entries.
   Standalone subpaths: `base64/encode`, `base64/decode`, `base64/stream`,
   `base64/transformer`. Older browsers need `import '@ungap/base64'` first.
 - **`password`** — `password(secret, keyOptions?) => { encrypt, decrypt }`;
-  PBKDF2 derives a 256-bit AES-GCM key; optional `pepper` is server-only key
-  material combined with the password before PBKDF2. Each envelope contains a
-  random 16-byte salt and a public 12-byte nonce. The nonce is generated internally and
-  authentication is provided by AES-GCM.
-  Ciphertext is authenticated and repeated plaintext is
-  randomized. Supports `{ buffer: true }`, `{ format }`, and `{ alphabet }` like
-  `base64`. The experimental branch intentionally does not decrypt legacy CBC data.
+  PBKDF2 + AES-CBC defaults. Same password and IV produce deterministic output:
+  pass a unique per-call `iv` for real encryption. Supports `{ buffer: true }`,
+  `{ format }`, and `{ alphabet }` like `base64`.
 - **`json-callback`** / `json/callback` — `toJSONCallback(fn) => source string`;
   normalizes method shorthand to named `function` form so it can be revived.
 - **`json`** — aggregate `{ callback, storage }`.
@@ -288,10 +284,8 @@ consumers.
 - `ascii`: does not encode Unicode. Use `TextEncoder` / `base64` for real text.
 - `base64`: `format`, `alphabet`, and other options must match on encode and
   decode. `decode` returns a string unless `{ buffer: true }`.
-- `password`: AES-GCM envelopes include public salt and nonce metadata; the
-  password is the shared secret. `pepper` is an optional server-only input and is
-  not stored in the envelope. The nonce is public envelope metadata and is
-  generated automatically for each encryption.
+- `password`: the default IV is zeroed and the password is also the salt; the
+  same input yields the same ciphertext. Supply a unique `iv` when that matters.
 - `signals`: dependency lists are explicit; no auto-tracking. A source write
   with a new value notifies dependents even if the computed result is identical.
   Same-value writes are no-ops unless the signal is eager.
