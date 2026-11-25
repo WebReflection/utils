@@ -1301,9 +1301,10 @@ const [next, resolve] = nextResolver(id => `my-logic-${id}`);
 ## password
 
 Derive an encryption key from a provided password and expose `encrypt` /
-`decrypt` helpers that wrap WebCrypto `subtle`. The password itself is used as
-both the raw key material and the PBKDF2 salt, so the same password plus default
-options always yield the same key — and the same ciphertext for identical input.
+`decrypt` helpers that wrap WebCrypto `subtle`. AES-GCM authenticates and
+encrypts every payload. Each ciphertext carries a random public PBKDF2 salt and
+public 12-byte nonce, so repeated plaintext produces different envelopes. The
+nonce is public metadata, generated internally for each encryption.
 
 ```js
 import password from '@webreflection/utils/password';
@@ -1344,10 +1345,19 @@ The `alphabet` option — also from [base64](#base64) — selects a non-default
 
 The password — a `string`, `ArrayBuffer`, or `ArrayBuffer`-backed view — is the
 sole required argument. Optional key-derivation settings default to
-`iterations: 8192`, `method: 'AES-CBC'`, `name: 'PBKDF2'`, a zeroed 16-byte `iv`,
-and `SHA-256`; override them only when interoperating with another tool that
-requires specific parameters. Both `encrypt` and `decrypt` accept a per-call `iv`
-option that overrides the default IV for that single operation.
+`iterations: 600000` and `SHA-256`. Pass `pepper` as a string or buffer-backed
+value to derive a server-only key. Password and pepper are independently typed and
+are combined before PBKDF2; the pepper is never stored in the envelope. A salt
+and nonce are generated automatically and stored in the envelope.
+
+```js
+const serverSide = password('weak-password', {
+  pepper: 'server-only-secret'
+});
+
+const envelope = await serverSide.encrypt('sensitive value');
+const plain = await serverSide.decrypt(envelope);
+```
 
 
 ## plain-tag

@@ -1,30 +1,124 @@
 import password from '../src/password.js';
 
-console.time('password');
-const { encrypt, decrypt } = password('1234567890');
+const assert = (condition, message = 'Assertion failed') => {
+  if (!condition)
+    throw new Error(message);
+};
 
+console.time('password');
+
+const { encrypt, decrypt } = password('1234567890');
 const source = 'Hello 🌍 !';
 
 const encrypted = await encrypt(source);
-const decrypted = await decrypt(encrypted);
-// console.log({ source, encrypted, decrypted });
-console.assert(decrypted === source, 'decrypted === source');
+const encryptedAgain = await encrypt(source);
+assert(encrypted !== encryptedAgain, 'equal plaintext uses separate envelopes');
+assert(await decrypt(encrypted) === source, 'string round trip');
 
 const encoded = new TextEncoder().encode(source);
-
-console.assert(await encrypt(encoded) === encrypted);
-console.assert(await encrypt(encoded.buffer) === encrypted);
+assert(await decrypt(await encrypt(encoded)) === source, 'typed-array round trip');
+assert(await decrypt(await encrypt(encoded.buffer)) === source, 'ArrayBuffer round trip');
 
 const view = new Uint8Array(await encrypt(source, { buffer: true }));
-
-console.assert(String.fromCharCode(...view) !== encrypted);
-console.assert(await decrypt(view) === source);
+assert(await decrypt(view) === source, 'ArrayBufferView round trip');
 
 const decoded = new Uint8Array(await decrypt(view, { buffer: true }));
-console.assert(decoded.every((c, i) => encoded[i] === c) && decoded.length === encoded.length);
+assert(decoded.every((byte, i) => encoded[i] === byte) && decoded.length === encoded.length, 'binary round trip');
 
 const compressed = await encrypt(source, { format: 'deflate' });
-console.assert(compressed !== encrypted);
-console.assert(await decrypt(compressed, { format: 'deflate' }) === source);
+assert(await decrypt(compressed, { format: 'deflate' }) === source, 'compressed round trip');
+
+let invalidIterationsRejected = false;
+try {
+  password(source, { iterations: 0 });
+}
+catch (error) {
+  invalidIterationsRejected = error instanceof RangeError;
+}
+assert(invalidIterationsRejected, 'zero iterations are rejected');
+
+invalidIterationsRejected = false;
+try {
+  password(source, { iterations: 1.5 });
+}
+catch (error) {
+  invalidIterationsRejected = error instanceof RangeError;
+}
+assert(invalidIterationsRejected, 'non-integer iterations are rejected');
+
+let invalidSHARejected = false;
+try {
+  password(source, { SHA: 224 });
+}
+catch (error) {
+  invalidSHARejected = error instanceof RangeError;
+}
+assert(invalidSHARejected, 'unsupported SHA is rejected');
+
+const sha384 = password(source, { SHA: 384, iterations: 1 });
+assert(await sha384.decrypt(await sha384.encrypt(source)) === source, 'SHA-384 round trip');
+
+const sha512 = password(source, { SHA: 512, iterations: 1 });
+assert(await sha512.decrypt(await sha512.encrypt(source)) === source, 'SHA-512 round trip');
+
+const stringPepper = password('password', { pepper: 'server-secret' });
+const stringPepperEncrypted = await stringPepper.encrypt(source);
+assert(await stringPepper.decrypt(stringPepperEncrypted) === source, 'string pepper round trip');
+
+const bufferPassword = password(new TextEncoder().encode('password').buffer, {
+  pepper: new TextEncoder().encode('server-secret').buffer
+});
+const bufferPepperEncrypted = await bufferPassword.encrypt(source);
+assert(await bufferPassword.decrypt(bufferPepperEncrypted) === source, 'ArrayBuffer password and pepper round trip');
+
+const binaryPassword = password(new TextEncoder().encode('password'), {
+  pepper: new TextEncoder().encode('server-secret')
+});
+const binaryPepperEncrypted = await binaryPassword.encrypt(source);
+assert(await binaryPassword.decrypt(binaryPepperEncrypted) === source, 'binary password and pepper round trip');
+
+let wrongPepperRejected = false;
+try {
+  await password('password', { pepper: 'wrong-secret' }).decrypt(stringPepperEncrypted);
+}
+catch (error) {
+  wrongPepperRejected = error instanceof Error;
+}
+assert(wrongPepperRejected, 'wrong pepper is rejected');
+
+let wrongPasswordRejected = false;
+try {
+  await password('wrong password').decrypt(encrypted);
+}
+catch (error) {
+  wrongPasswordRejected = error instanceof Error;
+}
+assert(wrongPasswordRejected, 'wrong password is rejected');
+
+const alphabetEncrypted = await encrypt(source, { alphabet: 'base64url' });
+assert(await decrypt(alphabetEncrypted, { alphabet: 'base64url' }) === source, 'base64url round trip');
+
+const alphabetRawOutput = await encrypt(source, { buffer: true, alphabet: 'base64url' });
+assert(typeof alphabetRawOutput === 'string', 'alphabet output remains base64url string');
+
+const tampered = Uint8Array.fromBase64(encrypted);
+tampered[tampered.length - 1] ^= 1;
+let tamperingRejected = false;
+try {
+  await decrypt(tampered.toBase64());
+}
+catch (error) {
+  tamperingRejected = error instanceof Error;
+}
+assert(tamperingRejected, 'tampered ciphertext is rejected');
+
+let truncatedRejected = false;
+try {
+  await decrypt('');
+}
+catch (error) {
+  truncatedRejected = error instanceof Error;
+}
+assert(truncatedRejected, 'truncated ciphertext is rejected');
 
 console.timeEnd('password');
