@@ -5,107 +5,169 @@ import decode from './base64/decode.js';
 
 /** @typedef {string | ArrayBufferLike | ArrayBufferView} IO */
 
-const { crypto: { subtle } } = globalThis;
+const SALT_LENGTH = 16;
+const NONCE_LENGTH = 12;
+const HEADER_LENGTH = SALT_LENGTH + NONCE_LENGTH;
+
+const { isSafeInteger } = Number;
+const { crypto } = globalThis;
+const { subtle } = crypto;
+const encoder = new TextEncoder;
+const decoder = new TextDecoder;
 
 /**
  * @param {boolean} asString
  * @param {IO} value
- * @returns {BufferSource}
+ * @returns {ArrayBuffer}
  */
-const asBufferSource = (asString, value) => /** @type {BufferSource} */(
-  asString ? encoder.encode(/** @type {string} */(value)) : value
+const toBytes = (asString, value) => (
+  asString ?
+    encoder.encode(/** @type {string} */(value)).buffer : (
+      value instanceof ArrayBuffer ?
+        value :
+        // @ts-ignore
+        new Uint8Array(value.buffer, value.byteOffset, value.byteLength).slice().buffer
+    )
 );
 
-/**
- * @param {{ alphabet?: string, format?: string, buffer?: boolean }} [options]
- * @returns {boolean}
- */
-const asString = options => !!(options?.alphabet || options?.format || !options?.buffer);
-
-const encoder = new TextEncoder;
-const decoder = new TextDecoder;
+/** @param {number} length */
+const random = length => crypto.getRandomValues(new Uint8Array(length));
 
 const defaults = {
-  iterations: 8192,
-  method: 'AES-CBC',
-  name: 'PBKDF2',
-  iv: new Uint8Array(16),
+  iterations: 32_000,
   SHA: 256,
 };
 
 /**
+ * Creates a password-based AES-GCM encrypt/decrypt pair.
+ *
+ * Each envelope contains a public 16-byte random salt and public 12-byte
+ * random nonce followed by authenticated ciphertext.
+ *
  * @param {IO} password
  * @param {{
  *   iterations?: number,
- *   method?: string,
- *   name?: string,
- *   iv?: Uint8Array,
- *   SHA?: number
+ *   SHA?: number,
+ *   pepper?: IO
  * }} [options]
  * @returns {{
- *   encrypt: (value: IO, options?: import('./base64/encode.js').Options & { buffer?: boolean, iv?: Uint8Array }) => Promise<string | ArrayBuffer>,
- *   decrypt: (value: string | ArrayBuffer, options?: import('./base64/decode.js').Options & { iv?: Uint8Array }) => Promise<string | ArrayBuffer>
+ *   encrypt: (value: IO, options?: import('./base64/encode.js').Options & { buffer?: boolean }) => Promise<string | ArrayBuffer>,
+ *   decrypt: (value: string | ArrayBuffer, options?: import('./base64/decode.js').Options & { buffer?: boolean }) => Promise<string | ArrayBuffer>
  * }}
  */
 export default (
-  /** @type {IO} */
-  password,
+  /** @type {IO} */ password,
   {
     iterations = defaults.iterations,
-    method = defaults.method,
-    name = defaults.name,
-    iv = defaults.iv,
     SHA = defaults.SHA,
+    pepper,
   } = defaults
 ) => {
-  const salt = asBufferSource(typeof password === 'string', password);
-  const key = subtle
-    .importKey('raw', salt, { name }, false, ['deriveBits', 'deriveKey'])
-    .then(key => subtle.deriveKey(
+  if (iterations < 1 || !isSafeInteger(iterations))
+    throw new RangeError('PBKDF2 iterations must be a positive integer');
+
+  if (SHA !== 256 && SHA !== 384 && SHA !== 512)
+    throw new RangeError('SHA must be 256, 384, or 512');
+
+  let passwordBytes = toBytes(typeof password === 'string', password);
+
+  if (pepper) {
+    const { byteLength } = passwordBytes;
+    const pepperBytes = toBytes(typeof pepper === 'string', pepper);
+    const combined = new Uint8Array(
+      4 + byteLength + pepperBytes.byteLength
+    );
+    new DataView(combined.buffer).setUint32(0, byteLength, true);
+    combined.set(new Uint8Array(passwordBytes), 4);
+    combined.set(new Uint8Array(pepperBytes), 4 + byteLength);
+    passwordBytes = combined.buffer;
+  }
+
+  /**
+   * @param {Uint8Array} messageSalt
+   * @returns {Promise<CryptoKey>}
+   */
+  const derive = async messageSalt => subtle
+    .importKey('raw', passwordBytes, 'PBKDF2', false, ['deriveKey'])
+    .then(base => subtle.deriveKey(
       {
-        name,
-        salt,
+        name: 'PBKDF2',
+        salt: /** @type {BufferSource} */(messageSalt),
+        hash: `SHA-${SHA}`,
         iterations,
-        hash: `SHA-${SHA}`
       },
-      key,
-      { name: method, length: SHA },
-      true,
-      ['encrypt', 'decrypt']
+      base,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['encrypt', 'decrypt'],
     ))
   ;
 
   return {
     /**
      * @param {IO} value
-     * @param {import('./base64/encode.js').Options & { buffer?: boolean, iv?: Uint8Array }} [options]
+     * @param {import('./base64/encode.js').Options & { buffer?: boolean }} [options]
      * @returns {Promise<string | ArrayBuffer>}
      */
     async encrypt(value, options) {
-      const encrypted = await subtle.encrypt(
-        { name: method, iv: /** @type {BufferSource} */(options?.iv ?? iv) },
-        await key,
-        asBufferSource(typeof value === 'string', value),
-      );
-      return asString(options) ? encode(encrypted, options) : encrypted;
+      const messageSalt = random(SALT_LENGTH);
+      const nonce = random(NONCE_LENGTH);
+      const header = new Uint8Array(HEADER_LENGTH);
+      header.set(messageSalt);
+      header.set(nonce, SALT_LENGTH);
+
+      const ciphertext = new Uint8Array(await subtle.encrypt(
+        {
+          name: 'AES-GCM',
+          iv: /** @type {BufferSource} */(nonce),
+          additionalData: /** @type {BufferSource} */(header),
+          tagLength: 128,
+        },
+        await derive(messageSalt),
+        toBytes(typeof value === 'string', value),
+      ));
+
+      const envelope = new Uint8Array(HEADER_LENGTH + ciphertext.length);
+      envelope.set(header);
+      envelope.set(ciphertext, HEADER_LENGTH);
+
+      return options?.buffer && !options.format && !options.alphabet ?
+        envelope.buffer :
+        encode(envelope, options)
+      ;
     },
 
     /**
      * @param {string | ArrayBuffer} value
-     * @param {import('./base64/decode.js').Options & { iv?: Uint8Array }} [options]
+     * @param {import('./base64/decode.js').Options & { buffer?: boolean }} [options]
      * @returns {Promise<string | ArrayBuffer>}
      */
     async decrypt(value, options) {
-      const decrypted = await subtle.decrypt(
-        { name: method, iv: /** @type {BufferSource} */(options?.iv ?? iv) },
-        await key,
-        /** @type {BufferSource} */(
-          typeof value === 'string' ?
-            await decode(value, { ...options, buffer: true }) :
-            value
-        ),
+      const raw = typeof value === 'string' ?
+        /** @type {ArrayBuffer} */(await decode(value, { ...options, buffer: true })) :
+        value;
+
+      const envelope = new Uint8Array(raw);
+
+      if (envelope.length < HEADER_LENGTH + 16)
+        throw new Error('Invalid AES-GCM envelope');
+
+      const header = envelope.slice(0, HEADER_LENGTH);
+
+      const plain = await subtle.decrypt(
+        {
+          name: 'AES-GCM',
+          iv: /** @type {BufferSource} */(header.slice(SALT_LENGTH, HEADER_LENGTH)),
+          additionalData: /** @type {BufferSource} */(header),
+          tagLength: 128,
+        },
+        await derive(header.slice(0, SALT_LENGTH)),
+        envelope.slice(HEADER_LENGTH),
       );
-      return asString(options) ? decoder.decode(decrypted) : decrypted;
+
+      return options?.alphabet || options?.format || !options?.buffer ?
+        decoder.decode(plain) :
+        plain;
     },
   };
 };
