@@ -196,8 +196,10 @@ etc. In Node provide a DOM (linkedom/jsdom) or do not import those entries.
   Standalone subpaths: `base64/encode`, `base64/decode`, `base64/stream`,
   `base64/transformer`. Older browsers need `import '@ungap/base64'` first.
 - **`password`** — `password(secret, keyOptions?) => { encrypt, decrypt }`;
-  PBKDF2 + AES-CBC defaults. Same password and IV produce deterministic output:
-  pass a unique per-call `iv` for real encryption. Supports `{ buffer: true }`,
+  Mobile-first PBKDF2 recommendation: 32,000 iterations. Use 64,000–128,000 where
+  stronger work factor is acceptable and 600,000+ for server/high-security profiles.
+  Weak-password protection should additionally use a server-only `pepper`; the pepper
+  must remain outside envelopes and the browser. Supports `{ buffer: true }`,
   `{ format }`, and `{ alphabet }` like `base64`.
 - **`json-callback`** / `json/callback` — `toJSONCallback(fn) => source string`;
   normalizes method shorthand to named `function` form so it can be revived.
@@ -284,8 +286,10 @@ consumers.
 - `ascii`: does not encode Unicode. Use `TextEncoder` / `base64` for real text.
 - `base64`: `format`, `alphabet`, and other options must match on encode and
   decode. `decode` returns a string unless `{ buffer: true }`.
-- `password`: the default IV is zeroed and the password is also the salt; the
-  same input yields the same ciphertext. Supply a unique `iv` when that matters.
+- `password`: start with 32,000 PBKDF2 iterations for mobile-first latency. Raise
+  to 64,000–128,000 for stronger offline resistance or 600,000+ for server profiles.
+  Use a server-only pepper for weak passwords. Encryption and decryption must share
+  iterations and pepper; benchmark evidence is in PR #14.
 - `signals`: dependency lists are explicit; no auto-tracking. A source write
   with a new value notifies dependents even if the computed result is identical.
   Same-value writes are no-ops unless the signal is eager.
