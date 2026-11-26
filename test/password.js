@@ -97,6 +97,39 @@ assert(await sha384.decrypt(await sha384.encrypt(source)) === source, 'SHA-384 r
 const sha512 = password(source, { SHA: 512, iterations: 1 });
 assert(await sha512.decrypt(await sha512.encrypt(source)) === source, 'SHA-512 round trip');
 
+const emptyStringPepper = (() => {
+  try {
+    password('password', { pepper: '' });
+  }
+  catch (error) {
+    return error instanceof TypeError;
+  }
+  return false;
+})();
+assert(emptyStringPepper, 'empty string pepper is rejected');
+
+const emptyBinaryPepper = (() => {
+  try {
+    password('password', { pepper: new Uint8Array });
+  }
+  catch (error) {
+    return error instanceof TypeError;
+  }
+  return false;
+})();
+assert(emptyBinaryPepper, 'empty binary pepper is rejected');
+
+const emptyPassword = (() => {
+  try {
+    password('');
+  }
+  catch (error) {
+    return error instanceof TypeError;
+  }
+  return false;
+})();
+assert(emptyPassword, 'empty password is rejected');
+
 const stringPepper = password('password', { pepper: 'server-secret' });
 const stringPepperEncrypted = await stringPepper.encrypt(source);
 assert(await stringPepper.decrypt(stringPepperEncrypted) === source, 'string pepper round trip');

@@ -9,6 +9,8 @@ const SALT_LENGTH = 16;
 const NONCE_LENGTH = 12;
 const HEADER_LENGTH = SALT_LENGTH + NONCE_LENGTH;
 
+const PBKDF2 = 'PBKDF2';
+
 const { isSafeInteger } = Number;
 const { crypto } = globalThis;
 const { subtle } = crypto;
@@ -79,21 +81,36 @@ export default (
   if (SHA !== 256 && SHA !== 384 && SHA !== 512)
     throw new RangeError('SHA must be 256, 384, or 512');
 
-  let passwordBytes = valid(bytes(password), 1, 'password');
-
-  if (pepper != null) {
-    const { byteLength } = passwordBytes;
-    const pepperBytes = valid(bytes(pepper), 1, 'pepper');
-    const combined = new Uint8Array(
-      4 + byteLength + pepperBytes.byteLength
-    );
-    new DataView(combined.buffer).setUint32(0, byteLength, true);
-    combined.set(new Uint8Array(passwordBytes), 4);
-    combined.set(new Uint8Array(pepperBytes), 4 + byteLength);
-    passwordBytes = combined.buffer;
-  }
-
-  const key = subtle.importKey('raw', passwordBytes, 'PBKDF2', false, ['deriveKey']);
+  const key = pepper == null ?
+    subtle
+      .importKey(
+        'raw',
+        valid(bytes(password), 1, 'password'),
+        PBKDF2,
+        false,
+        ['deriveKey']
+      ) :
+    subtle
+      .importKey(
+        'raw',
+        valid(bytes(pepper), 1, 'pepper'),
+        { name: 'HMAC', hash: 'SHA-256' },
+        false,
+        ['sign']
+      )
+      .then(pepperKey => subtle.sign(
+        'HMAC',
+        pepperKey,
+        valid(bytes(password), 1, 'password')
+      ))
+      .then(pepperedPassword => subtle.importKey(
+        'raw',
+        pepperedPassword,
+        PBKDF2,
+        false,
+        ['deriveKey']
+      ))
+  ;
 
   /**
    * @param {Uint8Array} messageSalt
@@ -101,7 +118,7 @@ export default (
    */
   const derive = async messageSalt => subtle.deriveKey(
     {
-      name: 'PBKDF2',
+      name: PBKDF2,
       salt: /** @type {BufferSource} */(messageSalt),
       hash: `SHA-${SHA}`,
       iterations,
