@@ -1,4 +1,4 @@
-import password from '../src/password.js';
+import password, { VersionError } from '../src/password.js';
 
 const assert = (condition, message = 'Assertion failed') => {
   if (!condition)
@@ -154,6 +154,46 @@ catch (error) {
   wrongPepperRejected = error instanceof Error;
 }
 assert(wrongPepperRejected, 'wrong pepper is rejected');
+
+const versionOne = password('password', { pepper: 'server-secret', version: 1 });
+const versionOneEnvelope = await versionOne.encrypt(source);
+let versionMismatch;
+try {
+  await password('password', { pepper: 'server-secret', version: 2 }).decrypt(versionOneEnvelope);
+}
+catch (error) {
+  versionMismatch = error;
+}
+assert(versionMismatch instanceof VersionError, 'version mismatch throws VersionError');
+assert(versionMismatch.expected === 2, 'VersionError exposes expected version');
+assert(versionMismatch.received === 1, 'VersionError exposes received version');
+
+const versionRoundTrip = await password('password', {
+  pepper: 'server-secret',
+  version: 0xffffffff
+}).decrypt(await password('password', {
+  pepper: 'server-secret',
+  version: 0xffffffff
+}).encrypt(source));
+assert(versionRoundTrip === source, 'uint32 version round trip');
+
+let invalidVersionRejected = false;
+try {
+  password(source, { version: -1 });
+}
+catch (error) {
+  invalidVersionRejected = error instanceof RangeError;
+}
+assert(invalidVersionRejected, 'negative version is rejected');
+
+invalidVersionRejected = false;
+try {
+  password(source, { version: 0x100000000 });
+}
+catch (error) {
+  invalidVersionRejected = error instanceof RangeError;
+}
+assert(invalidVersionRejected, 'version above uint32 is rejected');
 
 let wrongPasswordRejected = false;
 try {

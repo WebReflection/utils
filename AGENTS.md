@@ -289,7 +289,10 @@ consumers.
 - `password`: start with 32,000 PBKDF2 iterations for mobile-first latency. Raise
   to 64,000–128,000 for stronger offline resistance or 600,000+ for server profiles.
   Use a server-only pepper for weak passwords. Encryption and decryption must share
-  iterations and pepper; benchmark evidence is in PR #14.
+  iterations and pepper. `version` is an optional
+  unsigned 32-bit envelope identifier for consumer-owned migration data. It may
+  map to pepper, iterations, SHA, format, or combined configuration. Mismatch
+  throws `VersionError` with `expected` and `received` fields.
 - `signals`: dependency lists are explicit; no auto-tracking. A source write
   with a new value notifies dependents even if the computed result is identical.
   Same-value writes are no-ops unless the signal is eager.

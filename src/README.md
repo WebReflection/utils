@@ -1361,8 +1361,81 @@ benchmark reported roughly 5 ms on an Android 15 flagship.
 - 600,000 or more is a server-side / high-security option, not a sensible
   universal mobile default.
 - Use the same iteration setting for encryption and decryption. If this setting
-  changes, keep it discoverable with the encrypted envelope or retain a separate
+  changes, keep it discoverable with a consumer-owned version table or separate
   compatibility policy.
+
+### Envelope version migration
+
+Pass `version` as an unsigned 32-bit integer to identify the configuration used
+by an envelope:
+
+```js
+import password, { VersionError } from '@webreflection/utils/password';
+
+const current = password('secret', {
+  pepper: 'server-pepper',
+  version: 3
+});
+const envelope = await current.encrypt('sensitive value');
+
+try {
+  await current.decrypt(envelope);
+}
+catch (error) {
+  if (error instanceof VersionError) {
+    const config = await lookupConfig(error.received);
+    const plaintext = await password('secret', {
+      iterations: config.iterations,
+      SHA: config.SHA,
+      pepper: await lookupPepper(error.received),
+      version: error.received
+    }).decrypt(envelope);
+
+    // Re-encrypt with the current version after migration.
+  }
+}
+```
+
+`version` is generic envelope metadata. It may represent pepper, iterations,
+SHA, format revision, rotation, or any consumer-owned configuration set. It is
+not assigned meaning by this utility. The value is public, uint32-safe, included
+in AES-GCM additional data, and exposed through `VersionError.expected` and
+`VersionError.received` on mismatch.
+
+### Envelope version migration
+
+Pass `version` as an unsigned 32-bit integer to identify the configuration used
+by an envelope:
+
+```js
+import password, { VersionError } from '@webreflection/utils/password';
+
+const current = password('secret', { pepper: 'server-pepper', version: 3 });
+const encrypted = await current.encrypt('sensitive value');
+
+try {
+  await current.decrypt(encrypted);
+}
+catch (error) {
+  if (error instanceof VersionError) {
+    const config = await lookupConfig(error.received);
+    const plaintext = await password('secret', {
+      iterations: config.iterations,
+      SHA: config.SHA,
+      pepper: await lookupPepper(error.received),
+      version: error.received
+    }).decrypt(encrypted);
+
+    // Re-encrypt with the current 32-bit version after migration.
+  }
+}
+```
+
+`version` is generic envelope metadata. It may represent a pepper, iteration
+count, SHA variant, format revision, or a combination selected by the consumer.
+This utility does not assign meaning to the number or maintain a lookup table.
+The value is public, authenticated as AES-GCM additional data, and exposed through
+`VersionError.expected` and `VersionError.received` on mismatch.
 
 For weak passwords, PBKDF2 iterations alone are not sufficient. Pass a
 server-only `pepper` with `{ pepper }` when the server or secret manager can keep

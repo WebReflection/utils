@@ -2,12 +2,13 @@
 
 import encode from './base64/encode.js';
 import decode from './base64/decode.js';
+import { object } from './empty.js';
 
 /** @typedef {string | ArrayBufferLike | ArrayBufferView} IO */
 
 const SALT_LENGTH = 16;
 const NONCE_LENGTH = 12;
-const HEADER_LENGTH = SALT_LENGTH + NONCE_LENGTH;
+const HEADER_LENGTH = SALT_LENGTH + NONCE_LENGTH + 4;
 
 const PBKDF2 = 'PBKDF2';
 
@@ -32,34 +33,79 @@ const bytes = value => (
 );
 
 /**
+ * @param {number} i
+ * @param {string} kind
+ * @param {number} lower
+ */
+const check = (i, kind, lower) => {
+  if (
+    !isSafeInteger(i) ||
+    i < lower ||
+    i > 0xffffffff
+  )
+    throw new RangeError(`Invalid ${kind}`);
+};
+
+/**
+ * @param {Uint8Array} additionalData
+ * @param {Uint8Array} iv
+ * @returns
+ */
+const chiperDetails = (additionalData, iv) => ({
+  name: 'AES-GCM',
+  tagLength: 128,
+  additionalData,
+  iv,
+});
+
+/**
  * @param {ArrayBuffer} buffer
  * @param {number} lower
  * @param {string} what
  * @returns
  */
 const valid = (buffer, lower, what) => {
-  if (buffer.byteLength < lower) throw new TypeError('Invalid ' + what);
+  if (buffer.byteLength < lower)
+    throw new TypeError('Invalid ' + what);
+
   return buffer;
 };
 
 /** @param {number} length */
 const random = length => crypto.getRandomValues(new Uint8Array(length));
 
-const defaults = {
-  iterations: 32_000,
-  SHA: 256,
-};
+/**
+ * Thrown when an envelope's 32-bit version differs from the pair's version.
+ * The received value can be forwarded to lookup parameters, pepper, or rotation.
+ */
+export class VersionError extends Error {
+  /** @type {number} */ expected;
+  /** @type {number} */ received;
+
+  /**
+   * @param {number} expected
+   * @param {number} received
+   */
+  constructor(expected, received) {
+    super('Invalid version: ' + received);
+    this.expected = expected;
+    this.received = received;
+  }
+}
 
 /**
  * Creates a password-based AES-GCM encrypt/decrypt pair.
  *
- * Each envelope contains a public 16-byte random salt and public 12-byte
- * random nonce followed by authenticated ciphertext.
+ * Each envelope contains a public uint32 version, a public 16-byte random salt,
+ * a public 12-byte random nonce, and authenticated ciphertext. The version is
+ * generic envelope metadata: it can represent pepper, iterations, SHA, format,
+ * rotation, or any consumer-owned configuration set.
  *
  * @param {IO} password
  * @param {{
+ *   SHA?: 256 | 384 | 512,
  *   iterations?: number,
- *   SHA?: number,
+ *   version?: number,
  *   pepper?: IO
  * }} [options]
  * @returns {{
@@ -70,16 +116,17 @@ const defaults = {
 export default (
   /** @type {IO} */ password,
   {
-    iterations = defaults.iterations,
-    SHA = defaults.SHA,
+    SHA = 256,
+    iterations = 32_000,
+    version = 0,
     pepper,
-  } = defaults
+  } = object
 ) => {
-  if (iterations < 1 || !isSafeInteger(iterations))
-    throw new RangeError('PBKDF2 iterations must be a positive integer');
-
   if (SHA !== 256 && SHA !== 384 && SHA !== 512)
     throw new RangeError('SHA must be 256, 384, or 512');
+
+  check(iterations, 'iterations', 1);
+  check(version, 'version', 0);
 
   const key = pepper == null ?
     subtle
@@ -113,15 +160,16 @@ export default (
   ;
 
   /**
-   * @param {Uint8Array} messageSalt
+   * @param {Uint8Array} salt
    * @returns {Promise<CryptoKey>}
    */
-  const derive = async messageSalt => subtle.deriveKey(
+  const derive = async salt => subtle.deriveKey(
     {
       name: PBKDF2,
-      salt: /** @type {BufferSource} */(messageSalt),
       hash: `SHA-${SHA}`,
       iterations,
+      // @ts-ignore
+      salt,
     },
     await key,
     { name: 'AES-GCM', length: 256 },
@@ -136,20 +184,17 @@ export default (
      * @returns {Promise<string | ArrayBuffer>}
      */
     async encrypt(value, options) {
-      const messageSalt = random(SALT_LENGTH);
+      const salt = random(SALT_LENGTH);
       const nonce = random(NONCE_LENGTH);
       const header = new Uint8Array(HEADER_LENGTH);
-      header.set(messageSalt);
-      header.set(nonce, SALT_LENGTH);
+
+      new DataView(header.buffer).setUint32(0, version, true);
+      header.set(salt, 4);
+      header.set(nonce, SALT_LENGTH + 4);
 
       const ciphertext = new Uint8Array(await subtle.encrypt(
-        {
-          name: 'AES-GCM',
-          iv: /** @type {BufferSource} */(nonce),
-          additionalData: /** @type {BufferSource} */(header),
-          tagLength: 128,
-        },
-        await derive(messageSalt),
+        chiperDetails(header, nonce),
+        await derive(salt),
         bytes(value),
       ));
 
@@ -175,16 +220,15 @@ export default (
 
       const envelope = new Uint8Array(valid(raw, HEADER_LENGTH + 16, 'AES-GCM envelope'));
 
+      const v = new DataView(envelope.buffer).getUint32(0, true);
+      if (v !== version)
+        throw new VersionError(version, v);
+
       const header = envelope.subarray(0, HEADER_LENGTH);
 
       const plain = await subtle.decrypt(
-        {
-          name: 'AES-GCM',
-          iv: /** @type {BufferSource} */(header.subarray(SALT_LENGTH, HEADER_LENGTH)),
-          additionalData: /** @type {BufferSource} */(header),
-          tagLength: 128,
-        },
-        await derive(header.subarray(0, SALT_LENGTH)),
+        chiperDetails(header, header.subarray(SALT_LENGTH + 4, HEADER_LENGTH)),
+        await derive(header.subarray(4, SALT_LENGTH + 4)),
         envelope.subarray(HEADER_LENGTH),
       );
 
