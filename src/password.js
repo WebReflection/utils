@@ -16,12 +16,11 @@ const encoder = new TextEncoder;
 const decoder = new TextDecoder;
 
 /**
- * @param {boolean} asString
  * @param {IO} value
  * @returns {ArrayBuffer}
  */
-const toBytes = (asString, value) => (
-  asString ?
+const toBytes = value => (
+  typeof value === 'string' ?
     encoder.encode(/** @type {string} */(value)).buffer : (
       value instanceof ArrayBuffer ?
         value :
@@ -69,11 +68,11 @@ export default (
   if (SHA !== 256 && SHA !== 384 && SHA !== 512)
     throw new RangeError('SHA must be 256, 384, or 512');
 
-  let passwordBytes = toBytes(typeof password === 'string', password);
+  let passwordBytes = toBytes(password);
 
   if (pepper) {
     const { byteLength } = passwordBytes;
-    const pepperBytes = toBytes(typeof pepper === 'string', pepper);
+    const pepperBytes = toBytes(pepper);
     const combined = new Uint8Array(
       4 + byteLength + pepperBytes.byteLength
     );
@@ -124,7 +123,7 @@ export default (
           tagLength: 128,
         },
         await derive(messageSalt),
-        toBytes(typeof value === 'string', value),
+        toBytes(value),
       ));
 
       const envelope = new Uint8Array(HEADER_LENGTH + ciphertext.length);
