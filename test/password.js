@@ -8,8 +8,6 @@ const assert = (condition, message = 'Assertion failed') => {
 console.time('password');
 
 const { encrypt, decrypt } = password('1234567890');
-assert(password('1234567890').encrypt, 'default 32k pair exposes encrypt');
-assert(password('1234567890').decrypt, 'default 32k pair exposes decrypt');
 const source = 'Hello 🌍 !';
 
 const encrypted = await encrypt(source);
@@ -29,6 +27,42 @@ assert(decoded.every((byte, i) => encoded[i] === byte) && decoded.length === enc
 
 const compressed = await encrypt(source, { format: 'deflate' });
 assert(await decrypt(compressed, { format: 'deflate' }) === source, 'compressed round trip');
+
+let invalidPasswordRejected = false;
+try {
+  password('');
+}
+catch (error) {
+  invalidPasswordRejected = error instanceof TypeError;
+}
+assert(invalidPasswordRejected, 'empty string password is rejected');
+
+invalidPasswordRejected = false;
+try {
+  password(new Uint8Array);
+}
+catch (error) {
+  invalidPasswordRejected = error instanceof TypeError;
+}
+assert(invalidPasswordRejected, 'empty binary password is rejected');
+
+let invalidPepperRejected = false;
+try {
+  password('password', { pepper: '' });
+}
+catch (error) {
+  invalidPepperRejected = error instanceof TypeError;
+}
+assert(invalidPepperRejected, 'empty string pepper is rejected');
+
+invalidPepperRejected = false;
+try {
+  password('password', { pepper: new Uint8Array });
+}
+catch (error) {
+  invalidPepperRejected = error instanceof TypeError;
+}
+assert(invalidPepperRejected, 'empty binary pepper is rejected');
 
 let invalidIterationsRejected = false;
 try {

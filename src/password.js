@@ -19,7 +19,7 @@ const decoder = new TextDecoder;
  * @param {IO} value
  * @returns {ArrayBuffer}
  */
-const toBytes = value => (
+const bytes = value => (
   typeof value === 'string' ?
     encoder.encode(/** @type {string} */(value)).buffer : (
       value instanceof ArrayBuffer ?
@@ -28,6 +28,17 @@ const toBytes = value => (
         new Uint8Array(value.buffer, value.byteOffset, value.byteLength).slice().buffer
     )
 );
+
+/**
+ * @param {ArrayBuffer} buffer
+ * @param {number} lower
+ * @param {string} what
+ * @returns
+ */
+const valid = (buffer, lower, what) => {
+  if (buffer.byteLength < lower) throw new TypeError('Invalid ' + what);
+  return buffer;
+};
 
 /** @param {number} length */
 const random = length => crypto.getRandomValues(new Uint8Array(length));
@@ -68,11 +79,11 @@ export default (
   if (SHA !== 256 && SHA !== 384 && SHA !== 512)
     throw new RangeError('SHA must be 256, 384, or 512');
 
-  let passwordBytes = toBytes(password);
+  let passwordBytes = valid(bytes(password), 1, 'password');
 
-  if (pepper) {
+  if (pepper != null) {
     const { byteLength } = passwordBytes;
-    const pepperBytes = toBytes(pepper);
+    const pepperBytes = valid(bytes(pepper), 1, 'pepper');
     const combined = new Uint8Array(
       4 + byteLength + pepperBytes.byteLength
     );
@@ -82,25 +93,24 @@ export default (
     passwordBytes = combined.buffer;
   }
 
+  const key = subtle.importKey('raw', passwordBytes, 'PBKDF2', false, ['deriveKey']);
+
   /**
    * @param {Uint8Array} messageSalt
    * @returns {Promise<CryptoKey>}
    */
-  const derive = async messageSalt => subtle
-    .importKey('raw', passwordBytes, 'PBKDF2', false, ['deriveKey'])
-    .then(base => subtle.deriveKey(
-      {
-        name: 'PBKDF2',
-        salt: /** @type {BufferSource} */(messageSalt),
-        hash: `SHA-${SHA}`,
-        iterations,
-      },
-      base,
-      { name: 'AES-GCM', length: 256 },
-      false,
-      ['encrypt', 'decrypt'],
-    ))
-  ;
+  const derive = async messageSalt => subtle.deriveKey(
+    {
+      name: 'PBKDF2',
+      salt: /** @type {BufferSource} */(messageSalt),
+      hash: `SHA-${SHA}`,
+      iterations,
+    },
+    await key,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt', 'decrypt'],
+  );
 
   return {
     /**
@@ -123,7 +133,7 @@ export default (
           tagLength: 128,
         },
         await derive(messageSalt),
-        toBytes(value),
+        bytes(value),
       ));
 
       const envelope = new Uint8Array(HEADER_LENGTH + ciphertext.length);
@@ -146,22 +156,19 @@ export default (
         /** @type {ArrayBuffer} */(await decode(value, { ...options, buffer: true })) :
         value;
 
-      const envelope = new Uint8Array(raw);
+      const envelope = new Uint8Array(valid(raw, HEADER_LENGTH + 16, 'AES-GCM envelope'));
 
-      if (envelope.length < HEADER_LENGTH + 16)
-        throw new Error('Invalid AES-GCM envelope');
-
-      const header = envelope.slice(0, HEADER_LENGTH);
+      const header = envelope.subarray(0, HEADER_LENGTH);
 
       const plain = await subtle.decrypt(
         {
           name: 'AES-GCM',
-          iv: /** @type {BufferSource} */(header.slice(SALT_LENGTH, HEADER_LENGTH)),
+          iv: /** @type {BufferSource} */(header.subarray(SALT_LENGTH, HEADER_LENGTH)),
           additionalData: /** @type {BufferSource} */(header),
           tagLength: 128,
         },
-        await derive(header.slice(0, SALT_LENGTH)),
-        envelope.slice(HEADER_LENGTH),
+        await derive(header.subarray(0, SALT_LENGTH)),
+        envelope.subarray(HEADER_LENGTH),
       );
 
       return options?.alphabet || options?.format || !options?.buffer ?
